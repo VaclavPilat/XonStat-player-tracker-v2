@@ -12,10 +12,13 @@ class OverviewWorker(QThread):
     players_filename = "Players.json" # JSON file for storing players
     players = [] # List of players
 
+    signal_add_player = pyqtSignal(dict) # Singnal for adding new player to table
+
 
     def __init__(self, window: WindowWithStatus):
         super().__init__()
         self.window = window
+        self.signal_add_player.connect(self.window.add_player_to_table)
 
 
     def _load_players(self):
@@ -34,12 +37,8 @@ class OverviewWorker(QThread):
     def _add_players_to_table(self):
         """ Adds rows filled with player data to table """
         if not self.players == []:
-            self.window.player_table.setRowCount( len(self.players) )
-            i = 0
             for player in self.players:
-                self.window.player_table.setItem(i, 0, QTableWidgetItem(str(player["id"])))
-                self.window.player_table.setItem(i, 1, QTableWidgetItem(player["nick"]))
-                i += 1
+                self.signal_add_player.emit(player)
         if len(self.players) > 0:
             self.window.status_result_message("Successfully loaded " + str(len(self.players)) + " players from file.")
         else: 

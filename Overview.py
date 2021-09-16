@@ -43,6 +43,7 @@ class Overview(WindowWithStatus):
     def _create_player_table(self) -> QTableWidget:
         """ Creating table of players """
         self.player_table = QTableWidget()
+        self.player_table.setEditTriggers( QTableWidget.NoEditTriggers )
         # Setting columns
         table_headers = ["ID", "Player nickname", "Current player name", "Last played", 
                         "Player profile", "More information", "Delete player"]
@@ -52,6 +53,26 @@ class Overview(WindowWithStatus):
         self.player_table.horizontalHeader().setStretchLastSection(True)
         self.player_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         return self.player_table
+
+    
+    def add_player_to_table(self, player: dict):
+        """ Adds a single row with player data to table """
+        row_index = self.player_table.rowCount()
+        self.player_table.insertRow(row_index)
+        self.player_table.setItem(row_index, 0, QTableWidgetItem(str(player["id"])))
+        self.player_table.setItem(row_index, 1, QTableWidgetItem(player["nick"]))
+        # Adding button for showing player profile
+        button = QPushButton(self.player_table)
+        button.setText("Show player profile")
+        self.player_table.setCellWidget(row_index, 4, button)
+        # Adding button for showing more info about the player
+        button = QPushButton(self.player_table)
+        button.setText("Show more info")
+        self.player_table.setCellWidget(row_index, 5, button)
+        # Adding button for deleting the player
+        button = QPushButton(self.player_table)
+        button.setText("Delete this player")
+        self.player_table.setCellWidget(row_index, 6, button)
         
 
 
