@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-import sys
+import sys, os, json
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView
 
 class Oveview(QWidget):
     """ Class for creating a window that contains a table with currently tracked players """
+
+    players_filename = "Players.json" # JSON file for storing players
 
     def __init__(self):
         super().__init__()
@@ -36,6 +38,23 @@ class Oveview(QWidget):
         self._create_player_table()
 
 
+    def _load_players(self):
+        """ Loads players from file """
+
+        # Getting abolute path to file
+        current_directory = os.path.dirname(__file__) # The directory where this script is located
+        absolute_filepath = os.path.join(current_directory, self.players_filename) # Absolute path to the file with players
+        
+        # Opening file
+        if os.path.isfile(absolute_filepath):
+            players_file = open(absolute_filepath, "r")
+            self.players = json.loads(players_file.read())
+            players_file.close()
+        else:
+            self.players = []
+        ##############print(str(os.path.isfile(absolute_filepath)))
+
+
     def _create_player_table(self):
         """ Creating table of players """
 
@@ -48,8 +67,13 @@ class Oveview(QWidget):
         self.player_table.setHorizontalHeaderLabels(table_headers)
 
         # Filling the table with data
-        self.player_table.setRowCount(10)
-        self.player_table.setItem(0,0, QTableWidgetItem("Name"))
+        self._load_players()
+        self.player_table.setRowCount( len(self.players) )
+        i = 0
+        for player in self.players:
+            self.player_table.setItem(i, 0, QTableWidgetItem(str(player["id"])))
+            self.player_table.setItem(i, 1, QTableWidgetItem(player["nick"]))
+            i += 1
 
         # Enabling horizontal stretching
         self.player_table.horizontalHeader().setStretchLastSection(True)
