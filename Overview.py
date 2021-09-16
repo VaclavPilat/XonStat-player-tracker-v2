@@ -49,9 +49,15 @@ class Overview(WindowWithStatus):
                         "Player profile", "More information", "Delete player"]
         self.player_table.setColumnCount( len(table_headers) )
         self.player_table.setHorizontalHeaderLabels(table_headers)
-        # Enabling horizontal stretching
-        self.player_table.horizontalHeader().setStretchLastSection(True)
-        self.player_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # Setting column stretching
+        self.player_table.horizontalHeader().setMinimumSectionSize(150)
+        self.player_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.player_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.player_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.player_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.player_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        self.player_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        self.player_table.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeToContents)
         return self.player_table
 
     
