@@ -1,0 +1,26 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: medium;
+}
+
+
+/*#############################  TABLE WIDGETS  ##############################*/
+
+#player_table .profile { background-color: #9de0ff; }
+#player_table .info    { background-color: #fffeac; }
+#player_table .delete  { background-color: #ff9898; }
+
+
+/*#################################  STATUS  #################################*/
+
+#status {
+    border: 1px solid white;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 5px;
+}
+
+#status.ready   { background-color: #bbbbbb }
+#status.working { background-color: #fdff9f }
+#status.success { background-color: #b6ff99 }
+#status.error   { background-color: #ffab95 }

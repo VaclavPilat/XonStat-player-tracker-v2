@@ -2,12 +2,17 @@
 from PyQt5.QtCore import * 
 from PyQt5.QtGui import * 
 from PyQt5.QtWidgets import * 
+import os
 
 class WindowWithStatus(QWidget):
     """ Class for creating a status label and methods for controlling status content """
     
 
-    _status_message = ""
+    def __init__(self):
+        super().__init__()
+        # Adding CSS stylesheet
+        with open(os.path.join(os.path.dirname(__file__), "Style.css"), "r") as css_file:
+            self.setStyleSheet(css_file.read())
 
 
     def _status_create(self) -> QLabel:
@@ -17,17 +22,7 @@ class WindowWithStatus(QWidget):
         self.status.setAlignment(Qt.AlignCenter)
         self._status_change_text("Ready")
         self.status.setProperty("class", "ready")
-        # Adding CSS
-        self.status.setStyleSheet("""
-            QLabel {
-                padding: 5px;
-                font-weight: bold;
-            }
-            .ready   { background-color: #bbbbbb }
-            .working { background-color: #e9ea83 }
-            .success { background-color: #a1ea83 }
-            .error   { background-color: #ea9883 }
-        """)
+        self.status.setObjectName("status")
         return self.status
 
 

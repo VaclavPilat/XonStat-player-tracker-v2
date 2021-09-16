@@ -49,6 +49,7 @@ class Overview(WindowWithStatus):
                         "Player profile", "More information", "Delete player"]
         self.player_table.setColumnCount( len(table_headers) )
         self.player_table.setHorizontalHeaderLabels(table_headers)
+        self.player_table.setObjectName("player_table")
         # Setting column stretching
         self.player_table.horizontalHeader().setMinimumSectionSize(150)
         self.player_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -58,6 +59,7 @@ class Overview(WindowWithStatus):
         self.player_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.player_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
         self.player_table.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeToContents)
+        self.player_table.dumpObjectTree()
         return self.player_table
 
     
@@ -70,14 +72,17 @@ class Overview(WindowWithStatus):
         # Adding button for showing player profile
         button = QPushButton(self.player_table)
         button.setText("Show player profile")
+        button.setProperty("class", "profile")
         self.player_table.setCellWidget(row_index, 4, button)
         # Adding button for showing more info about the player
         button = QPushButton(self.player_table)
         button.setText("Show more info")
+        button.setProperty("class", "info")
         self.player_table.setCellWidget(row_index, 5, button)
         # Adding button for deleting the player
         button = QPushButton(self.player_table)
         button.setText("Delete this player")
+        button.setProperty("class", "delete")
         self.player_table.setCellWidget(row_index, 6, button)
         
 
