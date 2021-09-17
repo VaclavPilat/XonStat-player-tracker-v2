@@ -24,7 +24,7 @@ class OverviewWorker(QThread):
 
     def _load_players(self):
         """ Loads players from file """
-        self.window.status_change_message("Loading players from file...")
+        self.window.status_change_message("Loading players from file")
         # Getting abolute path to file
         current_directory = os.path.dirname(__file__) # The directory where this script is located
         absolute_filepath = os.path.join(current_directory, self.players_filename) # Absolute path to the file with players
@@ -43,22 +43,33 @@ class OverviewWorker(QThread):
             for player in self.players:
                 self.signal_add_player.emit(player)
         if len(self.players) > 0:
-            self.window.status_result_message("Successfully loaded " + str(len(self.players)) + " players from file.")
+            self.window.status_result_message("Successfully loaded " + str(len(self.players)) + " players from file")
         else: 
-            self.window.status_result_message("No stored players were found.")
+            self.window.status_result_message("No stored players were found")
     
 
     def _update_player_variables(self):
         """ Loading all player profiles and printing out player variables """
+        time.sleep(1)
+        correct = 0
+        current = 0
+        self.window.status_change_message("Loading information from player profiles")
+        self.window.status_update_progress(current, len(self.players))
         for player in self.players:
+            time.sleep(0)
             player.load_profile()
+            player.load_name()
             player.load_active()
+            if player.correct:
+                correct += 1
+            current += 1
             self.signal_update_player.emit(player)
+            self.window.status_update_progress(current, len(self.players))
+        self.window.status_result_progress("Finished loading player profiles", correct, len(self.players))
 
 
     def run(self):
         # Filling the table with data
         self._load_players()
         self._add_players_to_table()
-        time.sleep(1)
         self._update_player_variables()

@@ -36,5 +36,13 @@ class Player(dict):
             else:
                 self["name"] = name.text.strip()
         else:
-            self["name"] =  "---"
+            self["name"] =  ""
         return self["name"]
+    
+    def load_active(self) -> str:
+        """ Loads the last time this player played a game """
+        if self.correct:
+            self["active"] = self._soup.find_all("span", attrs={"class": "abstime"})[1].text
+        else:
+            self["active"] =  ""
+        return self["active"]

@@ -22,7 +22,7 @@ class Overview(WindowWithStatus):
         """ Setting winow properties """
         # Setting window title and size
         self.setWindowTitle("XonStat player tracker - Overview")
-        self.resize(1200, 800)
+        self.resize(1300, 800)
         # Moving window to the center of the screen
         frameGeometry = self.frameGeometry()
         frameGeometry.moveCenter(QDesktopWidget().availableGeometry().center())
@@ -98,6 +98,10 @@ class Overview(WindowWithStatus):
         widget = QLabel(self.player_table)
         widget.setText(player["name"])
         self.player_table.setCellWidget(player.row, 2, widget)
+        # Adding label for the last time this player was active
+        widget = QLabel(self.player_table)
+        widget.setText(player["active"])
+        self.player_table.setCellWidget(player.row, 3, widget)
 
 
 

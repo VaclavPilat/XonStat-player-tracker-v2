@@ -48,23 +48,33 @@ class WindowWithStatus(QWidget):
 
     def status_change_message (self, message: str):
         """ Changing status message """
+        message += " ..."
         self._status_message = message
         self._status_change_text(message)
         self._status_change_color("working")
     
 
-    def status_update_progress (self, current: int, max: int, change_color: bool = False):
+    def status_update_progress (self, current: int, max: int, result: bool = False):
         """ Printing out progress with the current status message """
-        self._status_change_text(self._status_message + " (" + str(current) + " out of " + str(max) + ")")
-        if change_color:
-            self._status_change_color("working")
+        output = self._status_message + " "
+        if current > 0:
+            output += str(math.ceil(current / max * 100))
+        else:
+            output += "0"
+        output += "% "
+        if result:
+            output += "correct"
+        else:
+            output += "done"
+        output += " (" + str(current) + " out of " + str(max) + ")"
+        self._status_change_text(output)
     
 
-    def status_result_message (self, message: str, current: int, max: int):
+    def status_result_progress (self, message: str, correct: int, max: int):
         """ Printing result message and progress """
-        self._status_change_text(message)
-        self._status_update_progress(current, max)
-        if current == max:
+        self.status_change_message(message)
+        self.status_update_progress(correct, max, True)
+        if correct == max:
             self._status_change_color("success")
         else:
             self._status_change_color("error")
@@ -72,7 +82,7 @@ class WindowWithStatus(QWidget):
 
     def status_result_message (self, message: str, correct: bool = True):
         """ Printing result message and progress """
-        self._status_change_text(message)
+        self.status_change_message(message)
         if correct:
             self._status_change_color("success")
         else:
