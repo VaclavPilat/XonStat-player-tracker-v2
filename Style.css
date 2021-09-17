@@ -6,9 +6,13 @@
 
 /*#############################  TABLE WIDGETS  ##############################*/
 
-#player_table .profile { background-color: #9de0ff; }
-#player_table .info    { background-color: #fffeac; }
-#player_table .delete  { background-color: #ff9898; }
+#player_table QLabel { 
+    padding: 0 3px;
+}
+
+#player_table QPushButton.profile { background-color: #9de0ff; }
+#player_table QPushButton.info    { background-color: #fffeac; }
+#player_table QPushButton.delete  { background-color: #ff9898; }
 
 
 /*#################################  STATUS  #################################*/
