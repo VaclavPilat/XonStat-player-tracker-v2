@@ -2,6 +2,7 @@
 from PyQt5.QtWidgets import * 
 from WindowWithStatus import *
 from OverviewWorker import *
+import webbrowser
 
 class Overview(WindowWithStatus):
     """ Class for creating a window that contains a table with currently tracked players """
@@ -79,6 +80,7 @@ class Overview(WindowWithStatus):
         widget = QPushButton(self.player_table)
         widget.setText("Show player profile")
         widget.setProperty("class", "profile")
+        widget.clicked.connect(lambda: self._show_profile(player["profile"]))
         self.player_table.setCellWidget(row_index, 4, widget)
         # Adding button for showing more info about the player
         widget = QPushButton(self.player_table)
@@ -90,6 +92,11 @@ class Overview(WindowWithStatus):
         widget.setText("Delete this player")
         widget.setProperty("class", "delete")
         self.player_table.setCellWidget(row_index, 6, widget)
+    
+
+    def _show_profile(self, url: str):
+        """ Opening player profile in a new tab of a browser """
+        webbrowser.open(url, new=2)
 
     
     def update_player_variables(self, player: Player):
