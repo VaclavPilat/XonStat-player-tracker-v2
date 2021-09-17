@@ -63,7 +63,9 @@ class Overview(WindowWithStatus):
     
     def add_player_to_table(self, player: Player):
         """ Adds a single row with player data to table """
+        # Creating a new row inside the table
         row_index = self.player_table.rowCount()
+        player.row = row_index
         self.player_table.insertRow(row_index)
         # Adding player ID label
         widget = QLabel(self.player_table)
@@ -73,10 +75,6 @@ class Overview(WindowWithStatus):
         widget = QLabel(self.player_table)
         widget.setText(player["nick"])
         self.player_table.setCellWidget(row_index, 1, widget)
-        # Adding player nickname label
-        widget = QLabel(self.player_table)
-        widget.setText(player["profile"])
-        self.player_table.setCellWidget(row_index, 2, widget)
         # Adding button for showing player profile
         widget = QPushButton(self.player_table)
         widget.setText("Show player profile")
@@ -92,7 +90,15 @@ class Overview(WindowWithStatus):
         widget.setText("Delete this player")
         widget.setProperty("class", "delete")
         self.player_table.setCellWidget(row_index, 6, widget)
-        
+
+    
+    def update_player_variables(self, player: Player):
+        """ Print out player variables into table """
+        # Adding label for current player name
+        widget = QLabel(self.player_table)
+        widget.setText(player["name"])
+        self.player_table.setCellWidget(player.row, 2, widget)
+
 
 
 if __name__ == '__main__':
