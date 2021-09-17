@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from PyQt5.QtCore import * 
 from PyQt5.QtWidgets import * 
-import os
+import os, qdarkstyle, math
 
 class WindowWithStatus(QWidget):
     """ Class for creating a status label and methods for controlling status content """
@@ -9,9 +9,16 @@ class WindowWithStatus(QWidget):
 
     def __init__(self):
         super().__init__()
-        # Adding CSS stylesheet
+        """ Adding CSS styling """
+        # Adding CSS stylesheet from QDarkStyle
+        stylesheet = qdarkstyle.load_stylesheet()
+        # Adding my own stylesheet
         with open(os.path.join(os.path.dirname(__file__), "Style.css"), "r") as css_file:
-            self.setStyleSheet(css_file.read())
+            css_content = css_file.read()
+            if not css_content == None and not css_content == "":
+                stylesheet += css_content
+        # Applying stylesheet
+        self.setStyleSheet(stylesheet)
 
 
     def _status_create(self) -> QLabel:
@@ -58,7 +65,7 @@ class WindowWithStatus(QWidget):
         self._status_change_text(message)
         self._status_update_progress(current, max)
         if current == max:
-            self._status_change_color("correct")
+            self._status_change_color("success")
         else:
             self._status_change_color("error")
     
