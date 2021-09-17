@@ -96,11 +96,20 @@ class Overview(WindowWithStatus):
         """ Print out player variables into table """
         # Adding label for current player name
         widget = QLabel(self.player_table)
-        widget.setText(player["name"])
+        if player["name"] == None:
+            widget.setText("---")
+            widget.setAlignment(Qt.AlignCenter)
+        else:
+            widget.setText(player["name"])
         self.player_table.setCellWidget(player.row, 2, widget)
         # Adding label for the last time this player was active
         widget = QLabel(self.player_table)
-        widget.setText(player["active"])
+        if player["active"] == None:
+            widget.setText("---")
+            widget.setAlignment(Qt.AlignCenter)
+        else:
+            widget.setText(player["active"])
+            widget.setStyleSheet("color: " + player.get_active_color())
         self.player_table.setCellWidget(player.row, 3, widget)
 
 

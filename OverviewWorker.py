@@ -56,7 +56,7 @@ class OverviewWorker(QThread):
         self.window.status_change_message("Loading information from player profiles")
         self.window.status_update_progress(current, len(self.players))
         for player in self.players:
-            time.sleep(0)
+            time.sleep(0.3)
             player.load_profile()
             player.load_name()
             player.load_active()
