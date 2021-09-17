@@ -21,9 +21,9 @@ class Player(dict):
         """ Loading player profile """
         response = self._http.request("GET", self["profile"])
         if response.status == 200:
-            self.correct = True
             self._profile_html = response.data
             self._soup = BeautifulSoup(self._profile_html, "html.parser")
+            self.correct = "Player Information" in str(self._profile_html)
         else:
             self.correct = False
     
@@ -44,7 +44,11 @@ class Player(dict):
     def load_active(self) -> str:
         """ Loads the last time this player played a game """
         if self.correct:
-            self["active"] = self._soup.find_all("span", attrs={"class": "abstime"})[1].text
+            elements = self._soup.find_all("span", attrs={"class": "abstime"})
+            if len(elements) >= 2:
+                self["active"] = elements[1].text
+            else: 
+                self["active"] = None
         else:
             self["active"] = None
         return self["active"]
@@ -81,5 +85,4 @@ class Player(dict):
                             color = "#ff8a46"
                     else:
                         color = "#ff6300"
-                        print(self["active"])
             return color

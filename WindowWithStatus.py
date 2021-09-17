@@ -1,14 +1,25 @@
 #!/usr/bin/env python3
 from PyQt5.QtCore import * 
+from PyQt5.QtGui import * 
 from PyQt5.QtWidgets import * 
 import os, qdarkstyle, math
 
 class WindowWithStatus(QWidget):
     """ Class for creating a status label and methods for controlling status content """
-    
+
 
     def __init__(self):
         super().__init__()
+        self._add_window_icon()
+        self._add_stylesheet()
+
+
+    def _add_window_icon(self):
+        """ Add icon to this window """
+        self.setWindowIcon(QIcon( os.path.join(os.path.dirname(__file__), "Icon.png") ))
+    
+
+    def _add_stylesheet(self):
         """ Adding CSS styling """
         # Adding CSS stylesheet from QDarkStyle
         stylesheet = qdarkstyle.load_stylesheet()
