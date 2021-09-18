@@ -25,17 +25,17 @@ QPushButton {
 [background="red"]    { background-color: #582a2a }
 [background="green"]  { background-color: #345328 }
 
-QPushButton[background="grey"]:hover   { background-color: #4d4d4d }
-QPushButton[background="blue"]:hover   { background-color: #3a667c }
-QPushButton[background="yellow"]:hover { background-color: #726e38 }
-QPushButton[background="red"]:hover    { background-color: #793838 }
-QPushButton[background="green"]:hover  { background-color: #497437 }
+[background="light-grey"],   QPushButton[background="grey"]:hover   { background-color: #4d4d4d }
+[background="light-blue"],   QPushButton[background="blue"]:hover   { background-color: #3a667c }
+[background="light-yellow"], QPushButton[background="yellow"]:hover { background-color: #726e38 }
+[background="light-red"],    QPushButton[background="red"]:hover    { background-color: #793838 }
+[background="light-green"],  QPushButton[background="green"]:hover  { background-color: #497437 }
 
-QPushButton[background="grey"]:disabled   { background-color: #292929 }
-QPushButton[background="blue"]:disabled   { background-color: #1f353f }
-QPushButton[background="yellow"]:disabled { background-color: #424121 }
-QPushButton[background="red"]:disabled    { background-color: #442020 }
-QPushButton[background="green"]:disabled  { background-color: #253b1d }
+[background="dark-grey"],   QPushButton[background="grey"]:disabled   { background-color: #252525 }
+[background="dark-blue"],   QPushButton[background="blue"]:disabled   { background-color: #1c2f38 }
+[background="dark-yellow"], QPushButton[background="yellow"]:disabled { background-color: #333218 }
+[background="dark-red"],    QPushButton[background="red"]:disabled    { background-color: #381b1b }
+[background="dark-green"],  QPushButton[background="green"]:disabled  { background-color: #1f3118 }
 
 [active="1"] { color: #ff6200 }
 [active="2"] { color: #ff8a46 }

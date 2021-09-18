@@ -75,6 +75,26 @@ class Overview(WindowWithStatus):
                         contains_text = True
                         break
             self.player_table.setRowHidden(row, not contains_text)
+    
+
+    def change_row_color(self, row: int, color: str):
+        """ Changes """
+        for column in range(self.player_table.columnCount()):
+            widget = self.player_table.cellWidget(row, column)
+            if not widget == None and type(widget) == QLabel:
+                widget.setProperty("background", color)
+                # Forcing style update
+                widget.style().unpolish(widget)
+                widget.style().polish(widget)
+                widget.update()
+    
+
+    def _try_update(self):
+        """ Tries to update data in the table """
+        print("update")
+        """if not self.worker == None:
+            self.worker.update_player_variables()"""
+        pass
 
 
     def _create_player_table(self) -> QTableWidget:

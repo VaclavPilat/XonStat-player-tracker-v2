@@ -13,6 +13,7 @@ class OverviewWorker(QThread):
 
     signal_add_player = pyqtSignal(Player) # Singnal for adding new player to table
     signal_update_player = pyqtSignal(Player) # Singnal for updating player variables
+    signal_change_row_color = pyqtSignal(int, str) # Signl for changing row color
 
 
     def __init__(self, window: WindowWithStatus):
@@ -20,6 +21,7 @@ class OverviewWorker(QThread):
         self.window = window
         self.signal_add_player.connect(self.window.add_player_to_table)
         self.signal_update_player.connect(self.window.update_player_variables)
+        self.signal_change_row_color.connect(self.window.change_row_color)
         
 
     def load_players(self):
@@ -58,12 +60,16 @@ class OverviewWorker(QThread):
         self.window.status_change_message("Loading information from player profiles")
         self.window.status_update_progress(current, len(self.players))
         for player in self.players:
+            self.signal_change_row_color.emit(player.row, "dark-yellow")
             time.sleep(0.3)
             player.load_profile()
             player.load_name()
             player.load_active()
             if player.correct:
+                self.signal_change_row_color.emit(player.row, None)
                 correct += 1
+            else:
+                self.signal_change_row_color.emit(player.row, "dark-red")
             current += 1
             self.signal_update_player.emit(player)
             self.window.status_update_progress(current, len(self.players))
