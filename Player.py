@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 class Player(dict):
     """ Class for interacting with player data """
 
-
     _http = urllib3.PoolManager() # Pool manager for sending request with urllib3
     _profile_html = None # HTML source of the player's profile page
     _soup = None # BeautifulSoup parser
@@ -69,23 +68,23 @@ class Player(dict):
                     number = int(substring)
             # Comparing string
             if "year" in self["active"] or "month" in self["active"]:
-                color = "7"
+                color = "active-7"
             else:
                 if "day" in self["active"]:
                     if number > 7:
-                        color = "6"
+                        color = "active-6"
                     elif number > 1:
-                        color = "5"
+                        color = "active-5"
                     else:
-                        color = "4"
+                        color = "active-4"
                 else:
                     if "hour" in self["active"]:
                         if number >= 20:
-                            color = "4"
+                            color = "active-4"
                         elif number >=2:
-                            color = "3"
+                            color = "active-3"
                         else:
-                            color = "2"
+                            color = "active-2"
                     else:
-                        color = "1"
+                        color = "active-1"
             return color

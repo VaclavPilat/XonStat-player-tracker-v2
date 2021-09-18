@@ -7,6 +7,8 @@ import webbrowser
 class Overview(WindowWithStatus):
     """ Class for creating a window that contains a table with currently tracked players """
 
+    players = [] # List of players
+
 
     def __init__(self):
         super().__init__()
@@ -14,9 +16,18 @@ class Overview(WindowWithStatus):
         self._set_window_properties()
         self._create_window_layout()
         self.show()
-        # Starting a worker thread
-        self.worker = OverviewWorker(self)
-        self.worker.start()
+        # Loading players
+        self._loader = OverviewLoader(self)
+        self._loader.start()
+        self._loader.finished.connect(self._try_update)
+        self._updater = OverviewUpdater(self)
+    
+
+    def _try_update(self):
+        """ Attempts to update player variables """
+        if self._loader.isFinished():
+            if not self._updater.isRunning():
+                self._updater.start()
     
 
     def _set_window_properties(self):
@@ -83,18 +94,7 @@ class Overview(WindowWithStatus):
             widget = self.player_table.cellWidget(row, column)
             if not widget == None and type(widget) == QLabel:
                 widget.setProperty("background", color)
-                # Forcing style update
-                widget.style().unpolish(widget)
-                widget.style().polish(widget)
-                widget.update()
-    
-
-    def _try_update(self):
-        """ Tries to update data in the table """
-        print("update")
-        """if not self.worker == None:
-            self.worker.update_player_variables()"""
-        pass
+                self.force_style_update(widget)
 
 
     def _create_player_table(self) -> QTableWidget:
@@ -169,7 +169,8 @@ class Overview(WindowWithStatus):
             widget.setAlignment(Qt.AlignCenter)
         else:
             widget.setText(player["active"])
-            widget.setProperty("active", player.get_active_color())
+            widget.setProperty("color", player.get_active_color())
+            self.force_style_update(widget)
 
 
 

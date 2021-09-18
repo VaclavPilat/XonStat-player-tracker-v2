@@ -37,10 +37,10 @@ QPushButton {
 [background="dark-red"],    QPushButton[background="red"]:disabled    { background-color: #381b1b }
 [background="dark-green"],  QPushButton[background="green"]:disabled  { background-color: #1f3118 }
 
-[active="1"] { color: #ff6200 }
-[active="2"] { color: #ff8a46 }
-[active="3"] { color: #ffac79 }
-[active="4"] { color: #ffcdaf }
-[active="5"] { color: #ffffff }
-[active="6"] { color: #acacac }
-[active="7"] { color: #595959 }
+[color="active-1"] { color: #ff6200 }
+[color="active-2"] { color: #ff8a46 }
+[color="active-3"] { color: #ffac79 }
+[color="active-4"] { color: #ffcdaf }
+[color="active-5"] { color: #ffffff }
+[color="active-6"] { color: #acacac }
+[color="active-7"] { color: #595959 }

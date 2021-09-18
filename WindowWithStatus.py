@@ -4,14 +4,23 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import * 
 import os, qdarkstyle, math
 
+
+
+
 class WindowWithStatus(QWidget):
     """ Class for creating a status label and methods for controlling status content """
-
 
     def __init__(self):
         super().__init__()
         self._add_window_icon()
         self._add_stylesheet()
+
+    
+    def force_style_update(self, widget: QWidget):
+        """ Forcing a widget to update its styles """
+        widget.style().unpolish(widget)
+        widget.style().polish(widget)
+        widget.update()
 
 
     def _add_window_icon(self):
@@ -46,10 +55,7 @@ class WindowWithStatus(QWidget):
     def _status_change_color (self, color: str):
         """ Changing status background color by changing its class property """
         self.status.setProperty("background", color)
-        # Forcing appearance update
-        self.status.style().unpolish(self.status)
-        self.status.style().polish(self.status)
-        self.status.update()
+        self.force_style_update(self.status)
 
 
     def _status_change_text (self, text: str):
