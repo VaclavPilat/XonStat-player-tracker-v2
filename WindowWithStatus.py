@@ -38,7 +38,7 @@ class WindowWithStatus(QWidget):
         self.status = QLabel(self)
         self.status.setAlignment(Qt.AlignCenter)
         self._status_change_text("Ready")
-        self.status.setProperty("class", "ready")
+        self.status.setProperty("class", "bg-grey")
         self.status.setObjectName("status")
         return self.status
 
@@ -62,7 +62,7 @@ class WindowWithStatus(QWidget):
         message += " ..."
         self._status_message = message
         self._status_change_text(message)
-        self._status_change_color("working")
+        self._status_change_color("bg-yellow")
     
 
     def status_update_progress (self, current: int, max: int, result: bool = False):
@@ -86,15 +86,15 @@ class WindowWithStatus(QWidget):
         self.status_change_message(message)
         self.status_update_progress(correct, max, True)
         if correct == max:
-            self._status_change_color("success")
+            self._status_change_color("bg-green")
         else:
-            self._status_change_color("error")
+            self._status_change_color("bg-red")
     
 
     def status_result_message (self, message: str, correct: bool = True):
         """ Printing result message and progress """
         self.status_change_message(message)
         if correct:
-            self._status_change_color("success")
+            self._status_change_color("bg-green")
         else:
-            self._status_change_color("error")
+            self._status_change_color("bg-red")

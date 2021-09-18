@@ -66,23 +66,23 @@ class Player(dict):
                     number = int(substring)
             # Comparing string
             if "year" in self["active"] or "month" in self["active"]:
-                color = "#595959"
+                color = "active-7"
             else:
                 if "day" in self["active"]:
                     if number > 7:
-                        color = "#acacac"
+                        color = "active-6"
                     elif number > 1:
-                        color = "#ffffff"
+                        color = "active-5"
                     else:
-                        color = "#ffcdaf"
+                        color = "active-4"
                 else:
                     if "hour" in self["active"]:
                         if number >= 20:
-                            color = "#ffcdaf"
+                            color = "active-4"
                         elif number >=2:
-                            color = "#ffac79"
+                            color = "active-3"
                         else:
-                            color = "#ff8a46"
+                            color = "active-2"
                     else:
-                        color = "#ff6300"
+                        color = "active-1"
             return color

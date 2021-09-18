@@ -3,23 +3,15 @@
     font-size: medium;
 }
 
-
-/*#############################  TABLE WIDGETS  ##############################*/
-
-#player_table QLabel { 
+QLabel { 
     padding: 0 3px;
 }
 
-#player_table QPushButton {
+QPushButton {
     margin: 2px;
+    padding: 5px;
+    min-width: 150px;
 }
-
-#player_table QPushButton.profile { background-color: #2c4a58 }
-#player_table QPushButton.info    { background-color: #5a582c }
-#player_table QPushButton.delete  { background-color: #582a2a }
-
-
-/*#################################  STATUS  #################################*/
 
 #status {
     border-radius: 5px;
@@ -27,7 +19,22 @@
     padding: 5px;
 }
 
-#status.ready   { background-color: #444444 }
-#status.working { background-color: #5a582c }
-#status.success { background-color: #345328 }
-#status.error   { background-color: #582a2a }
+.bg-grey   { background-color: #444444 }
+.bg-blue   { background-color: #2c4a58 }
+.bg-yellow { background-color: #5a582c }
+.bg-red    { background-color: #582a2a }
+.bg-green  { background-color: #345328 }
+
+QPushButton.bg-grey:hover   { background-color: #4d4d4d }
+QPushButton.bg-blue:hover   { background-color: #3a667c }
+QPushButton.bg-yellow:hover { background-color: #726e38 }
+QPushButton.bg-red:hover    { background-color: #793838 }
+QPushButton.bg-green:hover  { background-color: #497437 }
+
+.active-1 { color: #ff6200 }
+.active-2 { color: #ff8a46 }
+.active-3 { color: #ffac79 }
+.active-4 { color: #ffcdaf }
+.active-5 { color: #ffffff }
+.active-6 { color: #acacac }
+.active-7 { color: #595959 }

@@ -79,18 +79,18 @@ class Overview(WindowWithStatus):
         # Adding button for showing player profile
         widget = QPushButton(self.player_table)
         widget.setText("Show player profile")
-        widget.setProperty("class", "profile")
+        widget.setProperty("class", "bg-blue")
         widget.clicked.connect(lambda: self._show_profile(player["profile"]))
         self.player_table.setCellWidget(row_index, 4, widget)
         # Adding button for showing more info about the player
         widget = QPushButton(self.player_table)
         widget.setText("Show more info")
-        widget.setProperty("class", "info")
+        widget.setProperty("class", "bg-yellow")
         self.player_table.setCellWidget(row_index, 5, widget)
         # Adding button for deleting the player
         widget = QPushButton(self.player_table)
         widget.setText("Delete this player")
-        widget.setProperty("class", "delete")
+        widget.setProperty("class", "bg-red")
         self.player_table.setCellWidget(row_index, 6, widget)
     
 
@@ -116,7 +116,7 @@ class Overview(WindowWithStatus):
             widget.setAlignment(Qt.AlignCenter)
         else:
             widget.setText(player["active"])
-            widget.setStyleSheet("color: " + player.get_active_color())
+            widget.setProperty("class", player.get_active_color())
         self.player_table.setCellWidget(player.row, 3, widget)
 
 
