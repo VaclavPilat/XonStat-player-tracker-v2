@@ -19,22 +19,28 @@ QPushButton {
     padding: 5px;
 }
 
-.bg-grey   { background-color: #444444 }
-.bg-blue   { background-color: #2c4a58 }
-.bg-yellow { background-color: #5a582c }
-.bg-red    { background-color: #582a2a }
-.bg-green  { background-color: #345328 }
+[background="grey"]   { background-color: #444444 }
+[background="blue"]   { background-color: #2c4a58 }
+[background="yellow"] { background-color: #5a582c }
+[background="red"]    { background-color: #582a2a }
+[background="green"]  { background-color: #345328 }
 
-QPushButton.bg-grey:hover   { background-color: #4d4d4d }
-QPushButton.bg-blue:hover   { background-color: #3a667c }
-QPushButton.bg-yellow:hover { background-color: #726e38 }
-QPushButton.bg-red:hover    { background-color: #793838 }
-QPushButton.bg-green:hover  { background-color: #497437 }
+QPushButton[background="grey"]:hover   { background-color: #4d4d4d }
+QPushButton[background="blue"]:hover   { background-color: #3a667c }
+QPushButton[background="yellow"]:hover { background-color: #726e38 }
+QPushButton[background="red"]:hover    { background-color: #793838 }
+QPushButton[background="green"]:hover  { background-color: #497437 }
 
-.active-1 { color: #ff6200 }
-.active-2 { color: #ff8a46 }
-.active-3 { color: #ffac79 }
-.active-4 { color: #ffcdaf }
-.active-5 { color: #ffffff }
-.active-6 { color: #acacac }
-.active-7 { color: #595959 }
+QPushButton[background="grey"]:disabled   { background-color: #292929 }
+QPushButton[background="blue"]:disabled   { background-color: #1f353f }
+QPushButton[background="yellow"]:disabled { background-color: #424121 }
+QPushButton[background="red"]:disabled    { background-color: #442020 }
+QPushButton[background="green"]:disabled  { background-color: #253b1d }
+
+[active="1"] { color: #ff6200 }
+[active="2"] { color: #ff8a46 }
+[active="3"] { color: #ffac79 }
+[active="4"] { color: #ffcdaf }
+[active="5"] { color: #ffffff }
+[active="6"] { color: #acacac }
+[active="7"] { color: #595959 }

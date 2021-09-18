@@ -19,12 +19,15 @@ class Player(dict):
     
     def load_profile(self, info: bool = False):
         """ Loading player profile """
-        response = self._http.request("GET", self["profile"])
-        if response.status == 200:
-            self._profile_html = response.data
-            self._soup = BeautifulSoup(self._profile_html, "html.parser")
-            self.correct = "Player Information" in str(self._profile_html)
-        else:
+        try:
+            response = self._http.request("GET", self["profile"])
+            if response.status == 200:
+                self._profile_html = response.data
+                self._soup = BeautifulSoup(self._profile_html, "html.parser")
+                self.correct = "Player Information" in str(self._profile_html)
+            else:
+                self.correct = False
+        except:
             self.correct = False
     
 
@@ -66,23 +69,23 @@ class Player(dict):
                     number = int(substring)
             # Comparing string
             if "year" in self["active"] or "month" in self["active"]:
-                color = "active-7"
+                color = "7"
             else:
                 if "day" in self["active"]:
                     if number > 7:
-                        color = "active-6"
+                        color = "6"
                     elif number > 1:
-                        color = "active-5"
+                        color = "5"
                     else:
-                        color = "active-4"
+                        color = "4"
                 else:
                     if "hour" in self["active"]:
                         if number >= 20:
-                            color = "active-4"
+                            color = "4"
                         elif number >=2:
-                            color = "active-3"
+                            color = "3"
                         else:
-                            color = "active-2"
+                            color = "2"
                     else:
-                        color = "active-1"
+                        color = "1"
             return color

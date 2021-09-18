@@ -38,14 +38,14 @@ class WindowWithStatus(QWidget):
         self.status = QLabel(self)
         self.status.setAlignment(Qt.AlignCenter)
         self._status_change_text("Ready")
-        self.status.setProperty("class", "bg-grey")
+        self.status.setProperty("class", "grey")
         self.status.setObjectName("status")
         return self.status
 
 
     def _status_change_color (self, color: str):
         """ Changing status background color by changing its class property """
-        self.status.setProperty("class", color)
+        self.status.setProperty("background", color)
         # Forcing appearance update
         self.status.style().unpolish(self.status)
         self.status.style().polish(self.status)
@@ -62,7 +62,7 @@ class WindowWithStatus(QWidget):
         message += " ..."
         self._status_message = message
         self._status_change_text(message)
-        self._status_change_color("bg-yellow")
+        self._status_change_color("yellow")
     
 
     def status_update_progress (self, current: int, max: int, result: bool = False):
@@ -86,15 +86,15 @@ class WindowWithStatus(QWidget):
         self.status_change_message(message)
         self.status_update_progress(correct, max, True)
         if correct == max:
-            self._status_change_color("bg-green")
+            self._status_change_color("green")
         else:
-            self._status_change_color("bg-red")
+            self._status_change_color("red")
     
 
     def status_result_message (self, message: str, correct: bool = True):
         """ Printing result message and progress """
         self.status_change_message(message)
         if correct:
-            self._status_change_color("bg-green")
+            self._status_change_color("green")
         else:
-            self._status_change_color("bg-red")
+            self._status_change_color("red")

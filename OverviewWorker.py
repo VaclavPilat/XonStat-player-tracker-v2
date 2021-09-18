@@ -22,7 +22,7 @@ class OverviewWorker(QThread):
         self.signal_update_player.connect(self.window.update_player_variables)
         
 
-    def _load_players(self):
+    def load_players(self):
         """ Loads players from file """
         self.window.status_change_message("Loading players from file")
         # Getting abolute path to file
@@ -37,7 +37,7 @@ class OverviewWorker(QThread):
             players_file.close()
 
     
-    def _add_players_to_table(self):
+    def add_players_to_table(self):
         """ Adds rows filled with player data to table """
         if not self.players == []:
             for player in self.players:
@@ -48,8 +48,10 @@ class OverviewWorker(QThread):
             self.window.status_result_message("No stored players were found")
     
 
-    def _update_player_variables(self):
+    def update_player_variables(self):
         """ Loading all player profiles and printing out player variables """
+        self.window.refresh_button.setEnabled(False)
+        self.window.add_button.setEnabled(False)
         time.sleep(1)
         correct = 0
         current = 0
@@ -66,10 +68,12 @@ class OverviewWorker(QThread):
             self.signal_update_player.emit(player)
             self.window.status_update_progress(current, len(self.players))
         self.window.status_result_progress("Finished loading player profiles", correct, len(self.players))
+        self.window.refresh_button.setEnabled(True)
+        self.window.add_button.setEnabled(True)
 
 
     def run(self):
         # Filling the table with data
-        self._load_players()
-        self._add_players_to_table()
-        self._update_player_variables()
+        self.load_players()
+        self.add_players_to_table()
+        self.update_player_variables()

@@ -45,20 +45,21 @@ class Overview(WindowWithStatus):
         """ Creates a box layout with search bar and a few buttons """
         layout = QHBoxLayout()
         # Creating search bar
-        widget = QLineEdit(self)
-        widget.setPlaceholderText("Search by player ID, nickname or current player name")
-        widget.textChanged.connect(self._search)
-        layout.addWidget(widget)
+        self.search_bar = QLineEdit(self)
+        self.search_bar.setPlaceholderText("Search by player ID, nickname or current player name")
+        self.search_bar.textChanged.connect(self._search)
+        layout.addWidget(self.search_bar)
         # Creating button for refreshing table
-        widget = QPushButton(self)
-        widget.setText("Refresh table")
-        widget.setProperty("class", "bg-yellow")
-        layout.addWidget(widget)
+        self.refresh_button = QPushButton(self)
+        self.refresh_button.setText("Refresh table")
+        self.refresh_button.clicked.connect(self._try_update)
+        self.refresh_button.setProperty("background", "yellow")
+        layout.addWidget(self.refresh_button)
         # Creating button for adding new player
-        widget = QPushButton(self)
-        widget.setText("Add new player")
-        widget.setProperty("class", "bg-green")
-        layout.addWidget(widget)
+        self.add_button = QPushButton(self)
+        self.add_button.setText("Add new player")
+        self.add_button.setProperty("background", "green")
+        layout.addWidget(self.add_button)
         #return search
         return layout
     
@@ -99,33 +100,32 @@ class Overview(WindowWithStatus):
     def add_player_to_table(self, player: Player):
         """ Adds a single row with player data to table """
         # Creating a new row inside the table
-        row_index = self.player_table.rowCount()
-        player.row = row_index
-        self.player_table.insertRow(row_index)
-        # Adding player ID label
-        widget = QLabel(self.player_table)
-        widget.setText(str(player["id"]))
-        self.player_table.setCellWidget(row_index, 0, widget)
-        # Adding player nickname label
-        widget = QLabel(self.player_table)
-        widget.setText(player["nick"])
-        self.player_table.setCellWidget(row_index, 1, widget)
+        row = self.player_table.rowCount()
+        player.row = row
+        self.player_table.insertRow(row)
+        # Adding labels
+        for i in range(4):
+            widget = QLabel(self.player_table)
+            self.player_table.setCellWidget(row, i, widget)
+        # Adding label text
+        self.player_table.cellWidget(row, 0).setText(str(player["id"]))
+        self.player_table.cellWidget(row, 1).setText(player["nick"])
         # Adding button for showing player profile
         widget = QPushButton(self.player_table)
         widget.setText("Show player profile")
-        widget.setProperty("class", "bg-blue")
+        widget.setProperty("background", "blue")
         widget.clicked.connect(lambda: self._show_profile(player["profile"]))
-        self.player_table.setCellWidget(row_index, 4, widget)
+        self.player_table.setCellWidget(row, 4, widget)
         # Adding button for showing more info about the player
         widget = QPushButton(self.player_table)
         widget.setText("Show more info")
-        widget.setProperty("class", "bg-yellow")
-        self.player_table.setCellWidget(row_index, 5, widget)
+        widget.setProperty("background", "yellow")
+        self.player_table.setCellWidget(row, 5, widget)
         # Adding button for deleting the player
         widget = QPushButton(self.player_table)
         widget.setText("Delete this player")
-        widget.setProperty("class", "bg-red")
-        self.player_table.setCellWidget(row_index, 6, widget)
+        widget.setProperty("background", "red")
+        self.player_table.setCellWidget(row, 6, widget)
     
 
     def _show_profile(self, url: str):
@@ -136,22 +136,20 @@ class Overview(WindowWithStatus):
     def update_player_variables(self, player: Player):
         """ Print out player variables into table """
         # Adding label for current player name
-        widget = QLabel(self.player_table)
+        widget = self.player_table.cellWidget(player.row, 2)
         if player["name"] == None:
             widget.setText("---")
             widget.setAlignment(Qt.AlignCenter)
         else:
             widget.setText(player["name"])
-        self.player_table.setCellWidget(player.row, 2, widget)
         # Adding label for the last time this player was active
-        widget = QLabel(self.player_table)
+        widget = self.player_table.cellWidget(player.row, 3)
         if player["active"] == None:
             widget.setText("---")
             widget.setAlignment(Qt.AlignCenter)
         else:
             widget.setText(player["active"])
-            widget.setProperty("class", player.get_active_color())
-        self.player_table.setCellWidget(player.row, 3, widget)
+            widget.setProperty("active", player.get_active_color())
 
 
 
