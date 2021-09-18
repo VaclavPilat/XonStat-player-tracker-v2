@@ -1,5 +1,7 @@
-import urllib3
+#!/usr/bin/env python3
+import urllib3, webbrowser
 from bs4 import BeautifulSoup
+
 
 class Player(dict):
     """ Class for interacting with player data """
@@ -14,6 +16,11 @@ class Player(dict):
         """ Initializing a few variables """
         self.update(data)
         self["profile"] = "https://stats.xonotic.org/player/" + str(data["id"])
+    
+
+    def show_profile(self):
+        """ Opening player profile in a new tab of a browser """
+        webbrowser.open(self["profile"], new=2)
 
     
     def load_profile(self, info: bool = False):

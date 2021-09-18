@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-from PyQt5.QtWidgets import * 
 from WindowWithStatus import *
 from OverviewWorker import *
-import webbrowser
+
 
 class Overview(WindowWithStatus):
     """ Class for creating a window that contains a table with currently tracked players """
@@ -25,9 +24,8 @@ class Overview(WindowWithStatus):
 
     def _try_update(self):
         """ Attempts to update player variables """
-        if self._loader.isFinished():
-            if not self._updater.isRunning():
-                self._updater.start()
+        if self._loader.isFinished() and not self._updater.isRunning():
+            self._updater.start()
     
 
     def _set_window_properties(self):
@@ -63,11 +61,13 @@ class Overview(WindowWithStatus):
         # Creating button for refreshing table
         self.refresh_button = QPushButton(self)
         self.refresh_button.setText("Refresh table")
+        self.refresh_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.refresh_button.clicked.connect(self._try_update)
         self.refresh_button.setProperty("background", "yellow")
         layout.addWidget(self.refresh_button)
         # Creating button for adding new player
         self.add_button = QPushButton(self)
+        self.add_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.add_button.setText("Add new player")
         self.add_button.setProperty("background", "green")
         layout.addWidget(self.add_button)
@@ -130,27 +130,22 @@ class Overview(WindowWithStatus):
         # Adding label text
         self.player_table.cellWidget(row, 0).setText(str(player["id"]))
         self.player_table.cellWidget(row, 1).setText(player["nick"])
-        # Adding button for showing player profile
-        widget = QPushButton(self.player_table)
-        widget.setText("Show player profile")
-        widget.setProperty("background", "blue")
-        widget.clicked.connect(lambda: self._show_profile(player["profile"]))
-        self.player_table.setCellWidget(row, 4, widget)
-        # Adding button for showing more info about the player
-        widget = QPushButton(self.player_table)
-        widget.setText("Show more info")
-        widget.setProperty("background", "yellow")
-        self.player_table.setCellWidget(row, 5, widget)
-        # Adding button for deleting the player
-        widget = QPushButton(self.player_table)
-        widget.setText("Delete this player")
-        widget.setProperty("background", "red")
-        self.player_table.setCellWidget(row, 6, widget)
-    
-
-    def _show_profile(self, url: str):
-        """ Opening player profile in a new tab of a browser """
-        webbrowser.open(url, new=2)
+        # Adding buttons
+        for i in range(4, 7):
+            widget = QPushButton(self.player_table)
+            widget.setCursor(QCursor(Qt.PointingHandCursor))
+            self.player_table.setCellWidget(row, i, widget)
+        # Adding button settings
+        self.player_table.cellWidget(row, 4).setText("Show player profile")
+        self.player_table.cellWidget(row, 4).setProperty("background", "blue")
+        self.player_table.cellWidget(row, 4).clicked.connect(player.show_profile)
+        self.player_table.cellWidget(row, 5).setText("Show more info")
+        self.player_table.cellWidget(row, 5).setProperty("background", "yellow")
+        self.player_table.cellWidget(row, 6).setText("Delete this player")
+        self.player_table.cellWidget(row, 6).setProperty("background", "red")
+        # Forcing button style update
+        for i in range(4, 7):
+            self.force_style_update(self.player_table.cellWidget(row, i))
 
     
     def update_player_variables(self, player: Player):
@@ -171,6 +166,14 @@ class Overview(WindowWithStatus):
             widget.setText(player["active"])
             widget.setProperty("color", player.get_active_color())
             self.force_style_update(widget)
+    
+
+    def set_button_enabled(self, column: int, enabled: bool):
+        """ Sets "enabled" property to a specified value for each button in the column """
+        for i in range(self.player_table.rowCount()):
+            widget = self.player_table.cellWidget(i, column)
+            if not widget == None and type(widget) == QPushButton:
+                widget.setEnabled(enabled)
 
 
 

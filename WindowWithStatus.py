@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-from PyQt5.QtCore import * 
-from PyQt5.QtGui import * 
-from PyQt5.QtWidgets import * 
+from PyQt5.QtCore import (
+    Qt, pyqtSignal
+)
+from PyQt5.QtGui import (
+    QIcon, QCursor
+)
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, 
+    QLabel, QTableWidget, QHeaderView
+)
 import os, qdarkstyle, math
-
-
 
 
 class WindowWithStatus(QWidget):

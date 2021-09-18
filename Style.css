@@ -9,7 +9,7 @@ QLabel {
 
 QPushButton {
     margin: 2px;
-    padding: 5px;
+    padding: 3px 5px;
     min-width: 150px;
 }
 
@@ -17,6 +17,11 @@ QPushButton {
     border-radius: 5px;
     font-weight: bold;
     padding: 5px;
+}
+
+#status[background], QPushButton[background] {
+    border-style: solid;
+    border-width: 1px;
 }
 
 [background="grey"]   { background-color: #444444 }
@@ -36,6 +41,18 @@ QPushButton {
 [background="dark-yellow"], QPushButton[background="yellow"]:disabled { background-color: #333218 }
 [background="dark-red"],    QPushButton[background="red"]:disabled    { background-color: #381b1b }
 [background="dark-green"],  QPushButton[background="green"]:disabled  { background-color: #1f3118 }
+
+[background="grey"]   { border-color: #4d4d4d }
+[background="blue"]   { border-color: #3a667c }
+[background="yellow"] { border-color: #726e38 }
+[background="red"]    { border-color: #793838 }
+[background="green"]  { border-color: #497437 }
+
+QPushButton[background="grey"]:disabled   { border-color: #444444 }
+QPushButton[background="blue"]:disabled   { border-color: #2c4a58 }
+QPushButton[background="yellow"]:disabled { border-color: #5a582c }
+QPushButton[background="red"]:disabled    { border-color: #582a2a }
+QPushButton[background="green"]:disabled  { border-color: #345328 }
 
 [color="active-1"] { color: #ff6200 }
 [color="active-2"] { color: #ff8a46 }
