@@ -36,8 +36,44 @@ class Overview(WindowWithStatus):
         self.window_layout = QVBoxLayout()
         self.setLayout(self.window_layout)
         # Adding widgets to layout
+        self.window_layout.addLayout(self._create_top_widgets())
         self.window_layout.addWidget(self._create_player_table())
         self.window_layout.addWidget(self._status_create())
+    
+
+    def _create_top_widgets(self):
+        """ Creates a box layout with search bar and a few buttons """
+        layout = QHBoxLayout()
+        # Creating search bar
+        widget = QLineEdit(self)
+        widget.setPlaceholderText("Search by player ID, nickname or current player name")
+        widget.textChanged.connect(self._search)
+        layout.addWidget(widget)
+        # Creating button for refreshing table
+        widget = QPushButton(self)
+        widget.setText("Refresh table")
+        widget.setProperty("class", "bg-yellow")
+        layout.addWidget(widget)
+        # Creating button for adding new player
+        widget = QPushButton(self)
+        widget.setText("Add new player")
+        widget.setProperty("class", "bg-green")
+        layout.addWidget(widget)
+        #return search
+        return layout
+    
+
+    def _search(self, text: str):
+        """ Hiding and showing rows in the table based on input """
+        for row in range(self.player_table.rowCount()):
+            contains_text = False
+            for column in range(self.player_table.columnCount()):
+                widget = self.player_table.cellWidget(row, column)
+                if not widget == None and type(widget) == QLabel:
+                    if text.lower() in widget.text().lower():
+                        contains_text = True
+                        break
+            self.player_table.setRowHidden(row, not contains_text)
 
 
     def _create_player_table(self) -> QTableWidget:
@@ -53,12 +89,10 @@ class Overview(WindowWithStatus):
         # Setting column stretching
         self.player_table.horizontalHeader().setMinimumSectionSize(150)
         self.player_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.player_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.player_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
-        self.player_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        self.player_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        self.player_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
-        self.player_table.horizontalHeader().setSectionResizeMode(6, QHeaderView.ResizeToContents)
+        for i in range(1, 3):
+            self.player_table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
+        for i in range(3, 7):
+            self.player_table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeToContents)
         return self.player_table
 
     
