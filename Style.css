@@ -8,9 +8,12 @@ QLabel {
 }
 
 QPushButton {
-    margin: 2px;
     padding: 3px 5px;
     min-width: 150px;
+}
+
+QTableWidget QPushButton {
+    margin: 2px;
 }
 
 #status {
@@ -22,6 +25,10 @@ QPushButton {
 #status[background], QPushButton[background] {
     border-style: solid;
     border-width: 1px;
+}
+
+[type="error"] {
+    font-style: italic;
 }
 
 [background="grey"]   { background-color: #444444 }

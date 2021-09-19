@@ -5,10 +5,13 @@ import sys, os, json, time
 from Player import *
 
 
+PLAYERS_FINENAME = "Players.json" # JSON file for storing players
+
+
+
 class OverviewLoader(QThread):
     """ Overview worker QThread for loading players """
 
-    _players_filename = "Players.json" # JSON file for storing players
     _signal_add_player = pyqtSignal(Player) # Signal for adding new player to table
 
 
@@ -24,7 +27,7 @@ class OverviewLoader(QThread):
         self._window.status_change_message("Loading players from file")
         # Getting abolute path to file
         current_directory = os.path.dirname(__file__) # The directory where this script is located
-        absolute_filepath = os.path.join(current_directory, self._players_filename) # Absolute path to the file with players
+        absolute_filepath = os.path.join(current_directory, PLAYERS_FINENAME) # Absolute path to the file with players
         # Opening file
         if os.path.isfile(absolute_filepath):
             players_file = open(absolute_filepath, "r")
@@ -77,12 +80,12 @@ class OverviewUpdater(QThread):
         player.load_profile()
         player.load_name()
         player.load_active()
-        if player.correct:
+        if player.error == None:
             self._signal_change_row_color.emit(player.row, None)
         else:
             self._signal_change_row_color.emit(player.row, "dark-red")
         self._signal_update_player.emit(player)
-        return player.correct
+        return not player.error == None
     
     
     def _update_player_variables(self):
@@ -112,3 +115,4 @@ class OverviewUpdater(QThread):
     def run(self):
         """ Loading players and adding then into table """
         self._update_player_variables()
+        print(json.dumps(self._window.players, sort_keys=False, indent=4))

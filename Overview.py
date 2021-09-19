@@ -15,11 +15,11 @@ class Overview(WindowWithStatus):
         self._set_window_properties()
         self._create_window_layout()
         self.show()
-        # Loading players
+        # Worker threads
         self._loader = OverviewLoader(self)
+        self._updater = OverviewUpdater(self)
         self._loader.start()
         self._loader.finished.connect(self._try_update)
-        self._updater = OverviewUpdater(self)
     
 
     def _try_update(self):
@@ -152,20 +152,24 @@ class Overview(WindowWithStatus):
         """ Print out player variables into table """
         # Adding label for current player name
         widget = self.player_table.cellWidget(player.row, 2)
-        if player["name"] == None:
-            widget.setText("---")
+        if not player.error == None:
+            widget.setText(player.error)
             widget.setAlignment(Qt.AlignCenter)
+            widget.setProperty("type", "error")
         else:
-            widget.setText(player["name"])
+            widget.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+            widget.setText(player.name)
+            widget.setProperty("type", None)
+        self.force_style_update(widget)
         # Adding label for the last time this player was active
         widget = self.player_table.cellWidget(player.row, 3)
-        if player["active"] == None:
-            widget.setText("---")
-            widget.setAlignment(Qt.AlignCenter)
+        if not player.error == None:
+            widget.setText(None)
+            widget.setProperty("color", None)
         else:
-            widget.setText(player["active"])
+            widget.setText(player.active)
             widget.setProperty("color", player.get_active_color())
-            self.force_style_update(widget)
+        self.force_style_update(widget)
     
 
     def set_button_enabled(self, column: int, enabled: bool):
