@@ -19,6 +19,13 @@ class WindowWithStatus(QWidget):
         super().__init__()
         self._add_window_icon()
         self._add_stylesheet()
+    
+
+    def _center_window(self):
+        """ Moving window to the center of the screen """
+        frameGeometry = self.frameGeometry()
+        frameGeometry.moveCenter(QDesktopWidget().availableGeometry().center())
+        self.move(frameGeometry.topLeft())
 
     
     def force_style_update(self, widget: QWidget):
@@ -52,7 +59,7 @@ class WindowWithStatus(QWidget):
         self.status = QLabel(self)
         self.status.setAlignment(Qt.AlignCenter)
         self._status_change_text("Ready")
-        self.status.setProperty("class", "grey")
+        self.status.setProperty("background", "grey")
         self.status.setObjectName("status")
         return self.status
 
@@ -98,6 +105,8 @@ class WindowWithStatus(QWidget):
         self.status_update_progress(correct, max, True)
         if correct == max:
             self._status_change_color("green")
+        elif correct > 0:
+            self._status_change_color("orange")
         else:
             self._status_change_color("red")
     

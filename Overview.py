@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from WindowWithStatus import *
 from OverviewWorker import *
+from AddPlayer import *
 
 
 class Overview(WindowWithStatus):
@@ -28,15 +29,17 @@ class Overview(WindowWithStatus):
             self._updater.start()
     
 
+    def _open_add_dialog(self):
+        """ Opening a window for adding a new player """
+        print("add player")
+    
+
     def _set_window_properties(self):
         """ Setting winow properties """
         # Setting window title and size
         self.setWindowTitle("XonStat player tracker - Overview")
         self.resize(1300, 800)
-        # Moving window to the center of the screen
-        frameGeometry = self.frameGeometry()
-        frameGeometry.moveCenter(QDesktopWidget().availableGeometry().center())
-        self.move(frameGeometry.topLeft())
+        self._center_window()
     
 
     def _create_window_layout(self):
@@ -64,12 +67,15 @@ class Overview(WindowWithStatus):
         self.refresh_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.refresh_button.clicked.connect(self._try_update)
         self.refresh_button.setProperty("background", "yellow")
+        self.refresh_button.setEnabled(False)
         layout.addWidget(self.refresh_button)
         # Creating button for adding new player
         self.add_button = QPushButton(self)
-        self.add_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.add_button.setText("Add new player")
+        self.add_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.add_button.clicked.connect(self._open_add_dialog)
         self.add_button.setProperty("background", "green")
+        self.add_button.setEnabled(False)
         layout.addWidget(self.add_button)
         #return search
         return layout
@@ -143,6 +149,7 @@ class Overview(WindowWithStatus):
         self.player_table.cellWidget(row, 5).setProperty("background", "yellow")
         self.player_table.cellWidget(row, 6).setText("Delete this player")
         self.player_table.cellWidget(row, 6).setProperty("background", "red")
+        self.player_table.cellWidget(row, 6).setEnabled(False)
         # Forcing button style update
         for i in range(4, 7):
             self.force_style_update(self.player_table.cellWidget(row, i))
@@ -183,5 +190,6 @@ class Overview(WindowWithStatus):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setApplicationName('XonStat player tracker')
     overview = Overview()
     sys.exit(app.exec_())

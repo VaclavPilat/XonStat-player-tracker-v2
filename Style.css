@@ -34,30 +34,35 @@ QTableWidget QPushButton {
 [background="grey"]   { background-color: #444444 }
 [background="blue"]   { background-color: #2c4a58 }
 [background="yellow"] { background-color: #5a582c }
+[background="orange"] { background-color: #5a452c }
 [background="red"]    { background-color: #582a2a }
 [background="green"]  { background-color: #345328 }
 
 [background="light-grey"],   QPushButton[background="grey"]:hover   { background-color: #4d4d4d }
 [background="light-blue"],   QPushButton[background="blue"]:hover   { background-color: #3a667c }
 [background="light-yellow"], QPushButton[background="yellow"]:hover { background-color: #726e38 }
+[background="light-orange"], QPushButton[background="orange"]:hover { background-color: #775b38 }
 [background="light-red"],    QPushButton[background="red"]:hover    { background-color: #793838 }
 [background="light-green"],  QPushButton[background="green"]:hover  { background-color: #497437 }
 
 [background="dark-grey"],   QPushButton[background="grey"]:disabled   { background-color: #252525 }
 [background="dark-blue"],   QPushButton[background="blue"]:disabled   { background-color: #1c2f38 }
 [background="dark-yellow"], QPushButton[background="yellow"]:disabled { background-color: #333218 }
+[background="dark-orange"], QPushButton[background="orange"]:disabled { background-color: #3a2c1c }
 [background="dark-red"],    QPushButton[background="red"]:disabled    { background-color: #381b1b }
 [background="dark-green"],  QPushButton[background="green"]:disabled  { background-color: #1f3118 }
 
 [background="grey"]   { border-color: #4d4d4d }
 [background="blue"]   { border-color: #3a667c }
 [background="yellow"] { border-color: #726e38 }
+[background="orange"] { border-color: #775b38 }
 [background="red"]    { border-color: #793838 }
 [background="green"]  { border-color: #497437 }
 
 QPushButton[background="grey"]:disabled   { border-color: #444444 }
 QPushButton[background="blue"]:disabled   { border-color: #2c4a58 }
 QPushButton[background="yellow"]:disabled { border-color: #5a582c }
+QPushButton[background="orange"]:disabled { border-color: #5a452c }
 QPushButton[background="red"]:disabled    { border-color: #582a2a }
 QPushButton[background="green"]:disabled  { border-color: #345328 }
 

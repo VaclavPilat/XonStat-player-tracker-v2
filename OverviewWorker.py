@@ -22,19 +22,25 @@ class OverviewLoader(QThread):
         self._signal_add_player.connect(self._window.add_player_to_table)
         
 
-    def _load_players(self):
+    def _load_players(self) -> int:
         """ Loads players from file """
-        self._window.status_change_message("Loading players from file")
         # Getting abolute path to file
         current_directory = os.path.dirname(__file__) # The directory where this script is located
         absolute_filepath = os.path.join(current_directory, PLAYERS_FINENAME) # Absolute path to the file with players
         # Opening file
-        if os.path.isfile(absolute_filepath):
-            players_file = open(absolute_filepath, "r")
-            for player_dict in json.loads(players_file.read()):
-                player_instance = Player(player_dict)
-                self._window.players.append(player_instance)
-            players_file.close()
+        try:
+            if os.path.isfile(absolute_filepath):
+                players_file = open(absolute_filepath, "r")
+                players_loaded = json.loads(players_file.read())
+                for player_dict in players_loaded:
+                    if len(player_dict) == 2 and "id" in player_dict and "nick" in player_dict \
+                        and type(player_dict["id"]) == int and type(player_dict["nick"]) == str:
+                        player_instance = Player(player_dict)
+                        self._window.players.append(player_instance)
+                players_file.close()
+        except:
+            players_loaded = []
+        return len(players_loaded)
 
     
     def _add_players_to_table(self):
@@ -42,16 +48,18 @@ class OverviewLoader(QThread):
         if not self._window.players == []:
             for player in self._window.players:
                 self._signal_add_player.emit(player)
-        if len(self._window.players) > 0:
-            self._window.status_result_message("Successfully loaded " + str(len(self._window.players)) + " players from file")
-        else: 
-            self._window.status_result_message("No stored players were found")
 
 
     def run(self):
         """ Loading players and adding then into table """
-        self._load_players()
+        self._window.status_change_message("Loading players from file")
+        max = self._load_players()
         self._add_players_to_table()
+        if len(self._window.players) > 0:
+            self._window.status_result_progress("Finished loading players from file", len(self._window.players), max)
+        else: 
+            self._window.status_result_message("No stored players were found")
+        time.sleep(2)
 
 
 
@@ -76,7 +84,7 @@ class OverviewUpdater(QThread):
     def _update_player(self, player: Player) -> bool:
         """ Updating player variables of a single player """
         self._signal_change_row_color.emit(player.row, "dark-yellow")
-        time.sleep(0.3)
+        time.sleep(0.2)
         player.load_profile()
         player.load_name()
         player.load_active()
@@ -85,7 +93,7 @@ class OverviewUpdater(QThread):
         else:
             self._signal_change_row_color.emit(player.row, "dark-red")
         self._signal_update_player.emit(player)
-        return not player.error == None
+        return player.error == None
     
     
     def _update_player_variables(self):
@@ -95,7 +103,6 @@ class OverviewUpdater(QThread):
         self._window.add_button.setEnabled(False)
         self._signal_set_button_enable.emit(6, False)
         # Updating variables
-        time.sleep(1)
         correct = 0
         current = 0
         self._window.status_change_message("Loading information from player profiles")
@@ -114,5 +121,6 @@ class OverviewUpdater(QThread):
 
     def run(self):
         """ Loading players and adding then into table """
-        self._update_player_variables()
-        print(json.dumps(self._window.players, sort_keys=False, indent=4))
+        if len(self._window.players) > 0:
+            self._update_player_variables()
+        #print(json.dumps(self._window.players, sort_keys=False, indent=4))

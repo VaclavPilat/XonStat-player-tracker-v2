@@ -44,10 +44,13 @@ class Player(dict):
         """ Loads and returns current player name from profile """
         if self.error == None:
             name = self._soup.find("h2")
-            if not name.find() == None:
-                self.name = str(name.find())
+            if not name == None:
+                if not name.find() == None:
+                    self.name = str(name.find())
+                else:
+                    self.name = name.text.strip()
             else:
-                self.name = name.text.strip()
+                self.error = "Profile error"
         else:
             self.name = None
         return self.name
@@ -57,10 +60,13 @@ class Player(dict):
         """ Loads the last time this player played a game """
         if self.error == None:
             elements = self._soup.find_all("span", attrs={"class": "abstime"})
-            if len(elements) >= 2:
-                self.active = elements[1].text
-            else: 
-                self.active = None
+            if not elements == None:
+                if len(elements) >= 2:
+                    self.active = elements[1].text
+                else: 
+                    self.active = None
+            else:
+                self.error = "Profile error"
         else:
             self.active = None
         return self.active
