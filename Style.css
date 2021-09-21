@@ -38,7 +38,7 @@ QTableWidget QPushButton {
 [background="red"]    { background-color: #582a2a }
 [background="green"]  { background-color: #345328 }
 
-[background="light-grey"],   QPushButton[background="grey"]:hover   { background-color: #4d4d4d }
+[background="light-grey"],   QPushButton[background="grey"]:hover   { background-color: #636363 }
 [background="light-blue"],   QPushButton[background="blue"]:hover   { background-color: #3a667c }
 [background="light-yellow"], QPushButton[background="yellow"]:hover { background-color: #726e38 }
 [background="light-orange"], QPushButton[background="orange"]:hover { background-color: #775b38 }
@@ -52,7 +52,7 @@ QTableWidget QPushButton {
 [background="dark-red"],    QPushButton[background="red"]:disabled    { background-color: #381b1b }
 [background="dark-green"],  QPushButton[background="green"]:disabled  { background-color: #1f3118 }
 
-[background="grey"]   { border-color: #4d4d4d }
+[background="grey"]   { border-color: #636363 }
 [background="blue"]   { border-color: #3a667c }
 [background="yellow"] { border-color: #726e38 }
 [background="orange"] { border-color: #775b38 }

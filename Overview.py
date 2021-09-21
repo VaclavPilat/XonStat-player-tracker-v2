@@ -13,6 +13,7 @@ class Overview(WindowWithStatus):
     def __init__(self):
         super().__init__()
         """ Initialising GUI and a worker thread """
+        self._addplayer_window = None
         self._set_window_properties()
         self._create_window_layout()
         self.show()
@@ -31,7 +32,11 @@ class Overview(WindowWithStatus):
 
     def _open_add_dialog(self):
         """ Opening a window for adding a new player """
-        print("add player")
+        self.refresh_button.setEnabled(False)
+        if self._addplayer_window == None:
+            self._addplayer_window = AddPlayer(self)
+        else:
+            self._addplayer_window.activateWindow()
     
 
     def _set_window_properties(self):
@@ -45,12 +50,14 @@ class Overview(WindowWithStatus):
     def _create_window_layout(self):
         """ Creates widnow layout with widgets """
         # Creating the layout itself
-        self.window_layout = QVBoxLayout()
-        self.setLayout(self.window_layout)
+        window_widget = QWidget()
+        window_layout = QVBoxLayout()
+        window_widget.setLayout(window_layout)
+        self.setCentralWidget(window_widget)
         # Adding widgets to layout
-        self.window_layout.addLayout(self._create_top_widgets())
-        self.window_layout.addWidget(self._create_player_table())
-        self.window_layout.addWidget(self._status_create())
+        window_layout.addLayout(self._create_top_widgets())
+        window_layout.addWidget(self._create_player_table())
+        window_layout.addWidget(self._status_create())
     
 
     def _create_top_widgets(self):

@@ -7,12 +7,12 @@ from PyQt5.QtGui import (
 )
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, 
-    QLabel, QTableWidget, QHeaderView
+    QLabel, QTableWidget, QHeaderView, QMainWindow
 )
 import os, qdarkstyle, math
 
 
-class WindowWithStatus(QWidget):
+class WindowWithStatus(QMainWindow):
     """ Class for creating a status label and methods for controlling status content """
 
     def __init__(self):
