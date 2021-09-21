@@ -26,7 +26,7 @@ class Player(dict):
     def load_profile(self, info: bool = False):
         """ Loading player profile """
         try:
-            response = self._http.request("GET", self.profile)
+            response = self._http.request("GET", self.profile, timeout=urllib3.util.Timeout(3))
             if response.status == 200:
                 self._profile_html = response.data
                 self._soup = BeautifulSoup(self._profile_html, "html.parser")

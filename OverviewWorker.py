@@ -75,6 +75,7 @@ class OverviewUpdater(QThread):
     def __init__(self, window: WindowWithStatus):
         super().__init__()
         """ Init """
+        self.cancel = False
         self._window = window
         self._signal_update_player.connect(self._window.update_player_variables)
         self._signal_change_row_color.connect(self._window.change_row_color)
@@ -99,7 +100,7 @@ class OverviewUpdater(QThread):
     def _update_player_variables(self):
         """ Loading all player profiles and printing out player variables """
         # Disabling buttons
-        self._window.refresh_button.setEnabled(False)
+        #self._window.refresh_button.setEnabled(False)
         self._window.add_button.setEnabled(False)
         self._signal_set_button_enable.emit(6, False)
         # Updating variables
@@ -108,6 +109,10 @@ class OverviewUpdater(QThread):
         self._window.status_change_message("Loading information from player profiles")
         self._window.status_update_progress(current, len(self._window.players))
         for player in self._window.players:
+            # Checking if cancellation is requested
+            if self.cancel:
+                break
+            # Updating player data
             if self._update_player(player):
                 correct += 1
             current += 1
@@ -115,6 +120,7 @@ class OverviewUpdater(QThread):
         self._window.status_result_progress("Finished loading player profiles", correct, len(self._window.players))
         # Enabling buttons
         self._window.refresh_button.setEnabled(True)
+        self._window.update_refreshbutton_visuals(False)
         self._window.add_button.setEnabled(True)
         self._signal_set_button_enable.emit(6, True)
         
@@ -123,4 +129,5 @@ class OverviewUpdater(QThread):
         """ Loading players and adding then into table """
         if len(self._window.players) > 0:
             self._update_player_variables()
+        self.cancel = False
         #print(json.dumps(self._window.players, sort_keys=False, indent=4))

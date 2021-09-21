@@ -10,6 +10,7 @@ class AddPlayer(WindowWithStatus):
         self._window = window
         # GUI
         self.setWindowModality(Qt.ApplicationModal)
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self._set_window_properties()
         self._create_window_layout()
         self.show()
@@ -18,13 +19,13 @@ class AddPlayer(WindowWithStatus):
     def _set_window_properties(self):
         """ Setting winow properties """
         self.setWindowTitle("XonStat player tracker - Add new player")
-        self.resize(400, 150)
+        self.setFixedSize(400, 150)
         self._center_window()
     
 
     def closeEvent(self, event):
         """ Event called right before closing """
-        self._window.refresh_button.setEnabled(True)
+        self._window.addplayer_window_closed()
     
 
     def _create_window_layout(self):

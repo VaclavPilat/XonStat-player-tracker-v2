@@ -13,7 +13,6 @@ class Overview(WindowWithStatus):
     def __init__(self):
         super().__init__()
         """ Initialising GUI and a worker thread """
-        self._addplayer_window = None
         self._set_window_properties()
         self._create_window_layout()
         self.show()
@@ -21,22 +20,8 @@ class Overview(WindowWithStatus):
         self._loader = OverviewLoader(self)
         self._updater = OverviewUpdater(self)
         self._loader.start()
-        self._loader.finished.connect(self._try_update)
-    
-
-    def _try_update(self):
-        """ Attempts to update player variables """
-        if self._loader.isFinished() and not self._updater.isRunning():
-            self._updater.start()
-    
-
-    def _open_add_dialog(self):
-        """ Opening a window for adding a new player """
-        self.refresh_button.setEnabled(False)
-        if self._addplayer_window == None:
-            self._addplayer_window = AddPlayer(self)
-        else:
-            self._addplayer_window.activateWindow()
+        self._loader.finished.connect(self._update_player_data)
+        self.update_refreshbutton_visuals(False)
     
 
     def _set_window_properties(self):
@@ -70,22 +55,55 @@ class Overview(WindowWithStatus):
         layout.addWidget(self.search_bar)
         # Creating button for refreshing table
         self.refresh_button = QPushButton(self)
-        self.refresh_button.setText("Refresh table")
         self.refresh_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.refresh_button.clicked.connect(self._try_update)
-        self.refresh_button.setProperty("background", "yellow")
+        self.refresh_button.clicked.connect(self._update_player_data)
         self.refresh_button.setEnabled(False)
         layout.addWidget(self.refresh_button)
         # Creating button for adding new player
         self.add_button = QPushButton(self)
         self.add_button.setText("Add new player")
         self.add_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.add_button.clicked.connect(self._open_add_dialog)
+        self.add_button.clicked.connect(self._open_addplayer_window)
         self.add_button.setProperty("background", "green")
         self.add_button.setEnabled(False)
         layout.addWidget(self.add_button)
         #return search
         return layout
+    
+
+    def _update_player_data(self):
+        """ Attempts to update player variables """
+        self.refresh_button.setEnabled(True)
+        if self._updater.isRunning():
+            self._updater.cancel = True
+            self.refresh_button.setEnabled(False)
+        else:
+            self._updater.start()
+        self.update_refreshbutton_visuals(self._updater.isRunning())
+    
+
+    def update_refreshbutton_visuals(self, running: bool):
+        """ Updates visuals of "Refresh" button """
+        if running:
+            self.refresh_button.setText("Stop updating table")
+            self.refresh_button.setProperty("background", "orange")
+        else:
+            self.refresh_button.setText("Refresh table")
+            self.refresh_button.setProperty("background", "yellow")
+        self.force_style_update(self.refresh_button)
+
+
+    def _open_addplayer_window(self):
+        """ Opening a window for adding a new player """
+        self.add_button.setEnabled(False)
+        self.refresh_button.setEnabled(False)
+        self._addplayer_window = AddPlayer(self)
+    
+
+    def addplayer_window_closed(self):
+        """ Opening a window for adding a new player """
+        self.add_button.setEnabled(True)
+        self.refresh_button.setEnabled(True)
     
 
     def _search(self, text: str):
