@@ -210,6 +210,13 @@ class Overview(WindowWithStatus):
             widget = self.player_table.cellWidget(i, column)
             if not widget == None and type(widget) == QPushButton:
                 widget.setEnabled(enabled)
+    
+
+    def keyPressEvent(self, event):
+        """ Reacts to pressing keys """
+        key = event.key()
+        if key == Qt.Key_Return or key == Qt.Key_Enter:
+            self.search_bar.setFocus()
 
 
 
