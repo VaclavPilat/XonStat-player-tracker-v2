@@ -35,14 +35,14 @@ class OverviewLoader(QThread):
         # Opening file
         try:
             if os.path.isfile(absolute_filepath):
-                players_file = open(absolute_filepath, "r")
-                players_loaded = json.loads(players_file.read())
+                f = open(absolute_filepath, "r")
+                players_loaded = json.loads(f.read())
                 for player_dict in players_loaded:
                     if len(player_dict) == 2 and "id" in player_dict and "nick" in player_dict \
                         and type(player_dict["id"]) == int and type(player_dict["nick"]) == str:
                         player_instance = Player(player_dict)
                         self._window.players.append(player_instance)
-                players_file.close()
+                f.close()
         except:
             players_loaded = []
         return len(players_loaded)
@@ -141,7 +141,6 @@ class OverviewUpdater(QThread):
         if len(self._window.players) > 0:
             self._update_player_variables()
         self.cancel = False
-        #print(json.dumps(self._window.players, sort_keys=False, indent=4))
 
 
 
@@ -167,6 +166,20 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         self._signal_add_player.connect(self._window.add_player_to_table)
         self._signal_update_player.connect(self._window.update_player_variables)
         self._signal_change_row_color.connect(self._window.change_row_color)
+    
+
+    def _save_players(self):
+        """ Attempts to save current list of players into file """
+        # Getting abolute path to file
+        current_directory = os.path.dirname(__file__) # The directory where this script is located
+        absolute_filepath = os.path.join(current_directory, PLAYERS_FINENAME) # Absolute path to the file with players
+        # Saving file
+        try:
+            f = open(absolute_filepath, "w")
+            f.write(json.dumps(self._window.players, sort_keys=False, indent=4))
+            f.close()
+        except:
+            pass
         
     
     def run(self):
@@ -183,7 +196,7 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
             self._window.status_result_message("Successfully loaded new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
         else:
             self._window.status_result_message("An error occured while loading player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")", False)
+        self._save_players()
         # Enabling buttons
         self._window.refresh_button.setEnabled(True)
         self._window.add_button.setEnabled(True)
-        self._window.player_table.cellWidget(self._window.get_row(self.player), 6).setEnabled(True)

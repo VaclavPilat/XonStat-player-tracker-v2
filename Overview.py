@@ -173,7 +173,8 @@ class Overview(WindowWithStatus):
         self.player_table.cellWidget(row, 5).setProperty("background", "yellow")
         self.player_table.cellWidget(row, 6).setText("Delete this player")
         self.player_table.cellWidget(row, 6).setProperty("background", "red")
-        self.player_table.cellWidget(row, 6).setEnabled(False)
+        if not self._loader.isFinished():
+            self.player_table.cellWidget(row, 6).setEnabled(False)
         # Forcing button style update
         for i in range(4, 7):
             self.force_style_update(self.player_table.cellWidget(row, i))
