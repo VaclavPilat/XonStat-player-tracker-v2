@@ -152,7 +152,6 @@ class Overview(WindowWithStatus):
         """ Adds a single row with player data to table """
         # Creating a new row inside the table
         row = self.player_table.rowCount()
-        player.row = row
         self.player_table.insertRow(row)
         # Adding labels
         for i in range(4):
@@ -183,7 +182,7 @@ class Overview(WindowWithStatus):
     def update_player_variables(self, player: Player):
         """ Print out player variables into table """
         # Adding label for current player name
-        widget = self.player_table.cellWidget(player.row, 2)
+        widget = self.player_table.cellWidget(self.get_row(player), 2)
         if not player.error == None:
             widget.setText(player.error)
             widget.setAlignment(Qt.AlignCenter)
@@ -194,7 +193,7 @@ class Overview(WindowWithStatus):
             widget.setProperty("type", None)
         self.force_style_update(widget)
         # Adding label for the last time this player was active
-        widget = self.player_table.cellWidget(player.row, 3)
+        widget = self.player_table.cellWidget(self.get_row(player), 3)
         if not player.error == None:
             widget.setText(None)
             widget.setProperty("color", None)
@@ -210,6 +209,16 @@ class Overview(WindowWithStatus):
             widget = self.player_table.cellWidget(i, column)
             if not widget == None and type(widget) == QPushButton:
                 widget.setEnabled(enabled)
+    
+    
+    def get_row(self, player: Player):
+        """ Returns row index """
+        for row in range(self.player_table.rowCount()):
+            widget = self.player_table.cellWidget(row, 0)
+            if not widget == None:
+                if widget.text() == str(player["id"]):
+                    return row
+        return -1
     
 
     def keyPressEvent(self, event):

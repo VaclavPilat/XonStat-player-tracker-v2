@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from WindowWithStatus import *
+from OverviewWorker import *
 from Player import *
 import json
 
@@ -83,7 +84,9 @@ class AddPlayer(WindowWithStatus):
         self.add_button.setEnabled(False)
         self.status_change_message("Adding new player into table")
         player = Player({ "id": id, "nick": nick })
-        print(json.dumps(player, sort_keys=False, indent=4))
+        self._window.adder = OverviewAdder(self._window, player)
+        self._window.adder.start()
+        self.close()
     
 
     def closeEvent(self, event):

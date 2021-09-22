@@ -12,13 +12,18 @@ PLAYERS_FINENAME = "Players.json" # JSON file for storing players
 class OverviewLoader(QThread):
     """ Overview worker QThread for loading players """
 
+
     _signal_add_player = pyqtSignal(Player) # Signal for adding new player to table
 
 
     def __init__(self, window: WindowWithStatus):
-        super().__init__()
+        super().__init__(window)
         """ Init """
         self._window = window
+    
+
+    def _connect_slots(self):
+        """ Connecting signals to their slots """
         self._signal_add_player.connect(self._window.add_player_to_table)
         
 
@@ -52,6 +57,7 @@ class OverviewLoader(QThread):
 
     def run(self):
         """ Loading players and adding then into table """
+        self._connect_slots()
         self._window.status_change_message("Loading players from file")
         max = self._load_players()
         self._add_players_to_table()
@@ -67,16 +73,21 @@ class OverviewLoader(QThread):
 class OverviewUpdater(QThread):
     """ Loading information from player profiles and updating player table """
 
+
     _signal_update_player = pyqtSignal(Player) # Singnal for updating player variables
     _signal_change_row_color = pyqtSignal(int, str) # Signal for changing row color
     _signal_set_button_enable = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
 
 
     def __init__(self, window: WindowWithStatus):
-        super().__init__()
+        super().__init__(window)
         """ Init """
         self.cancel = False
         self._window = window
+    
+
+    def _connect_slots(self):
+        """ Connecting signals to their slots """
         self._signal_update_player.connect(self._window.update_player_variables)
         self._signal_change_row_color.connect(self._window.change_row_color)
         self._signal_set_button_enable.connect(self._window.set_button_enabled)
@@ -84,15 +95,15 @@ class OverviewUpdater(QThread):
 
     def _update_player(self, player: Player) -> bool:
         """ Updating player variables of a single player """
-        self._signal_change_row_color.emit(player.row, "dark-yellow")
+        self._signal_change_row_color.emit(self._window.get_row(player), "dark-yellow")
         time.sleep(0.2)
         player.load_profile()
         player.load_name()
         player.load_active()
         if player.error == None:
-            self._signal_change_row_color.emit(player.row, None)
+            self._signal_change_row_color.emit(self._window.get_row(player), None)
         else:
-            self._signal_change_row_color.emit(player.row, "dark-red")
+            self._signal_change_row_color.emit(self._window.get_row(player), "dark-red")
         self._signal_update_player.emit(player)
         return player.error == None
     
@@ -100,7 +111,6 @@ class OverviewUpdater(QThread):
     def _update_player_variables(self):
         """ Loading all player profiles and printing out player variables """
         # Disabling buttons
-        #self._window.refresh_button.setEnabled(False)
         self._window.add_button.setEnabled(False)
         self._signal_set_button_enable.emit(6, False)
         # Updating variables
@@ -127,7 +137,53 @@ class OverviewUpdater(QThread):
 
     def run(self):
         """ Loading players and adding then into table """
+        self._connect_slots()
         if len(self._window.players) > 0:
             self._update_player_variables()
         self.cancel = False
         #print(json.dumps(self._window.players, sort_keys=False, indent=4))
+
+
+
+
+class OverviewAdder(OverviewLoader, OverviewUpdater):
+    """ Loading information from player profiles and updating player table """
+
+
+    _signal_add_player = pyqtSignal(Player) # Signal for adding new player to table
+    _signal_update_player = pyqtSignal(Player) # Singnal for updating player variables
+    _signal_change_row_color = pyqtSignal(int, str) # Signal for changing row color
+    
+
+    def __init__(self, window: WindowWithStatus, player: Player):
+        OverviewLoader.__init__(self, window)
+        OverviewUpdater.__init__(self, window)
+        """ Init """
+        self.player = player
+    
+
+    def _connect_slots(self):
+        """ Connecting signals to their slots """
+        self._signal_add_player.connect(self._window.add_player_to_table)
+        self._signal_update_player.connect(self._window.update_player_variables)
+        self._signal_change_row_color.connect(self._window.change_row_color)
+        
+    
+    def run(self):
+        """ Loading new player and adding him into table """
+        # Disabling buttons
+        self._connect_slots()
+        self._window.refresh_button.setEnabled(False)
+        self._window.add_button.setEnabled(False)
+        self._window.status_change_message("Loading information about new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
+        # Loading player
+        self._window.players.append(self.player)
+        self._signal_add_player.emit(self.player)
+        if self._update_player(self.player):
+            self._window.status_result_message("Successfully loaded new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
+        else:
+            self._window.status_result_message("An error occured while loading player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")", False)
+        # Enabling buttons
+        self._window.refresh_button.setEnabled(True)
+        self._window.add_button.setEnabled(True)
+        self._window.player_table.cellWidget(self._window.get_row(self.player), 6).setEnabled(True)
