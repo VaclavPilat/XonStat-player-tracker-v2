@@ -25,7 +25,12 @@ class OverviewLoader(QThread):
     def _connect_slots(self):
         """ Connecting signals to their slots """
         self._signal_add_player.connect(self._window.add_player_to_table)
-        
+    
+
+    def _load_player(self, player: Player):
+        """ Loads a single player into list """
+        self._window.players.append(player)
+
 
     def _load_players(self) -> int:
         """ Loads players from file """
@@ -40,19 +45,24 @@ class OverviewLoader(QThread):
                 for player_dict in players_loaded:
                     if len(player_dict) == 2 and "id" in player_dict and "nick" in player_dict \
                         and type(player_dict["id"]) == int and type(player_dict["nick"]) == str:
-                        player_instance = Player(player_dict)
-                        self._window.players.append(player_instance)
+                        player = Player(player_dict)
+                        self._load_player(player)
                 f.close()
         except:
             players_loaded = []
         return len(players_loaded)
+    
+
+    def _add_player_to_table(self, player: Player):
+        """ Adds a single player into table """
+        self._signal_add_player.emit(player)
 
     
     def _add_players_to_table(self):
         """ Adds rows filled with player data to table """
         if not self._window.players == []:
             for player in self._window.players:
-                self._signal_add_player.emit(player)
+                self._add_player_to_table(player)
 
 
     def run(self):
@@ -146,7 +156,7 @@ class OverviewUpdater(QThread):
 
 
 class OverviewAdder(OverviewLoader, OverviewUpdater):
-    """ Loading information from player profiles and updating player table """
+    """ Loading information about a single player and updating player table during runtime """
 
 
     _signal_add_player = pyqtSignal(Player) # Signal for adding new player to table
@@ -190,8 +200,8 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         self._window.add_button.setEnabled(False)
         self._window.status_change_message("Loading information about new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
         # Loading player
-        self._window.players.append(self.player)
-        self._signal_add_player.emit(self.player)
+        self._load_player(self.player)
+        self._add_player_to_table(self.player)
         if self._update_player(self.player):
             self._window.status_result_message("Successfully loaded new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
         else:
@@ -200,3 +210,49 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         # Enabling buttons
         self._window.refresh_button.setEnabled(True)
         self._window.add_button.setEnabled(True)
+
+
+
+
+class OverviewRemover(OverviewAdder):
+    """ Removes a player from table and from files """
+
+
+    _signal_remove_player = pyqtSignal(Player) # Signal for removing a player from table
+    _signal_set_button_enable = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    
+
+    def __init__(self, window: WindowWithStatus, player: Player):
+        super().__init__(window, player)
+        """ Init """
+    
+
+    def _connect_slots(self):
+        """ Connecting signals to their slots """
+        self._signal_remove_player.connect(self._window.remove_player_from_table)
+        self._signal_set_button_enable.connect(self._window.set_button_enabled)
+    
+
+    def _remove_player_from_list(self):
+        """ Removes a selected player from list """
+        index = self._window.players.index(self.player)
+        self._window.players.pop(index)
+        
+    
+    def run(self):
+        """ Loading new player and adding him into table """
+        # Disabling buttons
+        self._connect_slots()
+        self._window.refresh_button.setEnabled(False)
+        self._window.add_button.setEnabled(False)
+        self._signal_set_button_enable.emit(6, False)
+        self._window.status_change_message("Removing player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")
+        # Deleting player
+        self._signal_remove_player.emit(self.player)
+        self._remove_player_from_list()
+        self._save_players()
+        # Enabling buttons
+        self._window.refresh_button.setEnabled(True)
+        self._window.add_button.setEnabled(True)
+        self._signal_set_button_enable.emit(6, True)
+        self._window.status_result_message("Successfully removed player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")

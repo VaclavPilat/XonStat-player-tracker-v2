@@ -98,6 +98,7 @@ class Overview(WindowWithStatus):
         self.add_button.setEnabled(False)
         self.refresh_button.setEnabled(False)
         self._addplayer_window = AddPlayer(self)
+        #self._addplayer_window.destroyed.connect(lambda: print("objekt zničen"))
     
 
     def addplayer_window_closed(self):
@@ -110,7 +111,7 @@ class Overview(WindowWithStatus):
         """ Hiding and showing rows in the table based on input """
         for row in range(self.player_table.rowCount()):
             contains_text = False
-            for column in range(self.player_table.columnCount()):
+            for column in range(0, 3):
                 widget = self.player_table.cellWidget(row, column)
                 if not widget == None and type(widget) == QLabel:
                     if text.lower() in widget.text().lower():
@@ -173,6 +174,7 @@ class Overview(WindowWithStatus):
         self.player_table.cellWidget(row, 5).setProperty("background", "yellow")
         self.player_table.cellWidget(row, 6).setText("Delete this player")
         self.player_table.cellWidget(row, 6).setProperty("background", "red")
+        self.player_table.cellWidget(row, 6).clicked.connect(lambda: self._delete_player(player))
         if not self._loader.isFinished():
             self.player_table.cellWidget(row, 6).setEnabled(False)
         # Forcing button style update
@@ -227,6 +229,25 @@ class Overview(WindowWithStatus):
         key = event.key()
         if key == Qt.Key_Return or key == Qt.Key_Enter:
             self.search_bar.setFocus()
+    
+
+    def _delete_player(self, player: Player):
+        """ Attempts to remove a player """
+        try:
+            answer = QMessageBox.question(self, 'XonStat player tracker', "Are you sure you want to delete player \"" \
+                                        + player["nick"] + "\" (ID " + str(player["id"]) + ") ?", \
+                                        QMessageBox.Yes | QMessageBox.Cancel)
+            if answer == QMessageBox.Yes:
+                self._remover = OverviewRemover(self, player)
+                self._remover.start()
+        except:
+            self.status_result_message("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
+            self.set_button_enabled(6, True)
+    
+
+    def remove_player_from_table(self, player: Player):
+        """ Removes player from table """
+        self.player_table.removeRow(self.get_row(player))
 
 
 

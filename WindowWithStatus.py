@@ -7,7 +7,7 @@ from PyQt5.QtGui import (
 )
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, 
-    QLabel, QTableWidget, QHeaderView, QMainWindow
+    QLabel, QTableWidget, QHeaderView, QMainWindow, QMessageBox
 )
 import os, qdarkstyle, math
 
@@ -19,6 +19,7 @@ class WindowWithStatus(QMainWindow):
         super().__init__()
         self._add_window_icon()
         self._add_stylesheet()
+        self.setAttribute(Qt.WA_DeleteOnClose)
     
 
     def _center_window(self):
