@@ -2,6 +2,7 @@
 from WindowWithStatus import *
 from OverviewWorker import *
 from AddPlayer import *
+from ColoredButton import *
 
 
 class Overview(WindowWithStatus):
@@ -60,12 +61,8 @@ class Overview(WindowWithStatus):
         self.refresh_button.setEnabled(False)
         layout.addWidget(self.refresh_button)
         # Creating button for adding new player
-        self.add_button = QPushButton(self)
-        self.add_button.setText("Add new player")
-        self.add_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.add_button = ColoredButton(self, "Add new player", "green", False)
         self.add_button.clicked.connect(self._open_addplayer_window)
-        self.add_button.setProperty("background", "green")
-        self.add_button.setEnabled(False)
         layout.addWidget(self.add_button)
         #return search
         return layout
@@ -162,18 +159,10 @@ class Overview(WindowWithStatus):
         self.player_table.cellWidget(row, 0).setText(str(player["id"]))
         self.player_table.cellWidget(row, 1).setText(player["nick"])
         # Adding buttons
-        for i in range(4, 7):
-            widget = QPushButton(self.player_table)
-            widget.setCursor(QCursor(Qt.PointingHandCursor))
-            self.player_table.setCellWidget(row, i, widget)
-        # Adding button settings
-        self.player_table.cellWidget(row, 4).setText("Show player profile")
-        self.player_table.cellWidget(row, 4).setProperty("background", "blue")
+        self.player_table.setCellWidget(row, 4, ColoredButton(self, "Show player profile", "blue"))
         self.player_table.cellWidget(row, 4).clicked.connect(player.show_profile)
-        self.player_table.cellWidget(row, 5).setText("Show more info")
-        self.player_table.cellWidget(row, 5).setProperty("background", "yellow")
-        self.player_table.cellWidget(row, 6).setText("Delete this player")
-        self.player_table.cellWidget(row, 6).setProperty("background", "red")
+        self.player_table.setCellWidget(row, 5, ColoredButton(self, "Show more info", "yellow"))
+        self.player_table.setCellWidget(row, 6, ColoredButton(self, "Delete this player", "red"))
         self.player_table.cellWidget(row, 6).clicked.connect(lambda: self._delete_player(player))
         if not self._loader.isFinished():
             self.player_table.cellWidget(row, 6).setEnabled(False)
@@ -210,7 +199,7 @@ class Overview(WindowWithStatus):
         """ Sets "enabled" property to a specified value for each button in the column """
         for i in range(self.player_table.rowCount()):
             widget = self.player_table.cellWidget(i, column)
-            if not widget == None and type(widget) == QPushButton:
+            if not widget == None and type(widget) == ColoredButton:
                 widget.setEnabled(enabled)
     
     
@@ -227,7 +216,7 @@ class Overview(WindowWithStatus):
     def keyPressEvent(self, event):
         """ Reacts to pressing keys """
         key = event.key()
-        if key == Qt.Key_Return or key == Qt.Key_Enter:
+        if key == Qt.Key_Return or key == Qt.Key_Enter or ((event.modifiers() & Qt.ControlModifier) and key == Qt.Key_F):
             self.search_bar.setFocus()
     
 
