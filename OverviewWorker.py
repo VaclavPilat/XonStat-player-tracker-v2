@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
-from WindowWithStatus import *
+from Window import *
 import sys, os, json, time
 from Player import *
 
@@ -16,7 +16,7 @@ class OverviewLoader(QThread):
     _signal_add_player = pyqtSignal(Player) # Signal for adding new player to table
 
 
-    def __init__(self, window: WindowWithStatus):
+    def __init__(self, window: Window):
         super().__init__(window)
         """ Init """
         self._window = window
@@ -68,13 +68,13 @@ class OverviewLoader(QThread):
     def run(self):
         """ Loading players and adding then into table """
         self._connect_slots()
-        self._window.status_change_message("Loading players from file")
+        self._window.status.message("Loading players from file")
         max = self._load_players()
         self._add_players_to_table()
         if len(self._window.players) > 0:
-            self._window.status_result_progress("Finished loading players from file", len(self._window.players), max)
+            self._window.status.result_progress("Finished loading players from file", len(self._window.players), max)
         else: 
-            self._window.status_result_message("No stored players were found")
+            self._window.status.result_message("No stored players were found")
         time.sleep(2)
 
 
@@ -89,7 +89,7 @@ class OverviewUpdater(QThread):
     _signal_set_button_enable = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
 
 
-    def __init__(self, window: WindowWithStatus):
+    def __init__(self, window: Window):
         super().__init__(window)
         """ Init """
         self.cancel = False
@@ -126,8 +126,8 @@ class OverviewUpdater(QThread):
         # Updating variables
         correct = 0
         current = 0
-        self._window.status_change_message("Loading information from player profiles")
-        self._window.status_update_progress(current, len(self._window.players))
+        self._window.status.message("Loading information from player profiles")
+        self._window.status.progress(current, len(self._window.players))
         for player in self._window.players:
             # Checking if cancellation is requested
             if self.cancel:
@@ -136,8 +136,8 @@ class OverviewUpdater(QThread):
             if self._update_player(player):
                 correct += 1
             current += 1
-            self._window.status_update_progress(current, len(self._window.players))
-        self._window.status_result_progress("Finished loading player profiles", correct, len(self._window.players))
+            self._window.status.progress(current, len(self._window.players))
+        self._window.status.result_progress("Finished loading player profiles", correct, len(self._window.players))
         # Enabling buttons
         self._window.refresh_button.setEnabled(True)
         self._window.update_refreshbutton_visuals(False)
@@ -164,7 +164,7 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
     _signal_change_row_color = pyqtSignal(int, str) # Signal for changing row color
     
 
-    def __init__(self, window: WindowWithStatus, player: Player):
+    def __init__(self, window: Window, player: Player):
         OverviewLoader.__init__(self, window)
         OverviewUpdater.__init__(self, window)
         """ Init """
@@ -198,14 +198,14 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         self._connect_slots()
         self._window.refresh_button.setEnabled(False)
         self._window.add_button.setEnabled(False)
-        self._window.status_change_message("Loading information about new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
+        self._window.status.message("Loading information about new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
         # Loading player
         self._load_player(self.player)
         self._add_player_to_table(self.player)
         if self._update_player(self.player):
-            self._window.status_result_message("Successfully loaded new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
+            self._window.status.result_message("Successfully loaded new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
         else:
-            self._window.status_result_message("An error occured while loading player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")", False)
+            self._window.status.result_message("An error occured while loading player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")", False)
         self._save_players()
         # Enabling buttons
         self._window.refresh_button.setEnabled(True)
@@ -222,7 +222,7 @@ class OverviewRemover(OverviewAdder):
     _signal_set_button_enable = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
     
 
-    def __init__(self, window: WindowWithStatus, player: Player):
+    def __init__(self, window: Window, player: Player):
         super().__init__(window, player)
         """ Init """
     
@@ -246,7 +246,7 @@ class OverviewRemover(OverviewAdder):
         self._window.refresh_button.setEnabled(False)
         self._window.add_button.setEnabled(False)
         self._signal_set_button_enable.emit(6, False)
-        self._window.status_change_message("Removing player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")
+        self._window.status.message("Removing player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")
         # Deleting player
         self._signal_remove_player.emit(self.player)
         self._remove_player_from_list()
@@ -255,4 +255,4 @@ class OverviewRemover(OverviewAdder):
         self._window.refresh_button.setEnabled(True)
         self._window.add_button.setEnabled(True)
         self._signal_set_button_enable.emit(6, True)
-        self._window.status_result_message("Successfully removed player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")
+        self._window.status.result_message("Successfully removed player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")

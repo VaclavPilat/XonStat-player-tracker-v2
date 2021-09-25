@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-from WindowWithStatus import *
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QTableWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
+from Window import *
+from Status import *
 from OverviewWorker import *
 from AddPlayer import *
-from ColoredButton import *
+from ColoredWidgets import *
 
 
-class Overview(WindowWithStatus):
+class Overview(Window):
     """ Class for creating a window that contains a table with currently tracked players """
 
     players = [] # List of players
@@ -14,10 +17,6 @@ class Overview(WindowWithStatus):
     def __init__(self):
         super().__init__()
         """ Initialising GUI and a worker thread """
-        self._set_window_properties()
-        self._create_window_layout()
-        self.show()
-        # Worker threads
         self._loader = OverviewLoader(self)
         self._updater = OverviewUpdater(self)
         self._loader.start()
@@ -25,15 +24,14 @@ class Overview(WindowWithStatus):
         self.update_refreshbutton_visuals(False)
     
 
-    def _set_window_properties(self):
+    def set_window_properties(self):
         """ Setting winow properties """
         # Setting window title and size
         self.setWindowTitle("XonStat player tracker - Overview")
         self.resize(1300, 800)
-        self._center_window()
     
 
-    def _create_window_layout(self):
+    def create_window_layout(self):
         """ Creates widnow layout with widgets """
         # Creating the layout itself
         window_widget = QWidget()
@@ -43,7 +41,8 @@ class Overview(WindowWithStatus):
         # Adding widgets to layout
         window_layout.addLayout(self._create_top_widgets())
         window_layout.addWidget(self._create_player_table())
-        window_layout.addWidget(self._status_create())
+        self.status = Status(self)
+        window_layout.addWidget(self.status)
     
 
     def _create_top_widgets(self):
@@ -55,10 +54,8 @@ class Overview(WindowWithStatus):
         self.search_bar.textChanged.connect(self._search)
         layout.addWidget(self.search_bar)
         # Creating button for refreshing table
-        self.refresh_button = QPushButton(self)
-        self.refresh_button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.refresh_button = ColoredButton(self, None, None, False)
         self.refresh_button.clicked.connect(self._update_player_data)
-        self.refresh_button.setEnabled(False)
         layout.addWidget(self.refresh_button)
         # Creating button for adding new player
         self.add_button = ColoredButton(self, "Add new player", "green", False)
@@ -83,11 +80,10 @@ class Overview(WindowWithStatus):
         """ Updates visuals of "Refresh" button """
         if running:
             self.refresh_button.setText("Stop updating table")
-            self.refresh_button.setProperty("background", "orange")
+            self.refresh_button.setBackground("orange")
         else:
             self.refresh_button.setText("Refresh table")
-            self.refresh_button.setProperty("background", "yellow")
-        self.force_style_update(self.refresh_button)
+            self.refresh_button.setBackground("yellow")
 
 
     def _open_addplayer_window(self):
@@ -110,7 +106,7 @@ class Overview(WindowWithStatus):
             contains_text = False
             for column in range(0, 3):
                 widget = self.player_table.cellWidget(row, column)
-                if not widget == None and type(widget) == QLabel:
+                if not widget == None and type(widget) == ColoredLabel:
                     if text.lower() in widget.text().lower():
                         contains_text = True
                         break
@@ -121,9 +117,8 @@ class Overview(WindowWithStatus):
         """ Changes """
         for column in range(self.player_table.columnCount()):
             widget = self.player_table.cellWidget(row, column)
-            if not widget == None and type(widget) == QLabel:
-                widget.setProperty("background", color)
-                self.force_style_update(widget)
+            if not widget == None and type(widget) == ColoredLabel:
+                widget.setBackground(color)
 
 
     def _create_player_table(self) -> QTableWidget:
@@ -153,22 +148,18 @@ class Overview(WindowWithStatus):
         self.player_table.insertRow(row)
         # Adding labels
         for i in range(4):
-            widget = QLabel(self.player_table)
-            self.player_table.setCellWidget(row, i, widget)
+            self.player_table.setCellWidget(row, i, ColoredLabel(self.player_table))
         # Adding label text
         self.player_table.cellWidget(row, 0).setText(str(player["id"]))
         self.player_table.cellWidget(row, 1).setText(player["nick"])
         # Adding buttons
-        self.player_table.setCellWidget(row, 4, ColoredButton(self, "Show player profile", "blue"))
+        self.player_table.setCellWidget(row, 4, ColoredButton(self.player_table, "Show player profile", "blue"))
         self.player_table.cellWidget(row, 4).clicked.connect(player.show_profile)
-        self.player_table.setCellWidget(row, 5, ColoredButton(self, "Show more info", "yellow"))
-        self.player_table.setCellWidget(row, 6, ColoredButton(self, "Delete this player", "red"))
+        self.player_table.setCellWidget(row, 5, ColoredButton(self.player_table, "Show more info", "yellow"))
+        self.player_table.setCellWidget(row, 6, ColoredButton(self.player_table, "Delete this player", "red"))
         self.player_table.cellWidget(row, 6).clicked.connect(lambda: self._delete_player(player))
         if not self._loader.isFinished():
             self.player_table.cellWidget(row, 6).setEnabled(False)
-        # Forcing button style update
-        for i in range(4, 7):
-            self.force_style_update(self.player_table.cellWidget(row, i))
 
     
     def update_player_variables(self, player: Player):
@@ -178,21 +169,17 @@ class Overview(WindowWithStatus):
         if not player.error == None:
             widget.setText(player.error)
             widget.setAlignment(Qt.AlignCenter)
-            widget.setProperty("type", "error")
         else:
             widget.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
             widget.setText(player.name)
-            widget.setProperty("type", None)
-        self.force_style_update(widget)
         # Adding label for the last time this player was active
         widget = self.player_table.cellWidget(self.get_row(player), 3)
         if not player.error == None:
             widget.setText(None)
-            widget.setProperty("color", None)
+            widget.setColor(None)
         else:
             widget.setText(player.active)
-            widget.setProperty("color", player.get_active_color())
-        self.force_style_update(widget)
+            widget.setColor(player.get_active_color())
     
 
     def set_button_enabled(self, column: int, enabled: bool):
@@ -230,7 +217,7 @@ class Overview(WindowWithStatus):
                 self._remover = OverviewRemover(self, player)
                 self._remover.start()
         except:
-            self.status_result_message("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
+            self.status.result_message("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
             self.set_button_enabled(6, True)
     
 

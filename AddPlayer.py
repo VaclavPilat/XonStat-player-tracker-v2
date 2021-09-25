@@ -1,32 +1,29 @@
-#!/usr/bin/env python3
-from WindowWithStatus import *
+from PyQt5.QtWidgets import QVBoxLayout, QLineEdit, QMessageBox
+from Window import *
+from Status import *
 from OverviewWorker import *
 from Player import *
 import json
 
-class AddPlayer(WindowWithStatus):
+class AddPlayer(Window):
     """ Class for creating a new "dialog window" for adding new players """
 
-    def __init__(self, window: WindowWithStatus):
+    def __init__(self, window: Window):
         super().__init__()
         """ Initialising GUI """
         self._window = window
         # GUI
         self.setWindowModality(Qt.ApplicationModal)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self._set_window_properties()
-        self._create_window_layout()
-        self.show()
     
 
-    def _set_window_properties(self):
+    def set_window_properties(self):
         """ Setting winow properties """
         self.setWindowTitle("XonStat player tracker - Add new player")
         self.setFixedSize(400, 150)
-        self._center_window()
     
 
-    def _create_window_layout(self):
+    def create_window_layout(self):
         """ Creates widnow layout with widgets """
         # Creating the layout itself
         window_widget = QWidget()
@@ -48,7 +45,8 @@ class AddPlayer(WindowWithStatus):
         window_layout.addWidget(self.add_button)
         # Adding status
         window_layout.addStretch()
-        window_layout.addWidget(self._status_create())
+        self.status = Status(self)
+        window_layout.addWidget(self.status)
     
 
     def _try_add(self):
@@ -59,12 +57,12 @@ class AddPlayer(WindowWithStatus):
         nick = self.nick.text()
         # Checking input validity
         if id == None or id == "" or nick == None or nick == "":
-            self.status_result_message("Both ID and nickname cannot be empty", False)
+            self.status.result_message("Both ID and nickname cannot be empty", False)
             return
         if id.isnumeric():
             id = int(id)
         else:
-            self.status_result_message("Player ID has to be a number", False)
+            self.status.result_message("Player ID has to be a number", False)
             return
         # Checking if the ID is already in use
         exists = False
@@ -73,7 +71,7 @@ class AddPlayer(WindowWithStatus):
                 exists = True
                 break
         if exists:
-            self.status_result_message("This ID is already being used", False)
+            self.status.result_message("This ID is already being used", False)
             return
         # Adding the player
         self._add(id, nick)
@@ -82,7 +80,7 @@ class AddPlayer(WindowWithStatus):
     def _add(self, id: int, nick: str):
         """ Adds new player to table """
         self.add_button.setEnabled(False)
-        self.status_change_message("Adding new player into table")
+        self.status.message("Adding new player into table")
         player = Player({ "id": id, "nick": nick })
         self._window.adder = OverviewAdder(self._window, player)
         self._window.adder.start()
@@ -101,3 +99,10 @@ class AddPlayer(WindowWithStatus):
             self._try_add()
         elif key == Qt.Key_Escape:
             self.close()
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    app.setApplicationName('XonStat player tracker')
+    addplayer = AddPlayer(None)
+    sys.exit(app.exec_())
