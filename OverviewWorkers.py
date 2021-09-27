@@ -13,13 +13,13 @@ class OverviewLoader(Worker):
     """
 
 
-    signal_showPlayer = pyqtSignal(Player) # Signal for adding new player to table
+    _showPlayer = pyqtSignal(Player) # Signal for adding new player to table
     
 
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
-        self.signal_showPlayer.connect(self.window.showPlayer)
+        self._showPlayer.connect(self.window.showPlayer)
 
 
     def __init__(self, window: Window):
@@ -66,7 +66,7 @@ class OverviewLoader(Worker):
         Args:
             player (Player): Player instance
         """
-        self.signal_showPlayer.emit(player)
+        self._showPlayer.emit(player)
 
     
     def __showPlayers(self):
@@ -107,17 +107,17 @@ class OverviewUpdater(Worker):
     """
 
 
-    signal_updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
-    signal_setRowColor = pyqtSignal(int, str) # Signal for changing row color
-    signal_setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    _updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
+    _setRowColor = pyqtSignal(int, str) # Signal for changing row color
+    _setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
     
 
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
-        self.signal_updatePlayer.connect(self.window.updatePlayer)
-        self.signal_setRowColor.connect(self.window.setRowColor)
-        self.signal_setButtonsEnabled.connect(self.window.setButtonsEnabled)
+        self._updatePlayer.connect(self.window.updatePlayer)
+        self._setRowColor.connect(self.window.setRowColor)
+        self._setButtonsEnabled.connect(self.window.setButtonsEnabled)
 
 
     def __init__(self, window: Window):
@@ -129,16 +129,16 @@ class OverviewUpdater(Worker):
     def updatePlayer(self, player: Player) -> bool:
         """Updating player variables of a single player
         """
-        self.signal_setRowColor.emit(self.window.get_row(player), "dark-yellow")
+        self._setRowColor.emit(self.window.getRow(player), "dark-yellow")
         time.sleep(0.2)
         player.loadProfile()
         player.loadName()
         player.loadActive()
         if player.error == None:
-            self.signal_setRowColor.emit(self.window.get_row(player), None)
+            self._setRowColor.emit(self.window.getRow(player), None)
         else:
-            self.signal_setRowColor.emit(self.window.get_row(player), "dark-red")
-        self.signal_updatePlayer.emit(player)
+            self._setRowColor.emit(self.window.getRow(player), "dark-red")
+        self._updatePlayer.emit(player)
         return player.error == None
     
     
@@ -165,13 +165,14 @@ class OverviewUpdater(Worker):
         self.window.status.message("Loading information from player profiles")
         self.window.status.progress(0, self.maximum)
         # Disabling buttons
-        self.window.add_button.setEnabled(False)
-        self.signal_setButtonsEnabled.emit(6, False)
+        self.window.addButton.setEnabled(False)
+        self._setButtonsEnabled.emit(6, False)
         
 
     def run(self):
         """Running the Worker task
         """
+        self.window.updateRefreshButton()
         self.correct = 0
         self.maximum = len(self.window.players)
         if self.maximum > 0:
@@ -183,10 +184,10 @@ class OverviewUpdater(Worker):
         """
         self.window.status.resultProgress("Finished loading player profiles", self.correct, self.maximum)
         # Enabling buttons
-        self.window.refresh_button.setEnabled(True)
-        self.window.updateRefreshButton(False)
-        self.window.add_button.setEnabled(True)
-        self.signal_setButtonsEnabled.emit(6, True)
+        self.window.refreshButton.setEnabled(True)
+        self.window.updateRefreshButton()
+        self.window.addButton.setEnabled(True)
+        self._setButtonsEnabled.emit(6, True)
 
 
 
@@ -197,17 +198,17 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
     """
 
 
-    signal_showPlayer = pyqtSignal(Player) # Signal for adding new player to table
-    signal_updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
-    signal_setRowColor = pyqtSignal(int, str) # Signal for changing row color
+    _showPlayer = pyqtSignal(Player) # Signal for adding new player to table
+    _updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
+    _setRowColor = pyqtSignal(int, str) # Signal for changing row color
     
 
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
-        self.signal_showPlayer.connect(self.window.showPlayer)
-        self.signal_updatePlayer.connect(self.window.updatePlayer)
-        self.signal_setRowColor.connect(self.window.setRowColor)
+        self._showPlayer.connect(self.window.showPlayer)
+        self._updatePlayer.connect(self.window.updatePlayer)
+        self._setRowColor.connect(self.window.setRowColor)
     
 
     def __init__(self, window: Window, player: Player):
@@ -237,8 +238,8 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         """This method is called before this worker is run
         """
         # Disabling buttons
-        self.window.refresh_button.setEnabled(False)
-        self.window.add_button.setEnabled(False)
+        self.window.refreshButton.setEnabled(False)
+        self.window.addButton.setEnabled(False)
         self.window.status.message("Loading information about new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
         
     
@@ -259,8 +260,8 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         else:
             self.window.status.resultMessage("An error occured while loading player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")", False)
         # Enabling buttons
-        self.window.refresh_button.setEnabled(True)
-        self.window.add_button.setEnabled(True)
+        self.window.refreshButton.setEnabled(True)
+        self.window.addButton.setEnabled(True)
 
 
 
@@ -271,15 +272,15 @@ class OverviewRemover(OverviewAdder):
     """
 
 
-    signal_hidePlayer = pyqtSignal(Player) # Signal for removing a player from table
-    signal_setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    _hidePlayer = pyqtSignal(Player) # Signal for removing a player from table
+    _setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
     
 
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
-        self.signal_hidePlayer.connect(self.window.hidePlayer)
-        self.signal_setButtonsEnabled.connect(self.window.setButtonsEnabled)
+        self._hidePlayer.connect(self.window.hidePlayer)
+        self._setButtonsEnabled.connect(self.window.setButtonsEnabled)
     
 
     def __init__(self, window: Window, player: Player):
@@ -299,9 +300,9 @@ class OverviewRemover(OverviewAdder):
         """This method is called before this worker is run
         """
         # Disabling buttons
-        self.window.refresh_button.setEnabled(False)
-        self.window.add_button.setEnabled(False)
-        self.signal_setButtonsEnabled.emit(6, False)
+        self.window.refreshButton.setEnabled(False)
+        self.window.addButton.setEnabled(False)
+        self._setButtonsEnabled.emit(6, False)
         self.window.status.message("Removing player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")
         
     
@@ -309,7 +310,7 @@ class OverviewRemover(OverviewAdder):
         """Running the Worker task
         """
         # Deleting player
-        self.signal_hidePlayer.emit(self.player)
+        self._hidePlayer.emit(self.player)
         self.__removePlayer()
         self.savePlayers()
 
@@ -318,7 +319,7 @@ class OverviewRemover(OverviewAdder):
         """This method is called after this worker is finished
         """
         # Enabling buttons
-        self.window.refresh_button.setEnabled(True)
-        self.window.add_button.setEnabled(True)
-        self.signal_setButtonsEnabled.emit(6, True)
+        self.window.refreshButton.setEnabled(True)
+        self.window.addButton.setEnabled(True)
+        self._setButtonsEnabled.emit(6, True)
         self.window.status.resultMessage("Successfully removed player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")

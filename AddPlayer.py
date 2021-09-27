@@ -4,50 +4,60 @@ from Status import *
 from OverviewWorkers import *
 from ColoredWidgets import *
 from Player import *
-import json
+
+
 
 class AddPlayer(Window):
-    """ Class for creating a new "dialog window" for adding new players """
+    """Class for creating a new "dialog window" for adding new players 
+    """
+
 
     def __init__(self, window: Window):
+        """Initialising GUI
+
+        Args:
+            window (Window): Overview window instance
+        """
         super().__init__()
-        """ Initialising GUI """
         self.window = window
     
 
     def setProperties(self):
-        """ Setting winow properties """
+        """Setting winow properties
+        """
         self.setWindowModality(Qt.ApplicationModal)
         self.setWindowTitle("XonStat player tracker - Add new player")
         self.setFixedSize(400, 150)
     
 
     def createLayout(self):
-        """ Creates widnow layout with widgets """
+        """Creates widnow layout with widgets
+        """
         # Creating the layout itself
-        window_widget = QWidget()
-        window_layout = QVBoxLayout()
-        window_widget.setLayout(window_layout)
-        self.setCentralWidget(window_widget)
+        widget = QWidget()
+        layout = QVBoxLayout()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
         # Adding widgets to layout
         self.id = QLineEdit(self)
         self.id.setPlaceholderText("Player ID")
-        window_layout.addWidget(self.id)
+        layout.addWidget(self.id)
         self.nick = QLineEdit(self)
         self.nick.setPlaceholderText("Player nickname")
-        window_layout.addWidget(self.nick)
-        self.add_button = ColoredButton(self, "Add player", "green")
-        self.add_button.clicked.connect(self.__tryAddPlayer)
-        window_layout.addWidget(self.add_button)
+        layout.addWidget(self.nick)
+        self.addButton = ColoredButton(self, "Add player", "green")
+        self.addButton.clicked.connect(self.__tryAddPlayer)
+        layout.addWidget(self.addButton)
         # Adding status
-        window_layout.addStretch()
+        layout.addStretch()
         self.status = Status(self)
-        window_layout.addWidget(self.status)
+        layout.addWidget(self.status)
     
 
     def __tryAddPlayer(self):
-        """ Attempt to add a new player """
-        if not self.add_button.isEnabled():
+        """Attempts to add a new player
+        """
+        if not self.addButton.isEnabled():
             return
         id = self.id.text()
         nick = self.nick.text()
@@ -74,8 +84,13 @@ class AddPlayer(Window):
     
 
     def __addPlayer(self, id: int, nick: str):
-        """ Adds new player to table """
-        self.add_button.setEnabled(False)
+        """Adds new player to table
+
+        Args:
+            id (int): Player ID
+            nick (str): Player nickname
+        """
+        self.addButton.setEnabled(False)
         self.status.message("Adding new player into table")
         player = Player({ "id": id, "nick": nick })
         self.window.adder = OverviewAdder(self.window, player)
@@ -84,13 +99,21 @@ class AddPlayer(Window):
     
 
     def closeEvent(self, event):
-        """ Event called right before closing """
-        self.window.add_button.setEnabled(True)
-        self.window.refresh_button.setEnabled(True)
+        """Event called right before closing
+
+        Args:
+            event: Event
+        """
+        self.window.addButton.setEnabled(True)
+        self.window.refreshButton.setEnabled(True)
     
 
     def keyPressEvent(self, event):
-        """ Reacts to pressing keys """
+        """Handling key press events
+
+        Args:
+            event: Event
+        """
         key = event.key()
         if key == Qt.Key_Return or key == Qt.Key_Enter:
             self.__tryAddPlayer()

@@ -4,33 +4,41 @@ from bs4 import BeautifulSoup
 
 
 class Player(dict):
-    """ Class for interacting with player data """
+    """Class for interacting with player data
+    """
 
-    _http = urllib3.PoolManager() # Pool manager for sending request with urllib3
-    _profile_html = None # HTML source of the player's profile page
-    _soup = None # BeautifulSoup parser
+
+    __poolManager = urllib3.PoolManager() # Pool manager for sending request with urllib3
+    __profileSource = None # HTML source of the player's profile page
+    __soup = None # BeautifulSoup parser
 
 
     def __init__(self, data: dict):
+        """Initializing a few variables
+
+        Args:
+            data (dict): Player data
+        """
         super().__init__()
-        """ Initializing a few variables """
         self.update(data)
         self.profile = "https://stats.xonotic.org/player/" + str(data["id"])
     
 
     def showProfile(self):
-        """ Opening player profile in a new tab of a browser """
+        """Opening player profile in a new tab of a browser
+        """
         webbrowser.open(self.profile, new=2)
 
     
-    def loadProfile(self, info: bool = False):
-        """ Loading player profile """
+    def loadProfile(self):
+        """Loading player profile
+        """
         try:
-            response = self._http.request("GET", self.profile, timeout=urllib3.util.Timeout(3))
+            response = self.__poolManager.request("GET", self.profile, timeout=urllib3.util.Timeout(3))
             if response.status == 200:
-                self._profile_html = response.data
-                self._soup = BeautifulSoup(self._profile_html, "html.parser")
-                if "Player Information" in str(self._profile_html):
+                self.__profileSource = response.data
+                self.__soup = BeautifulSoup(self.__profileSource, "html.parser")
+                if "Player Information" in str(self.__profileSource):
                     self.error = None
                 else:
                     self.error = "Profile error"
@@ -41,9 +49,13 @@ class Player(dict):
     
 
     def loadName(self) -> str:
-        """ Loads and returns current player name from profile """
+        """Loads and returns current player name from profile
+
+        Returns:
+            str: Current player name
+        """
         if self.error == None:
-            name = self._soup.find("h2")
+            name = self.__soup.find("h2")
             if not name == None:
                 if not name.find() == None:
                     self.name = str(name.find())
@@ -57,9 +69,13 @@ class Player(dict):
     
 
     def loadActive(self) -> str:
-        """ Loads the last time this player played a game """
+        """Loads the last time this player played a game
+
+        Returns:
+            str: The last time this player joined a game
+        """
         if self.error == None:
-            elements = self._soup.find_all("span", attrs={"class": "abstime"})
+            elements = self.__soup.find_all("span", attrs={"class": "abstime"})
             if not elements == None:
                 if len(elements) >= 2:
                     self.active = elements[1].text
@@ -73,7 +89,11 @@ class Player(dict):
     
 
     def  getActiveColor(self) -> str:
-        """ Gets text color for "active" label based on its content """
+        """Gets text color for "active" label based on its content
+
+        Returns:
+            str: Text color value, definec in stylesheets
+        """
         if self.active == None:
             return None
         else:

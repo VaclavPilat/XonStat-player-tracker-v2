@@ -23,6 +23,12 @@ class Worker(QThread):
         self.connectSlots()
     
 
+    def connectSlots(self):
+        """Connecting signals to slots. This method is called in init.
+        """
+        pass
+    
+
     def before(self):
         """This method is called before this worker is run
         """
