@@ -20,18 +20,18 @@ class Overview(Window):
         self._loader = OverviewLoader(self)
         self._updater = OverviewUpdater(self)
         self._loader.start()
-        self._loader.finished.connect(self._update_player_data)
-        self.update_refreshbutton_visuals(False)
+        self._loader.finished.connect(self.__updatePlayers)
+        self.updateRefreshButton(False)
     
 
-    def set_window_properties(self):
+    def setProperties(self):
         """ Setting winow properties """
         # Setting window title and size
         self.setWindowTitle("XonStat player tracker - Overview")
         self.resize(1300, 800)
     
 
-    def create_window_layout(self):
+    def createLayout(self):
         """ Creates widnow layout with widgets """
         # Creating the layout itself
         window_widget = QWidget()
@@ -39,33 +39,33 @@ class Overview(Window):
         window_widget.setLayout(window_layout)
         self.setCentralWidget(window_widget)
         # Adding widgets to layout
-        window_layout.addLayout(self._create_top_widgets())
-        window_layout.addWidget(self._create_player_table())
+        window_layout.addLayout(self.__createTopWidgets())
+        window_layout.addWidget(self.__creteTable())
         self.status = Status(self)
         window_layout.addWidget(self.status)
     
 
-    def _create_top_widgets(self):
+    def __createTopWidgets(self):
         """ Creates a box layout with search bar and a few buttons """
         layout = QHBoxLayout()
         # Creating search bar
         self.search_bar = QLineEdit(self)
         self.search_bar.setPlaceholderText("Search by player ID, nickname or current player name")
-        self.search_bar.textChanged.connect(self._search)
+        self.search_bar.textChanged.connect(self.__search)
         layout.addWidget(self.search_bar)
         # Creating button for refreshing table
         self.refresh_button = ColoredButton(self, None, None, False)
-        self.refresh_button.clicked.connect(self._update_player_data)
+        self.refresh_button.clicked.connect(self.__updatePlayers)
         layout.addWidget(self.refresh_button)
         # Creating button for adding new player
         self.add_button = ColoredButton(self, "Add new player", "green", False)
-        self.add_button.clicked.connect(self._open_addplayer_window)
+        self.add_button.clicked.connect(self.__openAddplayer)
         layout.addWidget(self.add_button)
         #return search
         return layout
     
 
-    def _update_player_data(self):
+    def __updatePlayers(self):
         """ Attempts to update player variables """
         self.refresh_button.setEnabled(True)
         if self._updater.isRunning():
@@ -73,10 +73,10 @@ class Overview(Window):
             self.refresh_button.setEnabled(False)
         else:
             self._updater.start()
-        self.update_refreshbutton_visuals(self._updater.isRunning())
+        self.updateRefreshButton(self._updater.isRunning())
     
 
-    def update_refreshbutton_visuals(self, running: bool):
+    def updateRefreshButton(self, running: bool):
         """ Updates visuals of "Refresh" button """
         if running:
             self.refresh_button.setText("Stop updating table")
@@ -86,7 +86,7 @@ class Overview(Window):
             self.refresh_button.setBackground("yellow")
 
 
-    def _open_addplayer_window(self):
+    def __openAddplayer(self):
         """ Opening a window for adding a new player """
         self.add_button.setEnabled(False)
         self.refresh_button.setEnabled(False)
@@ -94,34 +94,39 @@ class Overview(Window):
         #self._addplayer_window.destroyed.connect(lambda: print("objekt zničen"))
     
 
-    def addplayer_window_closed(self):
-        """ Opening a window for adding a new player """
-        self.add_button.setEnabled(True)
-        self.refresh_button.setEnabled(True)
-    
-
-    def _search(self, text: str):
+    def __search(self, text: str):
         """ Hiding and showing rows in the table based on input """
         for row in range(self.player_table.rowCount()):
             contains_text = False
             for column in range(0, 3):
                 widget = self.player_table.cellWidget(row, column)
                 if not widget == None and type(widget) == ColoredLabel:
-                    if text.lower() in widget.text().lower():
+                    if "<" in widget.text().lower():
+                        soup = BeautifulSoup(widget.text().lower(), 'html.parser')
+                        label_text = soup.get_text()
+                    else:
+                        label_text = widget.text().lower()
+                    if text.lower() in label_text:
                         contains_text = True
                         break
             self.player_table.setRowHidden(row, not contains_text)
     
 
-    def change_row_color(self, row: int, color: str):
-        """ Changes """
+    def setRowColor(self, row: int, background: str = None):
+        """Changes background color of all labels in a selected row
+
+        Args:
+            row (int): Row index
+            background (str, optional): Background color value defined in stylesheets. Defaults to None.
+        """
         for column in range(self.player_table.columnCount()):
             widget = self.player_table.cellWidget(row, column)
-            if not widget == None and type(widget) == ColoredLabel:
-                widget.setBackground(color)
+            if not widget == None:
+                if type(widget) == ColoredLabel:
+                    widget.setBackground(background)
 
 
-    def _create_player_table(self) -> QTableWidget:
+    def __creteTable(self) -> QTableWidget:
         """ Creating table of players """
         self.player_table = QTableWidget()
         self.player_table.setEditTriggers( QTableWidget.NoEditTriggers )
@@ -141,28 +146,28 @@ class Overview(Window):
         return self.player_table
 
     
-    def add_player_to_table(self, player: Player):
+    def showPlayer(self, player: Player):
         """ Adds a single row with player data to table """
         # Creating a new row inside the table
         row = self.player_table.rowCount()
         self.player_table.insertRow(row)
         # Adding labels
         for i in range(4):
-            self.player_table.setCellWidget(row, i, ColoredLabel(self.player_table))
+            self.player_table.setCellWidget(row, i, ColoredLabel(self.player_table, "", "dark-grey"))
         # Adding label text
         self.player_table.cellWidget(row, 0).setText(str(player["id"]))
         self.player_table.cellWidget(row, 1).setText(player["nick"])
         # Adding buttons
         self.player_table.setCellWidget(row, 4, ColoredButton(self.player_table, "Show player profile", "blue"))
-        self.player_table.cellWidget(row, 4).clicked.connect(player.show_profile)
+        self.player_table.cellWidget(row, 4).clicked.connect(player.showProfile)
         self.player_table.setCellWidget(row, 5, ColoredButton(self.player_table, "Show more info", "yellow"))
         self.player_table.setCellWidget(row, 6, ColoredButton(self.player_table, "Delete this player", "red"))
-        self.player_table.cellWidget(row, 6).clicked.connect(lambda: self._delete_player(player))
+        self.player_table.cellWidget(row, 6).clicked.connect(lambda: self.__removePlayer(player))
         if not self._loader.isFinished():
             self.player_table.cellWidget(row, 6).setEnabled(False)
 
     
-    def update_player_variables(self, player: Player):
+    def updatePlayer(self, player: Player):
         """ Print out player variables into table """
         # Adding label for current player name
         widget = self.player_table.cellWidget(self.get_row(player), 2)
@@ -179,10 +184,10 @@ class Overview(Window):
             widget.setColor(None)
         else:
             widget.setText(player.active)
-            widget.setColor(player.get_active_color())
+            widget.setColor(player.getActiveColor())
     
 
-    def set_button_enabled(self, column: int, enabled: bool):
+    def setButtonsEnabled(self, column: int, enabled: bool):
         """ Sets "enabled" property to a specified value for each button in the column """
         for i in range(self.player_table.rowCount()):
             widget = self.player_table.cellWidget(i, column)
@@ -207,7 +212,7 @@ class Overview(Window):
             self.search_bar.setFocus()
     
 
-    def _delete_player(self, player: Player):
+    def __removePlayer(self, player: Player):
         """ Attempts to remove a player """
         try:
             answer = QMessageBox.question(self, 'XonStat player tracker', "Are you sure you want to delete player \"" \
@@ -217,11 +222,11 @@ class Overview(Window):
                 self._remover = OverviewRemover(self, player)
                 self._remover.start()
         except:
-            self.status.result_message("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
-            self.set_button_enabled(6, True)
+            self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
+            self.setButtonsEnabled(6, True)
     
 
-    def remove_player_from_table(self, player: Player):
+    def hidePlayer(self, player: Player):
         """ Removes player from table """
         self.player_table.removeRow(self.get_row(player))
 

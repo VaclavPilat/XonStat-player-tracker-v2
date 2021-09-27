@@ -57,7 +57,7 @@ class Status(ColoredLabel):
         self.setText(output)
     
 
-    def result_message (self, message: str, correct: bool = True):
+    def resultMessage (self, message: str, correct: bool = True):
         """Changing status message and changing status color based on the if the task is completed successfully.
 
         Args:
@@ -72,7 +72,7 @@ class Status(ColoredLabel):
             self.setBackground("red")
     
 
-    def result_progress (self, message: str, correct: int, max: int):
+    def resultProgress (self, message: str, correct: int, max: int):
         """Changing status message and background color based on the amount of successfully completed parts
 
         Args:

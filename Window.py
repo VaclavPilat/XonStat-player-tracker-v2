@@ -15,15 +15,15 @@ class Window(QMainWindow):
         """
         super().__init__()
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.__add_stylesheet()
-        self.__add_icon()
-        self.set_window_properties()
-        self.create_window_layout()
+        self.__addStylesheet()
+        self.__addIcon()
+        self.setProperties()
+        self.createLayout()
         self.show()
-        self.__center_window()
+        self.__centerWindow()
     
 
-    def __add_stylesheet(self):
+    def __addStylesheet(self):
         """Adding CSS styling (my own + the one from "qdarkstyle" module)
         """
         # Adding CSS stylesheet from QDarkStyle
@@ -37,13 +37,13 @@ class Window(QMainWindow):
         self.setStyleSheet(stylesheet)
     
 
-    def __add_icon(self):
+    def __addIcon(self):
         """Adds an icon to this window
         """
         self.setWindowIcon(QIcon( os.path.join(os.path.dirname(__file__), "Icon.png") )) # Adding icon
     
 
-    def __center_window(self):
+    def __centerWindow(self):
         """Moving window to the center of the screen
         """
         frameGeometry = self.frameGeometry()

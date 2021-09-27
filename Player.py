@@ -18,12 +18,12 @@ class Player(dict):
         self.profile = "https://stats.xonotic.org/player/" + str(data["id"])
     
 
-    def show_profile(self):
+    def showProfile(self):
         """ Opening player profile in a new tab of a browser """
         webbrowser.open(self.profile, new=2)
 
     
-    def load_profile(self, info: bool = False):
+    def loadProfile(self, info: bool = False):
         """ Loading player profile """
         try:
             response = self._http.request("GET", self.profile, timeout=urllib3.util.Timeout(3))
@@ -40,7 +40,7 @@ class Player(dict):
             self.error = "Network error"
     
 
-    def load_name(self) -> str:
+    def loadName(self) -> str:
         """ Loads and returns current player name from profile """
         if self.error == None:
             name = self._soup.find("h2")
@@ -56,7 +56,7 @@ class Player(dict):
         return self.name
     
 
-    def load_active(self) -> str:
+    def loadActive(self) -> str:
         """ Loads the last time this player played a game """
         if self.error == None:
             elements = self._soup.find_all("span", attrs={"class": "abstime"})
@@ -72,7 +72,7 @@ class Player(dict):
         return self.active
     
 
-    def  get_active_color(self) -> str:
+    def  getActiveColor(self) -> str:
         """ Gets text color for "active" label based on its content """
         if self.active == None:
             return None

@@ -20,7 +20,7 @@ class Worker(QThread):
         # Connecting slots and signals
         self.started.connect(self.before)
         self.finished.connect(self.after)
-        self.connect_slots()
+        self.connectSlots()
     
 
     def before(self):
