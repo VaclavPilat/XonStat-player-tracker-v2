@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QVBoxLayout, QLineEdit, QMessageBox
 from Window import *
 from Status import *
-from OverviewWorker import *
+from OverviewWorkers import *
 from Player import *
 import json
 
@@ -12,13 +12,11 @@ class AddPlayer(Window):
         super().__init__()
         """ Initialising GUI """
         self._window = window
-        # GUI
-        self.setWindowModality(Qt.ApplicationModal)
-        self.setAttribute(Qt.WA_DeleteOnClose)
     
 
     def set_window_properties(self):
         """ Setting winow properties """
+        self.setWindowModality(Qt.ApplicationModal)
         self.setWindowTitle("XonStat player tracker - Add new player")
         self.setFixedSize(400, 150)
     

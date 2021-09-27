@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QTableWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
 from Window import *
 from Status import *
-from OverviewWorker import *
+from OverviewWorkers import *
 from AddPlayer import *
 from ColoredWidgets import *
 
