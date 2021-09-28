@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget
 from PyQt5.QtGui import QIcon
 from ColoredWidgets import *
 import os, qdarkstyle
@@ -21,6 +21,7 @@ class Window(QMainWindow):
         self.createLayout()
         self.show()
         self.__centerWindow()
+        self.destroyed.connect(lambda: print(str(type(self)) + " window destroyed"))
     
 
     def __addStylesheet(self):
@@ -29,10 +30,10 @@ class Window(QMainWindow):
         # Adding CSS stylesheet from QDarkStyle
         stylesheet = qdarkstyle.load_stylesheet()
         # Adding my own stylesheet
-        with open(os.path.join(os.path.dirname(__file__), "Style.css"), "r") as css_file:
-            css_content = css_file.read()
-            if not css_content == None and not css_content == "":
-                stylesheet += css_content
+        with open(os.path.join(os.path.dirname(__file__), "Style.css"), "r") as myCSSFile:
+            myCSS = myCSSFile.read()
+            if myCSS is not None and myCSS != "":
+                stylesheet += myCSS
         # Applying stylesheet
         self.setStyleSheet(stylesheet)
     
@@ -49,3 +50,12 @@ class Window(QMainWindow):
         frameGeometry = self.frameGeometry()
         frameGeometry.moveCenter(QDesktopWidget().availableGeometry().center())
         self.move(frameGeometry.topLeft())
+    
+
+    def setWindowTitle(self, title: str = ""):
+        """Sets window title
+
+        Args:
+            title (str, optional): Window title. Defaults to "".
+        """
+        super().setWindowTitle(str(QApplication.instance().applicationName()) + " - " + title)

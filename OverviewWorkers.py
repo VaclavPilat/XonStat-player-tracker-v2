@@ -4,8 +4,6 @@ from Worker import *
 from Player import *
 import sys, os, json, time
 
-PLAYERS_FINENAME = "Players.json" # JSON file for storing players
-
 
 
 class OverviewLoader(Worker):
@@ -41,23 +39,22 @@ class OverviewLoader(Worker):
         """Loads players from file
         """
         # Getting abolute path to file
-        current_directory = os.path.dirname(__file__) # The directory where this script is located
-        absolute_filepath = os.path.join(current_directory, PLAYERS_FINENAME) # Absolute path to the file with players
+        absolutePath = os.path.join(os.path.dirname(__file__), "Players.json") # Absolute path to the file with players
         # Opening file
         try:
-            if os.path.isfile(absolute_filepath):
-                f = open(absolute_filepath, "r")
-                players_loaded = json.loads(f.read())
-                for player_dict in players_loaded:
-                    if len(player_dict) == 2 and "id" in player_dict and "nick" in player_dict \
-                        and type(player_dict["id"]) == int and type(player_dict["nick"]) == str:
-                        player = Player(player_dict)
+            if os.path.isfile(absolutePath):
+                f = open(absolutePath, "r")
+                loadedPlayers = json.loads(f.read())
+                for loadedPlayer in loadedPlayers:
+                    if len(loadedPlayer) == 2 and "id" in loadedPlayer and "nick" in loadedPlayer \
+                        and type(loadedPlayer["id"]) == int and type(loadedPlayer["nick"]) == str:
+                        player = Player(loadedPlayer)
                         self.loadPlayer(player)
                 f.close()
         except:
-            players_loaded = []
+            loadedPlayers = []
         self.correct = len(self.window.players)
-        self.maximum = len(players_loaded)
+        self.maximum = len(loadedPlayers)
     
 
     def showPlayer(self, player: Player):
@@ -223,11 +220,10 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         """Attempts to save current list of players into file
         """
         # Getting abolute path to file
-        current_directory = os.path.dirname(__file__) # The directory where this script is located
-        absolute_filepath = os.path.join(current_directory, PLAYERS_FINENAME) # Absolute path to the file with players
+        absolutePath = os.path.join(os.path.dirname(__file__), "Players.json") # Absolute path to the file with players
         # Saving file
         try:
-            f = open(absolute_filepath, "w")
+            f = open(absolutePath, "w")
             f.write(json.dumps(self.window.players, sort_keys=False, indent=4))
             f.close()
         except:

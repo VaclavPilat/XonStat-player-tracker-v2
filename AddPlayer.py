@@ -26,7 +26,7 @@ class AddPlayer(Window):
         """Setting winow properties
         """
         self.setWindowModality(Qt.ApplicationModal)
-        self.setWindowTitle("XonStat player tracker - Add new player")
+        self.setWindowTitle("Add new player")
         self.setFixedSize(400, 150)
     
 

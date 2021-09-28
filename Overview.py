@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
-from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QTableWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
+from PyQt5.QtCore import Qt
 from Window import *
 from Status import *
 from OverviewWorkers import *
@@ -31,7 +30,7 @@ class Overview(Window):
         """Setting winow properties
         """
         # Setting window title and size
-        self.setWindowTitle("XonStat player tracker - Overview")
+        self.setWindowTitle("Overview")
         self.resize(1300, 800)
     
 
@@ -72,74 +71,6 @@ class Overview(Window):
         layout.addWidget(self.addButton)
         #return search
         return layout
-    
-
-    def __updatePlayers(self):
-        """Attempts to update player variables
-        """
-        self.refreshButton.setEnabled(True)
-        if self.updater.isRunning():
-            self.updater.cancel = True
-            self.refreshButton.setEnabled(False)
-        else:
-            self.updater.start()
-    
-
-    def updateRefreshButton(self):
-        """Updates visuals of "Refresh" button
-        """
-        if self.updater.isRunning():
-            self.refreshButton.setText("Stop updating table")
-            self.refreshButton.setBackground("orange")
-        else:
-            self.refreshButton.setText("Refresh table")
-            self.refreshButton.setBackground("yellow")
-
-
-    def __openAddplayer(self):
-        """Opening a window for adding a new player
-        """
-        self.addButton.setEnabled(False)
-        self.refreshButton.setEnabled(False)
-        self.__addPlayerWindow = AddPlayer(self)
-        self.__addPlayerWindow.destroyed.connect(lambda: print("objekt zničen"))
-    
-
-    def __search(self, text: str):
-        """Hiding and showing rows in the table based on input
-
-        Args:
-            text (str): Serched text
-        """
-        for row in range(self.table.rowCount()):
-            contains_text = False
-            for column in range(0, 3):
-                widget = self.table.cellWidget(row, column)
-                if not widget == None and type(widget) == ColoredLabel:
-                    # Checking if this label contins HTML
-                    if "<" in widget.text().lower():
-                        soup = BeautifulSoup(widget.text().lower(), 'html.parser')
-                        label_text = soup.get_text()
-                    else:
-                        label_text = widget.text().lower()
-                    if text.lower() in label_text:
-                        contains_text = True
-                        break
-            self.table.setRowHidden(row, not contains_text)
-    
-
-    def setRowColor(self, row: int, background: str = None):
-        """Changes background color of all labels in a selected row
-
-        Args:
-            row (int): Row index
-            background (str, optional): Background color value defined in stylesheets. Defaults to None.
-        """
-        for column in range(self.table.columnCount()):
-            widget = self.table.cellWidget(row, column)
-            if not widget == None:
-                if type(widget) == ColoredLabel:
-                    widget.setBackground(background)
 
 
     def __createTable(self) -> QTableWidget:
@@ -151,10 +82,10 @@ class Overview(Window):
         self.table = QTableWidget()
         self.table.setEditTriggers( QTableWidget.NoEditTriggers )
         # Setting columns
-        table_headers = ["ID", "Player nickname", "Current player name", "Last played", 
+        headers = ["ID", "Player nickname", "Current player name", "Last played", 
                         "Player profile", "More information", "Delete player"]
-        self.table.setColumnCount( len(table_headers) )
-        self.table.setHorizontalHeaderLabels(table_headers)
+        self.table.setColumnCount( len(headers) )
+        self.table.setHorizontalHeaderLabels(headers)
         self.table.setObjectName("table")
         # Setting column stretching
         self.table.horizontalHeader().setMinimumSectionSize(150)
@@ -213,6 +144,73 @@ class Overview(Window):
         else:
             widget.setText(player.active)
             widget.setColor(player.getActiveColor())
+    
+
+    def __updatePlayers(self):
+        """Attempts to update player variables
+        """
+        self.refreshButton.setEnabled(True)
+        if self.updater.isRunning():
+            self.updater.cancel = True
+            self.refreshButton.setEnabled(False)
+        else:
+            self.updater.start()
+    
+
+    def updateRefreshButton(self):
+        """Updates visuals of "Refresh" button
+        """
+        if self.updater.isRunning():
+            self.refreshButton.setText("Stop updating table")
+            self.refreshButton.setBackground("orange")
+        else:
+            self.refreshButton.setText("Refresh table")
+            self.refreshButton.setBackground("yellow")
+
+
+    def __openAddplayer(self):
+        """Opening a window for adding a new player
+        """
+        self.addButton.setEnabled(False)
+        self.refreshButton.setEnabled(False)
+        self.__addPlayerWindow = AddPlayer(self)
+    
+
+    def __search(self, text: str):
+        """Hiding and showing rows in the table based on input
+
+        Args:
+            text (str): Serched text
+        """
+        for row in range(self.table.rowCount()):
+            containsText = False
+            for column in range(0, 3):
+                widget = self.table.cellWidget(row, column)
+                if not widget == None and type(widget) == ColoredLabel:
+                    # Checking if this label contins HTML
+                    if "<" in widget.text().lower():
+                        soup = BeautifulSoup(widget.text().lower(), 'html.parser')
+                        labelText = soup.get_text()
+                    else:
+                        labelText = widget.text().lower()
+                    if text.lower() in labelText:
+                        containsText = True
+                        break
+            self.table.setRowHidden(row, not containsText)
+    
+
+    def setRowColor(self, row: int, background: str = None):
+        """Changes background color of all labels in a selected row
+
+        Args:
+            row (int): Row index
+            background (str, optional): Background color value defined in stylesheets. Defaults to None.
+        """
+        for column in range(self.table.columnCount()):
+            widget = self.table.cellWidget(row, column)
+            if not widget == None:
+                if type(widget) == ColoredLabel:
+                    widget.setBackground(background)
     
 
     def setButtonsEnabled(self, column: int, enabled: bool):
@@ -278,16 +276,12 @@ class Overview(Window):
             event: Event
         """
         key = event.key()
+        # Accessing search bar
         if key == Qt.Key_Return or key == Qt.Key_Enter or ((event.modifiers() & Qt.ControlModifier) and key == Qt.Key_F):
             self.searchBar.setFocus()
         elif key == Qt.Key_Escape:
             self.searchBar.clear()
             self.searchBar.setFocus()
-
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app.setApplicationName('XonStat player tracker')
-    overview = Overview()
-    sys.exit(app.exec_())
+        # Loading players
+        elif (key == Qt.Key_R and QApplication.keyboardModifiers() == Qt.ControlModifier) or key == Qt.Key_F5:
+            self.__updatePlayers()
