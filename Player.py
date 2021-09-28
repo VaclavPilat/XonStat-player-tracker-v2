@@ -8,6 +8,7 @@ class Player(dict):
     """
 
 
+    window = None # PlayerInfo window instance
     __poolManager = urllib3.PoolManager() # Pool manager for sending request with urllib3
     __profileSource = None # HTML source of the player's profile page
     __soup = None # BeautifulSoup parser

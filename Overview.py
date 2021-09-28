@@ -5,6 +5,7 @@ from Status import *
 from OverviewWorkers import *
 from AddPlayer import *
 from ColoredWidgets import *
+from PlayerInfo import *
 
 
 
@@ -67,7 +68,7 @@ class Overview(Window):
         layout.addWidget(self.refreshButton)
         # Creating button for adding new player
         self.addButton = ColoredButton(self, "Add new player", "green", False)
-        self.addButton.clicked.connect(self.__openAddplayer)
+        self.addButton.clicked.connect(self.__openAddPlayer)
         layout.addWidget(self.addButton)
         #return search
         return layout
@@ -116,6 +117,7 @@ class Overview(Window):
         self.table.setCellWidget(row, 4, ColoredButton(self.table, "Show player profile", "blue"))
         self.table.cellWidget(row, 4).clicked.connect(player.showProfile)
         self.table.setCellWidget(row, 5, ColoredButton(self.table, "Show more info", "yellow"))
+        self.table.cellWidget(row, 5).clicked.connect(lambda: self.__openPlayerInfo(player))
         self.table.setCellWidget(row, 6, ColoredButton(self.table, "Delete this player", "red"))
         self.table.cellWidget(row, 6).clicked.connect(lambda: self.__removePlayer(player))
         if not self.loader.isFinished():
@@ -168,12 +170,25 @@ class Overview(Window):
             self.refreshButton.setBackground("yellow")
 
 
-    def __openAddplayer(self):
+    def __openAddPlayer(self):
         """Opening a window for adding a new player
         """
         self.addButton.setEnabled(False)
         self.refreshButton.setEnabled(False)
         self.__addPlayerWindow = AddPlayer(self)
+    
+
+    def __openPlayerInfo(self, player: Player):
+        """Opens PlayerInfo window if it doen't exist
+
+        Args:
+            player (Player): Player instance
+        """
+        if player.window is None:
+            player.window = PlayerInfo(self)
+        else:
+            player.window.raise_()
+            player.window.activateWindow()
     
 
     def __search(self, text: str):
