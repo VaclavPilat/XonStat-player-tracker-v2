@@ -35,7 +35,7 @@ class Player(dict):
         """Loading player profile
         """
         try:
-            response = self.__poolManager.request("GET", self.profile, timeout=urllib3.util.Timeout(3))
+            response = self.__poolManager.request("GET", self.profile, timeout=urllib3.util.Timeout(1))
             if response.status == 200:
                 self.__profileSource = response.data
                 self.__soup = BeautifulSoup(self.__profileSource, "html.parser")

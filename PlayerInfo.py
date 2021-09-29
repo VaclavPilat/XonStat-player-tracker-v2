@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QGridLayout
 from Window import *
 from Status import *
 from ColoredWidgets import *
@@ -25,7 +25,7 @@ class PlayerInfo(Window):
         """Setting winow properties
         """
         self.setWindowTitle("Player information")
-        self.resize(450, 750)
+        self.resize(450, 500)
     
 
     def createLayout(self):
@@ -36,10 +36,31 @@ class PlayerInfo(Window):
         layout = QVBoxLayout()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-        # Adding widgets to layout
+        # Adding a scrollable grid
+        self.scrollArea = QScrollArea(self)
+        layout.addWidget(self.scrollArea)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaContent = QWidget()
+        self.gridLayout = QGridLayout(self.scrollAreaContent)
+        self.scrollArea.setWidget(self.scrollAreaContent)
+        self.__fillGrid()
+        # Setting gridLayout row stretch
+        for i in range(self.gridLayout.rowCount()):
+            self.gridLayout.setRowStretch(i, 0)
+        self.gridLayout.setRowStretch(self.gridLayout.rowCount(), 1)
         # Adding status
-        layout.addStretch()
         self.status = Status(self)
         layout.addWidget(self.status)
 
 
+    def __fillGrid(self):
+        """Adding widgets to gridLayout
+        """
+        # Adding headers
+        headers = ["Current player name", "Playing since", "Last active", "Games played this week", 
+            "Recently used names", "Activity heatmap"]
+        for i in range(len(headers)):
+            self.gridLayout.addWidget(ColoredLabel(self, headers[i]), i, 0)
+        # Adding widgets
+        for i in range(4):
+            self.gridLayout.addWidget(ColoredLabel(self, "---"), i, 1)

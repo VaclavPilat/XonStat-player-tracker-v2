@@ -3,17 +3,22 @@
     font-size: medium;
 }
 
-QLabel { 
+ColoredLabel { 
     padding: 0 3px;
 }
 
-QPushButton {
+ColoredButton {
     padding: 3px 5px;
     min-width: 150px;
 }
 
-QTableWidget QPushButton {
+QTableWidget ColoredButton {
     margin: 2px;
+}
+
+QScrollArea QWidget {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 #status {
@@ -22,7 +27,7 @@ QTableWidget QPushButton {
     padding: 5px;
 }
 
-#status[background], QPushButton[background] {
+#status[background], ColoredButton[background] {
     border-style: solid;
     border-width: 1px;
 }
@@ -38,19 +43,19 @@ QTableWidget QPushButton {
 [background="red"]    { background-color: #582a2a }
 [background="green"]  { background-color: #345328 }
 
-[background="light-grey"],   QPushButton[background="grey"]:hover   { background-color: #636363 }
-[background="light-blue"],   QPushButton[background="blue"]:hover   { background-color: #3a667c }
-[background="light-yellow"], QPushButton[background="yellow"]:hover { background-color: #726e38 }
-[background="light-orange"], QPushButton[background="orange"]:hover { background-color: #775b38 }
-[background="light-red"],    QPushButton[background="red"]:hover    { background-color: #793838 }
-[background="light-green"],  QPushButton[background="green"]:hover  { background-color: #497437 }
+[background="light-grey"],   ColoredButton[background="grey"]:hover   { background-color: #636363 }
+[background="light-blue"],   ColoredButton[background="blue"]:hover   { background-color: #3a667c }
+[background="light-yellow"], ColoredButton[background="yellow"]:hover { background-color: #726e38 }
+[background="light-orange"], ColoredButton[background="orange"]:hover { background-color: #775b38 }
+[background="light-red"],    ColoredButton[background="red"]:hover    { background-color: #793838 }
+[background="light-green"],  ColoredButton[background="green"]:hover  { background-color: #497437 }
 
-[background="dark-grey"],   QPushButton[background="grey"]:disabled   { background-color: #252525 }
-[background="dark-blue"],   QPushButton[background="blue"]:disabled   { background-color: #1c2f38 }
-[background="dark-yellow"], QPushButton[background="yellow"]:disabled { background-color: #333218 }
-[background="dark-orange"], QPushButton[background="orange"]:disabled { background-color: #3a2c1c }
-[background="dark-red"],    QPushButton[background="red"]:disabled    { background-color: #381b1b }
-[background="dark-green"],  QPushButton[background="green"]:disabled  { background-color: #1f3118 }
+[background="dark-grey"],   ColoredButton[background="grey"]:disabled   { background-color: #252525 }
+[background="dark-blue"],   ColoredButton[background="blue"]:disabled   { background-color: #1c2f38 }
+[background="dark-yellow"], ColoredButton[background="yellow"]:disabled { background-color: #333218 }
+[background="dark-orange"], ColoredButton[background="orange"]:disabled { background-color: #3a2c1c }
+[background="dark-red"],    ColoredButton[background="red"]:disabled    { background-color: #381b1b }
+[background="dark-green"],  ColoredButton[background="green"]:disabled  { background-color: #1f3118 }
 
 [background="grey"]   { border-color: #636363 }
 [background="blue"]   { border-color: #3a667c }
@@ -59,12 +64,12 @@ QTableWidget QPushButton {
 [background="red"]    { border-color: #793838 }
 [background="green"]  { border-color: #497437 }
 
-QPushButton[background="grey"]:disabled   { border-color: #444444 }
-QPushButton[background="blue"]:disabled   { border-color: #2c4a58 }
-QPushButton[background="yellow"]:disabled { border-color: #5a582c }
-QPushButton[background="orange"]:disabled { border-color: #5a452c }
-QPushButton[background="red"]:disabled    { border-color: #582a2a }
-QPushButton[background="green"]:disabled  { border-color: #345328 }
+ColoredButton[background="grey"]:disabled   { border-color: #444444 }
+ColoredButton[background="blue"]:disabled   { border-color: #2c4a58 }
+ColoredButton[background="yellow"]:disabled { border-color: #5a582c }
+ColoredButton[background="orange"]:disabled { border-color: #5a452c }
+ColoredButton[background="red"]:disabled    { border-color: #582a2a }
+ColoredButton[background="green"]:disabled  { border-color: #345328 }
 
 [color="active-1"] { color: #ff6200 }
 [color="active-2"] { color: #ff8a46 }

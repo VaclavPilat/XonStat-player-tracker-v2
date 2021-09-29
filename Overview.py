@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QTableWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
+from PyQt5.QtWidgets import QApplication, QTableWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
 from PyQt5.QtCore import Qt
 from Window import *
 from Status import *
@@ -186,9 +186,19 @@ class Overview(Window):
         """
         if player.window is None:
             player.window = PlayerInfo(self)
+            player.window.destroyed.connect(lambda: self.__deletePlayerInfo(player))
         else:
             player.window.raise_()
             player.window.activateWindow()
+
+    
+    def __deletePlayerInfo(self, player: Player):
+        """Deleting closed PlayerInfo window
+
+        Args:
+            player (Player): Player instance
+        """
+        player.window = None
     
 
     def __search(self, text: str):
@@ -282,6 +292,15 @@ class Overview(Window):
             player (Player): [description]
         """
         self.table.removeRow(self.getRow(player))
+    
+
+    def closeEvent(self, event):
+        """Event called right before closing
+
+        Args:
+            event: Event
+        """
+        QApplication.instance().closeAllWindows()
     
 
     def keyPressEvent(self, event):
