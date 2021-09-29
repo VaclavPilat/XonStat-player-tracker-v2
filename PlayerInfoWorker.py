@@ -40,10 +40,28 @@ class PlayerInfoWorker(Worker):
         """
         self.window.player.loadProfile()
         # Filling in player info
+        self.window.table.setRowColor(0, "dark-yellow")
         self._showName.emit(self.window.player.loadName())
+        if self.window.player.error:
+            self.window.table.setRowColor(0, "dark-red")
+        else:
+            self.window.table.setRowColor(0, None)
+        
+        self.window.table.setRowColor(1, "dark-yellow")
         self._showSince.emit(self.window.player.loadSince())
+        if self.window.player.error:
+            self.window.table.setRowColor(1, "dark-red")
+        else:
+            self.window.table.setRowColor(1, None)
+
+        self.window.table.setRowColor(2, "dark-yellow")
         self._showActive.emit(self.window.player.loadActive())
         self._setActiveColor.emit(self.window.player.getActiveColor())
+        if self.window.player.error:
+            self.window.table.setRowColor(2, "dark-red")
+        else:
+            self.window.table.setRowColor(2, None)
+
         # Changing status
         if self.window.player.error is not None:
             self.window.status.resultMessage("An error occured: " + self.window.player.error, False)

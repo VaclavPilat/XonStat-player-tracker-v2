@@ -112,8 +112,8 @@ class OverviewUpdater(Worker):
         """Connecting signals to slots (called from Worker class)
         """
         self._updatePlayer.connect(self.window.updatePlayer)
-        self._setRowColor.connect(self.window.setRowColor)
-        self._setButtonsEnabled.connect(self.window.setButtonsEnabled)
+        self._setRowColor.connect(self.window.table.setRowColor)
+        self._setButtonsEnabled.connect(self.window.table.setButtonsEnabled)
 
 
     def __init__(self, window: Window):
@@ -204,7 +204,7 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         """
         self._showPlayer.connect(self.window.showPlayer)
         self._updatePlayer.connect(self.window.updatePlayer)
-        self._setRowColor.connect(self.window.setRowColor)
+        self._setRowColor.connect(self.window.table.setRowColor)
     
 
     def __init__(self, window: Window, player: Player):
@@ -275,7 +275,7 @@ class OverviewRemover(OverviewAdder):
         """Connecting signals to slots (called from Worker class)
         """
         self._hidePlayer.connect(self.window.hidePlayer)
-        self._setButtonsEnabled.connect(self.window.setButtonsEnabled)
+        self._setButtonsEnabled.connect(self.window.table.setButtonsEnabled)
     
 
     def __init__(self, window: Window, player: Player):

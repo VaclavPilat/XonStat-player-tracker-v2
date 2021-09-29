@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel
+from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QTableWidget
 from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import Qt
 
@@ -89,3 +89,46 @@ class ColoredLabel(QLabel, ColoredWidget):
         super().__init__(text, parent)
         self.setBackground(background)
         self.setColor(color)
+
+
+
+
+
+class ColoredTable(QTableWidget):
+    """Creates a simple table with functions to easily change appearance
+    """
+
+
+    def __init__(self, parent):
+        """Initializes a table
+        """
+        super().__init__(parent)
+        self.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.horizontalHeader().setMinimumSectionSize(150)
+
+    
+    def setRowColor(self, row: int, background: str = None):
+        """Changes background color of all labels in a selected row
+
+        Args:
+            row (int): Row index
+            background (str, optional): Background color value defined in stylesheets. Defaults to None.
+        """
+        for column in range(self.columnCount()):
+            widget = self.cellWidget(row, column)
+            if not widget == None:
+                if type(widget) == ColoredLabel:
+                    widget.setBackground(background)
+    
+
+    def setButtonsEnabled(self, column: int, enabled: bool):
+        """Sets "enabled" property to a specified value for each button in the column
+
+        Args:
+            column (int): Column index
+            enabled (bool): Should the buttons be enabled?
+        """
+        for i in range(self.rowCount()):
+            widget = self.cellWidget(i, column)
+            if not widget == None and type(widget) == ColoredButton:
+                widget.setEnabled(enabled)

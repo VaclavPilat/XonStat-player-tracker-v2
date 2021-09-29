@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QGridLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QHeaderView
 from Window import *
 from Status import *
 from ColoredWidgets import *
@@ -46,37 +46,40 @@ class PlayerInfo(Window):
         playerID = ColoredLabel(self, "ID#" + str(self.player["id"]))
         playerID.setProperty("type", "subheader")
         layout.addWidget(playerID)
-        # Adding a scrollable grid
-        self.scrollArea = QScrollArea(self)
-        layout.addWidget(self.scrollArea)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaContent = QWidget()
-        self.gridLayout = QGridLayout(self.scrollAreaContent)
-        self.scrollArea.setWidget(self.scrollAreaContent)
-        self.__fillGrid()
-        # Setting gridLayout row stretch
-        for i in range(self.gridLayout.rowCount()):
-            self.gridLayout.setRowStretch(i, 0)
-        self.gridLayout.setRowStretch(self.gridLayout.rowCount(), 1)
+        layout.addWidget(self.__createTable())
         # Adding status
         self.status = Status(self)
         layout.addWidget(self.status)
 
 
-    def __fillGrid(self):
-        """Adding widgets to gridLayout
+    def __createTable(self) -> QTableWidget:
+        """Creating table layout
+
+        Returns:
+            QTableWidget: Created table widget
         """
-        # Adding headers
+        # Setting up a table
+        self.table = ColoredTable(self)
+        self.table.setColumnCount(2)
+        for i in range(2):
+            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
+        self.table.horizontalHeader().hide()
+        self.table.verticalHeader().hide()
+        # Adding headers to table
         headers = ["Current player name", "Playing since", "Last active", "Games played this week", 
             "Recently used names", "Activity heatmap"]
-        for i in range(len(headers)):
-            self.gridLayout.addWidget(ColoredLabel(self, headers[i]), i, 0)
-        # Adding empty labels
-        self.name = ColoredLabel(self)
-        self.gridLayout.addWidget(self.name, 0, 1)
-        self.since = ColoredLabel(self)
-        self.gridLayout.addWidget(self.since, 1, 1)
-        self.active = ColoredLabel(self)
-        self.gridLayout.addWidget(self.active, 2, 1)
-        self.games = ColoredLabel(self)
-        self.gridLayout.addWidget(self.games, 3, 1)
+        for header in headers:
+            rowIndex = self.table.rowCount()
+            self.table.insertRow(rowIndex)
+            self.table.setCellWidget(rowIndex, 0, ColoredLabel(self.table, header, "dark-grey"))
+        # Adding widgets to table
+        self.name = ColoredLabel(self.table, None, "dark-grey")
+        self.table.setCellWidget(0, 1, self.name)
+        self.since = ColoredLabel(self.table, None, "dark-grey")
+        self.table.setCellWidget(1, 1, self.since)
+        self.active = ColoredLabel(self.table, None, "dark-grey")
+        self.table.setCellWidget(2, 1, self.active)
+        self.games = ColoredLabel(self.table, None, "dark-grey")
+        self.table.setCellWidget(3, 1, self.games)
+
+        return self.table

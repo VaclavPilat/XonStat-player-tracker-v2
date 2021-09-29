@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QTableWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
 from PyQt5.QtCore import Qt
 from Window import *
 from Status import *
@@ -80,16 +80,13 @@ class Overview(Window):
         Returns:
             QTableWidget: Created table widget
         """
-        self.table = QTableWidget()
-        self.table.setEditTriggers( QTableWidget.NoEditTriggers )
+        self.table = ColoredTable(self)
         # Setting columns
         headers = ["ID", "Player nickname", "Current player name", "Last played", 
                         "Player profile", "More information", "Delete player"]
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
-        self.table.setObjectName("table")
         # Setting column stretching
-        self.table.horizontalHeader().setMinimumSectionSize(150)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         for i in range(1, 3):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
@@ -222,33 +219,6 @@ class Overview(Window):
                         containsText = True
                         break
             self.table.setRowHidden(row, not containsText)
-    
-
-    def setRowColor(self, row: int, background: str = None):
-        """Changes background color of all labels in a selected row
-
-        Args:
-            row (int): Row index
-            background (str, optional): Background color value defined in stylesheets. Defaults to None.
-        """
-        for column in range(self.table.columnCount()):
-            widget = self.table.cellWidget(row, column)
-            if not widget == None:
-                if type(widget) == ColoredLabel:
-                    widget.setBackground(background)
-    
-
-    def setButtonsEnabled(self, column: int, enabled: bool):
-        """Sets "enabled" property to a specified value for each button in the column
-
-        Args:
-            column (int): Column index
-            enabled (bool): Should the buttons be enabled?
-        """
-        for i in range(self.table.rowCount()):
-            widget = self.table.cellWidget(i, column)
-            if not widget == None and type(widget) == ColoredButton:
-                widget.setEnabled(enabled)
     
     
     def getRow(self, player: Player) -> int:
