@@ -1,4 +1,3 @@
-from PyQt5.QtCore import pyqtSignal
 from Window import *
 from Worker import *
 from Player import *
@@ -236,7 +235,7 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         # Disabling buttons
         self.window.refreshButton.setEnabled(False)
         self.window.addButton.setEnabled(False)
-        self.window.status.message("Loading information about new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
+        self.window.status.message("Loading information about new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         
     
     def run(self):
@@ -252,9 +251,9 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         """This method is called after this worker is finished
         """
         if self.correct:
-            self.window.status.resultMessage("Successfully loaded new player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")")
+            self.window.status.resultMessage("Successfully loaded new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         else:
-            self.window.status.resultMessage("An error occured while loading player \"" + self.player["nick"] + "\" (ID = " + str(self.player["id"]) + ")", False)
+            self.window.status.resultMessage("An error occured while loading player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", False)
         # Enabling buttons
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
@@ -299,7 +298,7 @@ class OverviewRemover(OverviewAdder):
         self.window.refreshButton.setEnabled(False)
         self.window.addButton.setEnabled(False)
         self._setButtonsEnabled.emit(6, False)
-        self.window.status.message("Removing player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")
+        self.window.status.message("Removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         
     
     def run(self):
@@ -318,4 +317,4 @@ class OverviewRemover(OverviewAdder):
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
         self._setButtonsEnabled.emit(6, True)
-        self.window.status.resultMessage("Successfully removed player \"" + self.player["nick"] + "\" (ID " + str(self.player["id"]) + ")")
+        self.window.status.resultMessage("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")

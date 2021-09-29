@@ -4,9 +4,20 @@ from PyQt5.QtCore import Qt
 
 
 
-class ColoredWidget():
+class ColoredWidget(QWidget):
     """Special methods for styling QWidget objects
     """
+    
+
+    def setProperty(self, prop: str, value: str = None):
+        """Overriding setProperty function for updating styles after each change
+
+        Args:
+            prop (str): Property name
+            value (str, optional): Property value. Defaults to None.
+        """
+        super().setProperty(prop, value)
+        self.__updateStyle()
 
 
     def setBackground(self, value: str = None):
@@ -16,7 +27,6 @@ class ColoredWidget():
             value (str, optional): Background color value, defined in stylesheets. Defaults to None.
         """
         self.setProperty("background", value)
-        self.__updateStyle()
         
 
     def setColor(self, value: str = None):
@@ -26,7 +36,6 @@ class ColoredWidget():
             color (str, optional): Text color value, defined in stylesheets. Defaults to None.
         """
         self.setProperty("color", value)
-        self.__updateStyle()
     
 
     def __updateStyle(self):

@@ -69,6 +69,26 @@ class Player(dict):
         return self.name
     
 
+    def loadSince(self) -> str:
+        """Loads the first time this player played a game
+
+        Returns:
+            str: The first time this player joined a game
+        """
+        if self.error == None:
+            elements = self.__soup.find_all("span", attrs={"class": "abstime"})
+            if not elements == None:
+                if len(elements) >= 1:
+                    self.since = elements[0].text
+                else: 
+                    self.since = None
+            else:
+                self.error = "Profile error"
+        else:
+            self.since = None
+        return self.since
+    
+
     def loadActive(self) -> str:
         """Loads the last time this player played a game
 

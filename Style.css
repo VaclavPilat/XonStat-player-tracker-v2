@@ -17,8 +17,7 @@ QTableWidget ColoredButton {
 }
 
 QScrollArea QWidget {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin: 4px 0;
 }
 
 #status {
@@ -32,9 +31,7 @@ QScrollArea QWidget {
     border-width: 1px;
 }
 
-[type="error"] {
-    font-style: italic;
-}
+/*#####################################  BACKGROUND COLOR  #####################################*/
 
 [background="grey"]   { background-color: #444444 }
 [background="blue"]   { background-color: #2c4a58 }
@@ -57,6 +54,8 @@ QScrollArea QWidget {
 [background="dark-red"],    ColoredButton[background="red"]:disabled    { background-color: #381b1b }
 [background="dark-green"],  ColoredButton[background="green"]:disabled  { background-color: #1f3118 }
 
+/*#####################################  BORDER COLOR  #####################################*/
+
 [background="grey"]   { border-color: #636363 }
 [background="blue"]   { border-color: #3a667c }
 [background="yellow"] { border-color: #726e38 }
@@ -71,6 +70,8 @@ ColoredButton[background="orange"]:disabled { border-color: #5a452c }
 ColoredButton[background="red"]:disabled    { border-color: #582a2a }
 ColoredButton[background="green"]:disabled  { border-color: #345328 }
 
+/*#####################################  TEXT COLOR  #####################################*/
+
 [color="active-1"] { color: #ff6200 }
 [color="active-2"] { color: #ff8a46 }
 [color="active-3"] { color: #ffac79 }
@@ -78,3 +79,15 @@ ColoredButton[background="green"]:disabled  { border-color: #345328 }
 [color="active-5"] { color: #ffffff }
 [color="active-6"] { color: #acacac }
 [color="active-7"] { color: #595959 }
+
+/*#####################################  TEXT TYPE  #####################################*/
+
+[type="header"] {
+    font-size: 30px;
+    font-weight: bold;
+    qproperty-alignment: AlignCenter;
+}
+[type="subheader"] {
+    margin-bottom: 10px;
+    qproperty-alignment: AlignCenter;
+}

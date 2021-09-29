@@ -3,6 +3,7 @@ from Window import *
 from Status import *
 from ColoredWidgets import *
 from Player import *
+from PlayerInfoWorker import *
 
 
 
@@ -11,14 +12,16 @@ class PlayerInfo(Window):
     """
 
 
-    def __init__(self, window: Window):
+    def __init__(self, player: Player):
         """Initialising GUI
 
         Args:
-            window (Window): Overview window instance
+            player (Player): Player instance
         """
+        self.player = player
         super().__init__()
-        self.window = window
+        self.worker = PlayerInfoWorker(self)
+        self.worker.start()
     
 
     def setProperties(self):
@@ -36,6 +39,13 @@ class PlayerInfo(Window):
         layout = QVBoxLayout()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
+        # Adding top widgets
+        playerNick = ColoredLabel(self, self.player["nick"])
+        playerNick.setProperty("type", "header")
+        layout.addWidget(playerNick)
+        playerID = ColoredLabel(self, "ID#" + str(self.player["id"]))
+        playerID.setProperty("type", "subheader")
+        layout.addWidget(playerID)
         # Adding a scrollable grid
         self.scrollArea = QScrollArea(self)
         layout.addWidget(self.scrollArea)
@@ -61,6 +71,12 @@ class PlayerInfo(Window):
             "Recently used names", "Activity heatmap"]
         for i in range(len(headers)):
             self.gridLayout.addWidget(ColoredLabel(self, headers[i]), i, 0)
-        # Adding widgets
-        for i in range(4):
-            self.gridLayout.addWidget(ColoredLabel(self, "---"), i, 1)
+        # Adding empty labels
+        self.name = ColoredLabel(self)
+        self.gridLayout.addWidget(self.name, 0, 1)
+        self.since = ColoredLabel(self)
+        self.gridLayout.addWidget(self.since, 1, 1)
+        self.active = ColoredLabel(self)
+        self.gridLayout.addWidget(self.active, 2, 1)
+        self.games = ColoredLabel(self)
+        self.gridLayout.addWidget(self.games, 3, 1)

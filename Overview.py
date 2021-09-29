@@ -185,7 +185,7 @@ class Overview(Window):
             player (Player): Player instance
         """
         if player.window is None:
-            player.window = PlayerInfo(self)
+            player.window = PlayerInfo(player)
             player.window.destroyed.connect(lambda: self.__deletePlayerInfo(player))
         else:
             player.window.raise_()
