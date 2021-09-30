@@ -42,9 +42,9 @@ class Player(dict):
                 if "Player Information" in str(self.__profileSource):
                     self.error = None
                 else:
-                    self.error = "Profile error"
+                    self.error = "Profile page error"
             else:
-                self.error = "Stats error"
+                self.error = "Stats web error"
         except:
             self.error = "Network error"
     
@@ -55,17 +55,18 @@ class Player(dict):
         Returns:
             str: Current player name
         """
-        if self.error == None:
+        try:
+            if self.error is not None:
+                raise Exception
             name = self.__soup.find("h2")
-            if not name == None:
-                if not name.find() == None:
-                    self.name = str(name.find())
-                else:
-                    self.name = name.text.strip()
+            if not name.find() == None:
+                self.name = str(name.find())
             else:
-                self.error = "Profile error"
-        else:
+                self.name = name.text.strip()
+        except:
             self.name = None
+            if self.error is None:
+                self.error = "Profile data error"
         return self.name
     
 
@@ -75,17 +76,14 @@ class Player(dict):
         Returns:
             str: The first time this player joined a game
         """
-        if self.error == None:
-            elements = self.__soup.find_all("span", attrs={"class": "abstime"})
-            if not elements == None:
-                if len(elements) >= 1:
-                    self.since = elements[0].text
-                else: 
-                    self.since = None
-            else:
-                self.error = "Profile error"
-        else:
+        try:
+            if self.error is not None:
+                raise Exception
+            self.since = self.__soup.select("span.abstime")[0].text
+        except:
             self.since = None
+            if self.error is None:
+                self.error = "Profile data error"
         return self.since
     
 
@@ -95,17 +93,14 @@ class Player(dict):
         Returns:
             str: The last time this player joined a game
         """
-        if self.error == None:
-            elements = self.__soup.find_all("span", attrs={"class": "abstime"})
-            if not elements == None:
-                if len(elements) >= 2:
-                    self.active = elements[1].text
-                else: 
-                    self.active = None
-            else:
-                self.error = "Profile error"
-        else:
+        try:
+            if self.error is not None:
+                raise Exception
+            self.active = self.__soup.select("span.abstime")[1].text
+        except:
             self.active = None
+            if self.error is None:
+                self.error = "Profile data error"
         return self.active
     
 
@@ -115,7 +110,7 @@ class Player(dict):
         Returns:
             str: Text color value, definec in stylesheets
         """
-        if self.active == None:
+        if self.active is None:
             return None
         else:
             # Extracting number from string
@@ -145,3 +140,32 @@ class Player(dict):
                     else:
                         color = "active-1"
             return color
+    
+
+    def loadTime(self) -> str:
+        """Loads total time this player spent playing
+
+        Returns:
+            str: Total time this player spent playing
+        """
+        try:
+            if self.error is not None:
+                raise Exception
+            time = self.__soup.select("div.cell.small-6 p")[1].select("small")[0].text
+            hours = 0
+            timeList = time.split(" ")
+            for i in range(0, (len(timeList) // 2) * 2, 2):
+                if "day" in timeList[i + 1]:
+                    hours += int(timeList[i]) * 24
+                elif "hour" in timeList[i + 1]:
+                    hours += int(timeList[i])
+            self.time = str(hours) + " hours"
+        except:
+            import traceback
+
+
+            print(traceback.format_exc())
+            self.time = None
+            if self.error is None:
+                self.error = "Profile data error"
+        return self.time

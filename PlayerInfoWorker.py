@@ -13,6 +13,7 @@ class PlayerInfoWorker(Worker):
     _showSince = pyqtSignal(str) # Showing since when this player is playing
     _showActive = pyqtSignal(str) # Showing the last time this player joined a game
     _setActiveColor = pyqtSignal(str) # Setting a color to "active" label
+    _showTime = pyqtSignal(str) # Showing total time spent playing
     
 
     def connectSlots(self):
@@ -22,6 +23,7 @@ class PlayerInfoWorker(Worker):
         self._showSince.connect(self.window.since.setText)
         self._showActive.connect(self.window.active.setText)
         self._setActiveColor.connect(self.window.active.setColor)
+        self._showTime.connect(self.window.time.setText)
 
 
     def __init__(self, window: Window):
@@ -45,6 +47,7 @@ class PlayerInfoWorker(Worker):
         yield [0, lambda: self._showName.emit(self.window.player.loadName())]
         yield [1, lambda: self._showSince.emit(self.window.player.loadSince())]
         yield [2, lambda: self._showActive.emit(self.window.player.loadActive())]
+        yield [3, lambda: self._showTime.emit(self.window.player.loadTime())]
         
 
     def run(self):
@@ -54,6 +57,7 @@ class PlayerInfoWorker(Worker):
         # Filling in simple player variables
         for label in self.__fillLabels():
             label[1]()
+            # Setting active color
             if label[0] == 2:
                 self._setActiveColor.emit(self.window.player.getActiveColor())
             if self.window.player.error:

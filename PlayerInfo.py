@@ -66,7 +66,7 @@ class PlayerInfo(Window):
         self.table.horizontalHeader().hide()
         self.table.verticalHeader().hide()
         # Adding headers to table
-        headers = ["Current player name", "Playing since", "Last active", "Games played this week", 
+        headers = ["Current player name", "Playing since", "Last active", "Total time spent", "Games played this week", 
             "Recently used names", "Activity heatmap"]
         for header in headers:
             rowIndex = self.table.rowCount()
@@ -79,7 +79,9 @@ class PlayerInfo(Window):
         self.table.setCellWidget(1, 1, self.since)
         self.active = ColoredLabel(self.table, None, "dark-grey")
         self.table.setCellWidget(2, 1, self.active)
+        self.time = ColoredLabel(self.table, None, "dark-grey")
+        self.table.setCellWidget(3, 1, self.time)
         self.games = ColoredLabel(self.table, None, "dark-grey")
-        self.table.setCellWidget(3, 1, self.games)
+        self.table.setCellWidget(4, 1, self.games)
 
         return self.table
