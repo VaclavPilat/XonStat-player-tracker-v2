@@ -9,6 +9,7 @@ class PlayerInfoWorker(Worker):
     """
 
 
+    _setRowColor = pyqtSignal(int, str) # Signal for changing row color
     _showName = pyqtSignal(str) # Showing current player name
     _showSince = pyqtSignal(str) # Showing since when this player is playing
     _showActive = pyqtSignal(str) # Showing the last time this player joined a game
@@ -19,6 +20,7 @@ class PlayerInfoWorker(Worker):
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
+        self._setRowColor.connect(self.window.table.setRowColor)
         self._showName.connect(self.window.name.setText)
         self._showSince.connect(self.window.since.setText)
         self._showActive.connect(self.window.active.setText)
@@ -61,9 +63,9 @@ class PlayerInfoWorker(Worker):
             if label[0] == 2:
                 self._setActiveColor.emit(self.window.player.getActiveColor())
             if self.window.player.error:
-                self.window.table.setRowColor(label[0], "dark-red")
+                self._setRowColor.emit(label[0], "dark-red")
             else:
-                self.window.table.setRowColor(label[0], None)
+                self._setRowColor.emit(label[0], None)
         # Changing status
         if self.window.player.error is not None:
             self.window.status.resultMessage("An error occured: " + self.window.player.error, False)

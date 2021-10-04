@@ -106,6 +106,7 @@ class OverviewUpdater(Worker):
     _updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
     _setRowColor = pyqtSignal(int, str) # Signal for changing row color
     _setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
     def connectSlots(self):
@@ -114,6 +115,7 @@ class OverviewUpdater(Worker):
         self._updatePlayer.connect(self.window.updatePlayer)
         self._setRowColor.connect(self.window.table.setRowColor)
         self._setButtonsEnabled.connect(self.window.table.setButtonsEnabled)
+        self._updateRefreshButton.connect(self.window.updateRefreshButton)
 
 
     def __init__(self, window: Window):
@@ -168,7 +170,7 @@ class OverviewUpdater(Worker):
     def run(self):
         """Running the Worker task
         """
-        self.window.updateRefreshButton()
+        self._updateRefreshButton.emit()
         self.correct = 0
         self.maximum = len(self.window.players)
         if self.maximum > 0:
@@ -181,7 +183,7 @@ class OverviewUpdater(Worker):
         self.window.status.resultProgress("Finished loading player profiles", self.correct, self.maximum)
         # Enabling buttons
         self.window.refreshButton.setEnabled(True)
-        self.window.updateRefreshButton()
+        self._updateRefreshButton.emit()
         self.window.addButton.setEnabled(True)
         self._setButtonsEnabled.emit(6, True)
 

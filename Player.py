@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import urllib3, webbrowser
 from bs4 import BeautifulSoup
+from http.client import responses
 
 
 class Player(dict):
@@ -42,11 +43,13 @@ class Player(dict):
                 if "Player Information" in str(self.__profileSource):
                     self.error = None
                 else:
-                    self.error = "Profile page error"
+                    self.error = "Profile might not exist"
             else:
-                self.error = "Stats web error"
-        except:
-            self.error = "Network error"
+                self.error = responses[response.status]
+        except urllib3.exceptions.HTTPError:
+            self.error = "Cannot connect to stats"
+        except Exception as e:
+            self.error = "Error: " + type(e).__name__
     
 
     def loadName(self) -> str:
@@ -66,7 +69,7 @@ class Player(dict):
         except:
             self.name = None
             if self.error is None:
-                self.error = "Profile data error"
+                self.error = "Profile contains wrong info"
         return self.name
     
 
@@ -83,7 +86,7 @@ class Player(dict):
         except:
             self.since = None
             if self.error is None:
-                self.error = "Profile data error"
+                self.error = "Profile contains wrong info"
         return self.since
     
 
@@ -100,7 +103,7 @@ class Player(dict):
         except:
             self.active = None
             if self.error is None:
-                self.error = "Profile data error"
+                self.error = "Profile contains wrong info"
         return self.active
     
 
@@ -161,11 +164,7 @@ class Player(dict):
                     hours += int(timeList[i])
             self.time = str(hours) + " hours"
         except:
-            import traceback
-
-
-            print(traceback.format_exc())
             self.time = None
             if self.error is None:
-                self.error = "Profile data error"
+                self.error = "Profile contains wrong info"
         return self.time
