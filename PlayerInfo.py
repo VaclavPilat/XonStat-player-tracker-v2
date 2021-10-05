@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QHeaderView
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHeaderView, QTextEdit
 from Window import *
 from Status import *
 from ColoredWidgets import *
@@ -63,9 +63,17 @@ class PlayerInfo(Window):
         self.table.setColumnCount(2)
         for i in range(2):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.horizontalHeader().hide()
         self.table.verticalHeader().hide()
         # Adding headers to table
+        self.__addWidgetsToTable()
+        return self.table
+    
+
+    def __addWidgetsToTable(self):
+        """Adding widgets to QTableView widget
+        """
         headers = ["Current player name", "Playing since", "Last active", "Total time spent", "Games played this week", 
             "Recently used names", "Activity heatmap"]
         for header in headers:
@@ -83,5 +91,6 @@ class PlayerInfo(Window):
         self.table.setCellWidget(3, 1, self.time)
         self.games = ColoredLabel(self.table, None, "dark-grey")
         self.table.setCellWidget(4, 1, self.games)
-
-        return self.table
+        self.names = QTextEdit(self.table)
+        self.names.setReadOnly(True)
+        self.table.setCellWidget(5, 1, self.names)

@@ -4,20 +4,15 @@
 }
 
 ColoredLabel { 
-    padding: 0 3px;
+    padding: 5px;
 }
 
 ColoredButton {
-    padding: 3px 5px;
     min-width: 150px;
 }
 
 QTableWidget ColoredButton {
     margin: 2px;
-}
-
-QScrollArea QWidget {
-    margin: 4px 0;
 }
 
 #status {

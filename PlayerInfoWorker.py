@@ -50,10 +50,10 @@ class PlayerInfoWorker(Worker):
         yield [1, lambda: self._showSince.emit(self.window.player.loadSince())]
         yield [2, lambda: self._showActive.emit(self.window.player.loadActive())]
         yield [3, lambda: self._showTime.emit(self.window.player.loadTime())]
-        
+    
 
-    def run(self):
-        """Running the Worker task
+    def __loadSimpleValues(self):
+        """Loads simple values
         """
         self.window.player.loadProfile()
         # Filling in simple player variables
@@ -66,14 +66,22 @@ class PlayerInfoWorker(Worker):
                 self._setRowColor.emit(label[0], "dark-red")
             else:
                 self._setRowColor.emit(label[0], None)
+    
+
+    def __loadRecentGames(self):
+        """Loads recent games and extracts information from them
+        """
+        time.sleep(1.5)
+        self.window.status.message("Loading recent games")
+        
+
+    def run(self):
+        """Running the Worker task
+        """
+        self.__loadSimpleValues()
         # Changing status
         if self.window.player.error is not None:
             self.window.status.resultMessage("An error occured: " + self.window.player.error, False)
         else:
             self.window.status.resultMessage("Successfully loaded player profile")
-
-
-    def after(self):
-        """This method is called after this worker is finished
-        """
-        pass
+            self.__loadRecentGames()

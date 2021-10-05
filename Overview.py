@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QLineEdit, QHeaderView
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QHeaderView
 from PyQt5.QtCore import Qt
 from Window import *
 from Status import *
@@ -87,6 +87,7 @@ class Overview(Window):
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         for i in range(1, 3):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
