@@ -1,5 +1,6 @@
 from Worker import *
 from ColoredWidgets import *
+from bs4 import BeautifulSoup
 import time
 
 
@@ -72,9 +73,17 @@ class PlayerInfoWorker(Worker):
                 self._setRowColor.emit(label[0], None)
     
 
-    def __processGameData(self, data):
-        self._showUsedNames.emit(data)
-        pass
+    def __processGameData(self, data: BeautifulSoup):
+        """Processes game data retrieved from game pages
+
+        Args:
+            data (BeautifulSoup): Beutiful soup object for game page
+        """
+        try:
+            element = data.find("a", href="/player/" + str(self.window.player["id"]))
+            self._showUsedNames.emit(self.window.player.loadName(element))
+        except:
+            pass
     
 
     def __loadRecentGames(self):

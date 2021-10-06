@@ -50,29 +50,35 @@ class Player(dict):
                 self.error = responses[response.status]
         except urllib3.exceptions.HTTPError:
             self.error = "Cannot connect to stats"
-        except Exception as e:
+        except:
             self.error = "Error: " + type(e).__name__
     
 
-    def loadName(self) -> str:
+    def loadName(self, element = None) -> str:
         """Loads and returns current player name from profile
 
         Returns:
             str: Current player name
         """
+        saveName = False
         try:
-            if self.error is not None:
-                raise Exception
-            name = self.__profileSoup.find("h2")
-            if not name.find() == None:
-                self.name = str(name.find())
+            if element is None:
+                if self.error is not None:
+                    raise Exception
+                element = self.__profileSoup.find("h2")
+                saveName = True
+            if not element.find() == None:
+                name = str(element.find())
             else:
-                self.name = name.text.strip()
+                name = element.text.strip()
         except:
-            self.name = None
+            name = None
             if self.error is None:
                 self.error = "Profile contains wrong info"
-        return self.name
+        # Saving and returning name
+        if saveName:
+            self.name = name
+        return name
     
 
     def loadSince(self) -> str:
@@ -183,24 +189,27 @@ class Player(dict):
         gameListUrl = 'https://stats.xonotic.org/games?player_id=' + str(self["id"])
         try:
             # Getting list of games
-            response = self.__poolManager.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
-            if response.status == 200:
-                gameListSource = response.data
-                soup = BeautifulSoup(gameListSource, "html.parser")
-                gameLinks = soup.select("tr > .text-center > a.button")
+            gameListResponse = self.__poolManager.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
+            if gameListResponse.status == 200:
+                gameListSoup = BeautifulSoup(gameListResponse.data, "html.parser")
+                gameListLinks = gameListSoup.select("tr > .text-center > a.button")
                 # Looping through game links
-                maximum += len(gameLinks)
-                for gameLink in gameLinks:
+                maximum += len(gameListLinks)
+                for gameLink in gameListLinks:
                     try:
                         time.sleep(0.2)
                         current += 1
                         gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
-                        yield [current, maximum, gameUrl]
-                    except Exception as e:
-                        print("Error: " + type(e).__name__)
+                        try:
+                            gameResponse = self.__poolManager.request("GET", gameUrl, timeout=urllib3.util.Timeout(2))
+                            if gameResponse.status == 200:
+                                gameSoup = BeautifulSoup(gameResponse.data, "html.parser")
+                                yield [current, maximum, gameSoup]
+                        except:
+                            pass
+                    except:
                         pass
             else:
-                self.error = responses[response.status]
-        except Exception as e:
-            print("Error: " + type(e).__name__)
+                self.error = responses[gameListResponse.status]
+        except:
             pass

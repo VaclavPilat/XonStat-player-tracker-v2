@@ -11,8 +11,6 @@ class PlayerInfo(Window):
     """Class for showing detailed information about players
     """
 
-    __usedNames = []
-
 
     def __init__(self, player: Player):
         """Initialising GUI
@@ -20,6 +18,7 @@ class PlayerInfo(Window):
         Args:
             player (Player): Player instance
         """
+        self.__usedNames = {}
         self.player = player
         super().__init__()
         self.worker = PlayerInfoWorker(self)
@@ -104,13 +103,17 @@ class PlayerInfo(Window):
         Args:
             name (str): Used name
         """
-        self.__usedNames.append(name)
+        # Adding name to dictionary
+        if name in self.__usedNames:
+            self.__usedNames[name] += 1
+        else:
+            self.__usedNames[name] = 1
         # Printing out names
         output = ""
         i = 0
-        for name in self.__usedNames:
+        for usedName in self.__usedNames:
             i += 1
-            output += name
+            output += usedName + " (" + str(self.__usedNames[usedName]) + ")"
             if not i == len(self.__usedNames):
                 output += "<br>"
         self.names.setHtml(output)
