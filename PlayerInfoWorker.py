@@ -116,10 +116,7 @@ class PlayerInfoWorker(Worker):
         if maximum > 0:
             self.window.status.resultProgress("Finished loading games", correct, maximum)
         else:
-            if self.window.player.time == "0 hours":
-                self.window.status.resultMessage("No games were found", True)
-            else:
-                self.window.status.resultMessage("No games were found", False)
+            self.window.status.resultMessage("No games were found", self.window.player.time == "0 hours")
         if correct > 0 or (maximum == 0 and self.window.player.time == "0 hours"):
             for i in range(4, 7):
                 self._setRowColor.emit(i, None)

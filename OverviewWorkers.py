@@ -128,7 +128,7 @@ class OverviewUpdater(Worker):
         """Updating player variables of a single player
         """
         self._setRowColor.emit(self.window.getRow(player), "dark-yellow")
-        time.sleep(0.2)
+        time.sleep(0.3)
         player.loadProfile()
         player.loadName()
         player.loadActive()

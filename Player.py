@@ -187,29 +187,38 @@ class Player(dict):
         current = 0
         maximum = 0
         gameListUrl = 'https://stats.xonotic.org/games?player_id=' + str(self["id"])
+        # Getting list of games
         try:
-            # Getting list of games
-            gameListResponse = self.__poolManager.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
-            if gameListResponse.status == 200:
-                gameListSoup = BeautifulSoup(gameListResponse.data, "html.parser")
-                gameListLinks = gameListSoup.select("tr > .text-center > a.button")
-                # Looping through game links
-                maximum += len(gameListLinks)
-                for gameLink in gameListLinks:
-                    try:
-                        time.sleep(0.2)
-                        current += 1
-                        gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
+            for i in range(pages):
+                gameListResponse = self.__poolManager.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
+                if gameListResponse.status == 200:
+                    gameListSoup = BeautifulSoup(gameListResponse.data, "html.parser")
+                    gameListLinks = gameListSoup.select("tr > .text-center > a.button")
+                    # Looping through game links
+                    maximum += len(gameListLinks)
+                    for gameLink in gameListLinks:
                         try:
-                            gameResponse = self.__poolManager.request("GET", gameUrl, timeout=urllib3.util.Timeout(2))
-                            if gameResponse.status == 200:
-                                gameSoup = BeautifulSoup(gameResponse.data, "html.parser")
-                                yield [current, maximum, gameSoup]
+                            time.sleep(0.3)
+                            current += 1
+                            gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
+                            try:
+                                gameResponse = self.__poolManager.request("GET", gameUrl, timeout=urllib3.util.Timeout(2))
+                                if gameResponse.status == 200:
+                                    gameSoup = BeautifulSoup(gameResponse.data, "html.parser")
+                                    yield [current, maximum, gameSoup]
+                            except:
+                                pass
                         except:
                             pass
-                    except:
-                        pass
-            else:
-                self.error = responses[gameListResponse.status]
+                else:
+                    self.error = responses[gameListResponse.status]
+                # Getting new URL
+                nextPageElements = gameListSoup.select('a[name="Next Page"]')
+                if len(nextPageElements) >= 0:
+                    gameListUrl = 'https://stats.xonotic.org' + nextPageElements[0]["href"]
+                else:
+                    raise StopIteration
+                if not i == pages -1:
+                    time.sleep(2)
         except:
-            pass
+            print("error")

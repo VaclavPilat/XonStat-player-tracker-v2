@@ -125,4 +125,4 @@ class PlayerInfo(Window):
         """Shows number of games played within the last 7 days
         """
         self.__gamesPlayed += 1
-        self.games.setText(str(self.__gamesPlayed))
+        self.games.setText(str(self.__gamesPlayed) + " (~" + str(int(self.__gamesPlayed / 7)) + " games a day)")
