@@ -15,6 +15,7 @@ class PlayerInfoWorker(Worker):
     _showActive = pyqtSignal(str) # Showing the last time this player joined a game
     _setActiveColor = pyqtSignal(str) # Setting a color to "active" label
     _showTime = pyqtSignal(str) # Showing total time spent playing
+    _showUsedNames = pyqtSignal(str) # Showing recently used names
     
 
     def connectSlots(self):
@@ -26,6 +27,7 @@ class PlayerInfoWorker(Worker):
         self._showActive.connect(self.window.active.setText)
         self._setActiveColor.connect(self.window.active.setColor)
         self._showTime.connect(self.window.time.setText)
+        self._showUsedNames.connect(self.window.showUsedNames)
 
 
     def __init__(self, window: Window):
@@ -55,6 +57,8 @@ class PlayerInfoWorker(Worker):
     def __loadSimpleValues(self):
         """Loads simple values
         """
+        for i in range(4):
+            self._setRowColor.emit(i, "dark-yellow")
         self.window.player.loadProfile()
         # Filling in simple player variables
         for label in self.__fillLabels():
@@ -68,11 +72,27 @@ class PlayerInfoWorker(Worker):
                 self._setRowColor.emit(label[0], None)
     
 
+    def __processGameData(self, data):
+        self._showUsedNames.emit(data)
+        pass
+    
+
     def __loadRecentGames(self):
         """Loads recent games and extracts information from them
         """
-        time.sleep(1.5)
+        for i in range(4, 7):
+            self._setRowColor.emit(i, "dark-yellow")
         self.window.status.message("Loading recent games")
+        correct = 0
+        maximum = 0
+        for gameValues in self.window.player.loadRecentGames():
+            maximum = gameValues[1]
+            correct += 1
+            self.__processGameData(gameValues[2])
+            if gameValues[0] == maximum:
+                self.window.status.resultProgress("Finished loading games", correct, maximum)
+            else:
+                self.window.status.progress(gameValues[0], gameValues[1])
         
 
     def run(self):
@@ -84,4 +104,5 @@ class PlayerInfoWorker(Worker):
             self.window.status.resultMessage("An error occured: " + self.window.player.error, False)
         else:
             self.window.status.resultMessage("Successfully loaded player profile")
+            time.sleep(1)
             self.__loadRecentGames()

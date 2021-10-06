@@ -2,6 +2,7 @@
 import urllib3, webbrowser
 from bs4 import BeautifulSoup
 from http.client import responses
+import time
 
 
 class Player(dict):
@@ -10,9 +11,9 @@ class Player(dict):
 
 
     window = None # PlayerInfo window instance
-    __poolManager = urllib3.PoolManager() # Pool manager for sending request with urllib3
-    __profileSource = None # HTML source of the player's profile page
-    __soup = None # BeautifulSoup parser
+    profileSource = None # HTML source of the player's profile page
+    __profileSoup = None # BeautifulSoup parser for parsing player profile
+    gameSources = [] # List containing HTML sources of recently played games
 
 
     def __init__(self, data: dict):
@@ -24,6 +25,7 @@ class Player(dict):
         super().__init__()
         self.update(data)
         self.profile = "https://stats.xonotic.org/player/" + str(data["id"])
+        self.__poolManager = urllib3.PoolManager() # Pool manager for sending request with urllib3
     
 
     def showProfile(self):
@@ -36,11 +38,11 @@ class Player(dict):
         """Loading player profile
         """
         try:
-            response = self.__poolManager.request("GET", self.profile, timeout=urllib3.util.Timeout(1))
+            response = self.__poolManager.request("GET", self.profile, timeout=urllib3.util.Timeout(2))
             if response.status == 200:
-                self.__profileSource = response.data
-                self.__soup = BeautifulSoup(self.__profileSource, "html.parser")
-                if "Player Information" in str(self.__profileSource):
+                self.profileSource = response.data
+                self.__profileSoup = BeautifulSoup(self.profileSource, "html.parser")
+                if "Player Information" in str(self.profileSource):
                     self.error = None
                 else:
                     self.error = "Profile might not exist"
@@ -61,7 +63,7 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            name = self.__soup.find("h2")
+            name = self.__profileSoup.find("h2")
             if not name.find() == None:
                 self.name = str(name.find())
             else:
@@ -82,7 +84,7 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            self.since = self.__soup.select("span.abstime")[0].text
+            self.since = self.__profileSoup.select("span.abstime")[0].text
         except:
             self.since = None
             if self.error is None:
@@ -99,7 +101,7 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            self.active = self.__soup.select("span.abstime")[1].text
+            self.active = self.__profileSoup.select("span.abstime")[1].text
         except:
             self.active = None
             if self.error is None:
@@ -111,7 +113,7 @@ class Player(dict):
         """Gets text color for "active" label based on its content
 
         Returns:
-            str: Text color value, definec in stylesheets
+            str: Text color value, defined in stylesheets
         """
         if self.active is None:
             return None
@@ -154,7 +156,7 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            time = self.__soup.select("div.cell.small-6 p")[1].select("small")[0].text
+            time = self.__profileSoup.select("div.cell.small-6 p")[1].select("small")[0].text
             hours = 0
             timeList = time.split(" ")
             for i in range(0, (len(timeList) // 2) * 2, 2):
@@ -168,3 +170,37 @@ class Player(dict):
             if self.error is None:
                 self.error = "Profile contains wrong info"
         return self.time
+    
+
+    def loadRecentGames(self, pages: int = 5):
+        """Loads recently played games
+
+        Args:
+            pages (int, optional): Maximum number of pages the cycle will go through. Defaults to 10.
+        """
+        current = 0
+        maximum = 0
+        gameListUrl = 'https://stats.xonotic.org/games?player_id=' + str(self["id"])
+        try:
+            # Getting list of games
+            response = self.__poolManager.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
+            if response.status == 200:
+                gameListSource = response.data
+                soup = BeautifulSoup(gameListSource, "html.parser")
+                gameLinks = soup.select("tr > .text-center > a.button")
+                # Looping through game links
+                maximum += len(gameLinks)
+                for gameLink in gameLinks:
+                    try:
+                        time.sleep(0.2)
+                        current += 1
+                        gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
+                        yield [current, maximum, gameUrl]
+                    except Exception as e:
+                        print("Error: " + type(e).__name__)
+                        pass
+            else:
+                self.error = responses[response.status]
+        except Exception as e:
+            print("Error: " + type(e).__name__)
+            pass

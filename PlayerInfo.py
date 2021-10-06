@@ -11,6 +11,8 @@ class PlayerInfo(Window):
     """Class for showing detailed information about players
     """
 
+    __usedNames = []
+
 
     def __init__(self, player: Player):
         """Initialising GUI
@@ -28,7 +30,7 @@ class PlayerInfo(Window):
         """Setting winow properties
         """
         self.setWindowTitle("Player information")
-        self.resize(450, 500)
+        self.resize(450, 600)
     
 
     def createLayout(self):
@@ -94,3 +96,21 @@ class PlayerInfo(Window):
         self.names = QTextEdit(self.table)
         self.names.setReadOnly(True)
         self.table.setCellWidget(5, 1, self.names)
+    
+
+    def showUsedNames(self, name: str):
+        """Shows currently used names
+
+        Args:
+            name (str): Used name
+        """
+        self.__usedNames.append(name)
+        # Printing out names
+        output = ""
+        i = 0
+        for name in self.__usedNames:
+            i += 1
+            output += name
+            if not i == len(self.__usedNames):
+                output += "<br>"
+        self.names.setHtml(output)
