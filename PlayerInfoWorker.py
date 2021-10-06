@@ -17,6 +17,7 @@ class PlayerInfoWorker(Worker):
     _setActiveColor = pyqtSignal(str) # Setting a color to "active" label
     _showTime = pyqtSignal(str) # Showing total time spent playing
     _showUsedNames = pyqtSignal(str) # Showing recently used names
+    _showGames = pyqtSignal() # Showing number of recently played games
     
 
     def connectSlots(self):
@@ -29,6 +30,7 @@ class PlayerInfoWorker(Worker):
         self._setActiveColor.connect(self.window.active.setColor)
         self._showTime.connect(self.window.time.setText)
         self._showUsedNames.connect(self.window.showUsedNames)
+        self._showGames.connect(self.window.showGames)
 
 
     def __init__(self, window: Window):
@@ -79,9 +81,20 @@ class PlayerInfoWorker(Worker):
         Args:
             data (BeautifulSoup): Beutiful soup object for game page
         """
+        # Getting used player name
         try:
             element = data.find("a", href="/player/" + str(self.window.player["id"]))
             self._showUsedNames.emit(self.window.player.loadName(element))
+        except:
+            pass
+        # Checking if this game happened within the last 7 days
+        try:
+            currentTime = int(time.time())
+            element = data.select("span.abstime")[0]
+            gameTime = int(element["data-epoch"])
+            week = 60 * 60 * 24 * 7
+            if (currentTime - gameTime) <= week:
+                self._showGames.emit()
         except:
             pass
     
@@ -98,10 +111,21 @@ class PlayerInfoWorker(Worker):
             maximum = gameValues[1]
             correct += 1
             self.__processGameData(gameValues[2])
-            if gameValues[0] == maximum:
-                self.window.status.resultProgress("Finished loading games", correct, maximum)
+            self.window.status.progress(gameValues[0], gameValues[1])
+        # Printing out message
+        if maximum > 0:
+            self.window.status.resultProgress("Finished loading games", correct, maximum)
+        else:
+            if self.window.player.time == "0 hours":
+                self.window.status.resultMessage("No games were found", True)
             else:
-                self.window.status.progress(gameValues[0], gameValues[1])
+                self.window.status.resultMessage("No games were found", False)
+        if correct > 0 or (maximum == 0 and self.window.player.time == "0 hours"):
+            for i in range(4, 7):
+                self._setRowColor.emit(i, None)
+        else:
+            for i in range(4, 7):
+                self._setRowColor.emit(i, "dark-red")
         
 
     def run(self):

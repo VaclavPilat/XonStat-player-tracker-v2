@@ -19,6 +19,7 @@ class PlayerInfo(Window):
             player (Player): Player instance
         """
         self.__usedNames = {}
+        self.__gamesPlayed = 0
         self.player = player
         super().__init__()
         self.worker = PlayerInfoWorker(self)
@@ -29,7 +30,7 @@ class PlayerInfo(Window):
         """Setting winow properties
         """
         self.setWindowTitle("Player information")
-        self.resize(450, 600)
+        self.resize(500, 600)
     
 
     def createLayout(self):
@@ -93,6 +94,7 @@ class PlayerInfo(Window):
         self.games = ColoredLabel(self.table, None, "dark-grey")
         self.table.setCellWidget(4, 1, self.games)
         self.names = QTextEdit(self.table)
+        self.names.setLineWrapMode(QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(5, 1, self.names)
     
@@ -117,3 +119,10 @@ class PlayerInfo(Window):
             if not i == len(self.__usedNames):
                 output += "<br>"
         self.names.setHtml(output)
+    
+
+    def showGames(self):
+        """Shows number of games played within the last 7 days
+        """
+        self.__gamesPlayed += 1
+        self.games.setText(str(self.__gamesPlayed))
