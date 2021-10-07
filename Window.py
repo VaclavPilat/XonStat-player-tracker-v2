@@ -13,6 +13,8 @@ class Window(QMainWindow):
     def __init__(self):
         """Initializes window, adds stylesheet, sets properties using methods implemented by derived classes.
         """
+        self.__closing = False
+        self.worker = None
         super().__init__()
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.__addStylesheet()
@@ -59,3 +61,18 @@ class Window(QMainWindow):
             title (str, optional): Window title. Defaults to "".
         """
         super().setWindowTitle(str(QApplication.instance().applicationName()) + " - " + title)
+
+
+    def closeEvent(self, event):
+        """Stopping background tasks before closing this window to avoid crashes
+
+        Args:
+            event: Closing event
+        """
+        if self.worker.isRunning() and not self.__closing:
+            self.__closing = True
+            event.ignore()
+            self.status.lock()
+            self.worker.cancel = True
+            self.setEnabled(False)
+            self.worker.finished.connect(self.close)

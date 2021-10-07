@@ -129,10 +129,14 @@ class PlayerInfoWorker(Worker):
         """Running the Worker task
         """
         self.__loadSimpleValues()
+        if self.cancel:
+            return
         # Changing status
         if self.window.player.error is not None:
             self.window.status.resultMessage("An error occured: " + self.window.player.error, False)
         else:
             self.window.status.resultMessage("Successfully loaded player profile")
             time.sleep(1)
+            if self.cancel:
+                return
             self.__loadRecentGames()

@@ -15,24 +15,27 @@ class Status(ColoredLabel):
         Args:
             parent (Window): Parent of this widget
         """
+        self.__locked = False # Boolean for locking changes
         super().__init__(parent, "Ready", "grey")
         self.setAlignment(Qt.AlignCenter)
         self.setObjectName("status")
     
 
-    def message (self, message: str):
+    def message(self, message: str, color: str = "yellow"):
         """Changing status message and setting background color to yellow. Used for starting a new task
 
         Args:
             message (str): Text that will be displayed in the status.
+            color (str): New background color status
         """
-        message += " ..."
-        self.__message = message
-        self.setText(message)
-        self.setBackground("yellow")
+        if not self.__locked:
+            message += " ..."
+            self.__message = message
+            self.setText(message)
+            self.setBackground(color)
     
 
-    def progress (self, current: int, max: int, finished: bool = False):
+    def progress(self, current: int, max: int, finished: bool = False):
         """Changing status progress. Used for displaying how much work is done in a task.
 
         Args:
@@ -40,39 +43,41 @@ class Status(ColoredLabel):
             max (int): Maximum amount of parts that can be completed in this task
             finished (bool, optional): Is the task finished? Defaults to False.
         """
-        output = self.__message + " "
-        # Displaying percentage
-        if current > 0:
-            output += str(math.ceil(current / max * 100))
-        else:
-            output += "0"
-        output += "% "
-        # Varying status message based on if the task is finished
-        if finished:
-            output += "correct"
-        else:
-            output += "done"
-        # Displaying amount of parts finished
-        output += " (" + str(current) + " out of " + str(max) + ")"
-        self.setText(output)
+        if not self.__locked:
+            output = self.__message + " "
+            # Displaying percentage
+            if current > 0:
+                output += str(math.ceil(current / max * 100))
+            else:
+                output += "0"
+            output += "% "
+            # Varying status message based on if the task is finished
+            if finished:
+                output += "correct"
+            else:
+                output += "done"
+            # Displaying amount of parts finished
+            output += " (" + str(current) + " out of " + str(max) + ")"
+            self.setText(output)
     
 
-    def resultMessage (self, message: str, correct: bool = True):
+    def resultMessage(self, message: str, correct: bool = True):
         """Changing status message and changing status color based on the if the task is completed successfully.
 
         Args:
             message (str): Text that will be displayed on the status
             correct (bool, optional): Is the task completed successfully? Defaults to True.
         """
-        self.message(message)
-        # Changing the background color based on if the task is completed successfully
-        if correct:
-            self.setBackground("green")
-        else:
-            self.setBackground("red")
+        if not self.__locked:
+            self.message(message)
+            # Changing the background color based on if the task is completed successfully
+            if correct:
+                self.setBackground("green")
+            else:
+                self.setBackground("red")
     
 
-    def resultProgress (self, message: str, correct: int, max: int):
+    def resultProgress(self, message: str, correct: int, max: int):
         """Changing status message and background color based on the amount of successfully completed parts
 
         Args:
@@ -80,12 +85,21 @@ class Status(ColoredLabel):
             correct (int): Amount of successfully completed parts of this task
             max (int): Maximum amount of parts that can be completed
         """
-        self.message(message)
-        self.progress(correct, max, True)
-        # Changing the background color based on if the task is completed successfully
-        if correct == max:
-            self.setBackground("green")
-        elif correct > 0:
-            self.setBackground("orange")
-        else:
-            self.setBackground("red")
+        if not self.__locked:
+            self.message(message)
+            self.progress(correct, max, True)
+            # Changing the background color based on if the task is completed successfully
+            if correct == max:
+                self.setBackground("green")
+            elif correct > 0:
+                self.setBackground("orange")
+            else:
+                self.setBackground("red")
+    
+
+    def lock(self):
+        """Locking status from further changes
+        """
+        if not self.__locked:
+            self.message("Waiting for background task to finish", "blue")
+            self.__locked = True

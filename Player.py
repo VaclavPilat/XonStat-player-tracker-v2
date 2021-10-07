@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import urllib3, webbrowser
 from bs4 import BeautifulSoup
 from http.client import responses
@@ -10,18 +9,16 @@ class Player(dict):
     """
 
 
-    window = None # PlayerInfo window instance
-    profileSource = None # HTML source of the player's profile page
-    __profileSoup = None # BeautifulSoup parser for parsing player profile
-    gameSources = [] # List containing HTML sources of recently played games
-
-
     def __init__(self, data: dict):
         """Initializing a few variables
 
         Args:
             data (dict): Player data
         """
+        self.window = None # PlayerInfo window instance
+        self.profileSource = None # HTML source of the player's profile page
+        self.__profileSoup = None # BeautifulSoup parser for parsing player profile
+        self.gameSources = [] # List containing HTML sources of recently played games
         super().__init__()
         self.update(data)
         self.profile = "https://stats.xonotic.org/player/" + str(data["id"])
@@ -190,6 +187,10 @@ class Player(dict):
         # Getting list of games
         try:
             for i in range(pages):
+                # Canceling
+                if self.window.worker.cancel:
+                    raise StopIteration
+                # Getting list of games
                 gameListResponse = self.__poolManager.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
                 if gameListResponse.status == 200:
                     gameListSoup = BeautifulSoup(gameListResponse.data, "html.parser")
@@ -197,6 +198,8 @@ class Player(dict):
                     # Looping through game links
                     maximum += len(gameListLinks)
                     for gameLink in gameListLinks:
+                        if self.window.worker.cancel:
+                            raise StopIteration
                         try:
                             time.sleep(0.3)
                             current += 1
@@ -221,4 +224,4 @@ class Player(dict):
                 if not i == pages -1:
                     time.sleep(2)
         except:
-            print("error")
+            pass

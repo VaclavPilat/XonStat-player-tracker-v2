@@ -14,12 +14,10 @@ class Overview(Window):
     """
 
 
-    players = [] # List of players
-
-
     def __init__(self):
         """Initialising GUI and a worker thread
         """
+        self.players = [] # List of players
         super().__init__()
         self.loader = OverviewLoader(self)
         self.updater = OverviewUpdater(self)

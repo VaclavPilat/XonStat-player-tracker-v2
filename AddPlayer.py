@@ -104,6 +104,7 @@ class AddPlayer(Window):
         Args:
             event: Event
         """
+        super().closeEvent(event)
         self.window.addButton.setEnabled(True)
         self.window.refreshButton.setEnabled(True)
     

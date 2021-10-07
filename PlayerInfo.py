@@ -92,6 +92,7 @@ class PlayerInfo(Window):
         self.time = ColoredLabel(self.table, None, "dark-grey")
         self.table.setCellWidget(3, 1, self.time)
         self.games = ColoredLabel(self.table, None, "dark-grey")
+        self.games.setText("0")
         self.table.setCellWidget(4, 1, self.games)
         self.names = QTextEdit(self.table)
         self.names.setLineWrapMode(QTextEdit.NoWrap)
