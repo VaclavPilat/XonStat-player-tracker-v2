@@ -102,7 +102,7 @@ class PlayerInfoWorker(Worker):
     def __loadRecentGames(self):
         """Loads recent games and extracts information from them
         """
-        for i in range(4, 7):
+        for i in range(4, self.window.table.rowCount()):
             self._setRowColor.emit(i, "dark-yellow")
         self.window.status.message("Loading recent games")
         correct = 0
@@ -118,10 +118,10 @@ class PlayerInfoWorker(Worker):
         else:
             self.window.status.resultMessage("No games were found", self.window.player.time == "0 hours")
         if correct > 0 or (maximum == 0 and self.window.player.time == "0 hours"):
-            for i in range(4, 7):
+            for i in range(4, self.window.table.rowCount()):
                 self._setRowColor.emit(i, None)
         else:
-            for i in range(4, 7):
+            for i in range(4, self.window.table.rowCount()):
                 self._setRowColor.emit(i, "dark-red")
         
 

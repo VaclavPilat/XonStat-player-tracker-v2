@@ -122,6 +122,7 @@ class OverviewUpdater(Worker):
         """Initialising Worker thread
         """
         super().__init__(window)
+        self.maximum = 0
     
 
     def updatePlayer(self, player: Player) -> bool:

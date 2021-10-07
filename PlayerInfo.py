@@ -1,9 +1,11 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHeaderView, QTextEdit
+from PyQt5.QtGui import QPixmap
 from Window import *
 from Status import *
 from ColoredWidgets import *
 from Player import *
 from PlayerInfoWorker import *
+import os
 
 
 
@@ -98,6 +100,9 @@ class PlayerInfo(Window):
         self.names.setLineWrapMode(QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(5, 1, self.names)
+        self.heatmap = ColoredLabel(self.table, None, "dark-grey")
+        self.table.setCellWidget(6, 1, self.heatmap)
+        self.heatmap.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), "Icon.png")))
     
 
     def showUsedNames(self, name: str):

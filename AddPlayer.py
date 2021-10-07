@@ -93,8 +93,8 @@ class AddPlayer(Window):
         self.addButton.setEnabled(False)
         self.status.message("Adding new player into table")
         player = Player({ "id": id, "nick": nick })
-        self.window.adder = OverviewAdder(self.window, player)
-        self.window.adder.start()
+        self.worker = OverviewAdder(self.window, player)
+        self.worker.start()
         self.close()
     
 

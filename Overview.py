@@ -19,10 +19,9 @@ class Overview(Window):
         """
         self.players = [] # List of players
         super().__init__()
-        self.loader = OverviewLoader(self)
-        self.updater = OverviewUpdater(self)
-        self.loader.start()
-        self.loader.finished.connect(self.__updatePlayers)
+        self.worker = OverviewLoader(self)
+        self.worker.start()
+        self.worker.finished.connect(self.__updatePlayers)
     
 
     def setProperties(self):
@@ -116,7 +115,7 @@ class Overview(Window):
         self.table.cellWidget(row, 5).clicked.connect(lambda: self.__openPlayerInfo(player))
         self.table.setCellWidget(row, 6, ColoredButton(self.table, "Delete this player", "red"))
         self.table.cellWidget(row, 6).clicked.connect(lambda: self.__removePlayer(player))
-        if not self.loader.isFinished():
+        if not self.worker.isFinished():
             self.table.cellWidget(row, 6).setEnabled(False)
 
     
@@ -148,17 +147,18 @@ class Overview(Window):
         """Attempts to update player variables
         """
         self.refreshButton.setEnabled(True)
-        if self.updater.isRunning():
-            self.updater.cancel = True
+        if self.worker.isRunning():
+            self.worker.cancel = True
             self.refreshButton.setEnabled(False)
         else:
-            self.updater.start()
+            self.worker = OverviewUpdater(self)
+            self.worker.start()
     
 
     def updateRefreshButton(self):
         """Updates visuals of "Refresh" button
         """
-        if self.updater.isRunning():
+        if self.worker.isRunning():
             self.refreshButton.setText("Stop updating table")
             self.refreshButton.setBackground("orange")
         else:
@@ -247,8 +247,8 @@ class Overview(Window):
             answer = QMessageBox.question(self, 'XonStat player tracker', "Are you sure you want to delete player \n" \
                 + "\"" + player["nick"] + "\" (ID " + str(player["id"]) + ") ?", QMessageBox.Yes | QMessageBox.Cancel)
             if answer == QMessageBox.Yes:
-                self.remover = OverviewRemover(self, player)
-                self.remover.start()
+                self.worker = OverviewRemover(self, player)
+                self.worker.start()
         except:
             self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
             self.setButtonsEnabled(6, True)
