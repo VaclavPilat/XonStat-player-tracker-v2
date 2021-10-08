@@ -102,16 +102,20 @@ class PlayerInfoWorker(Worker):
     def __loadRecentGames(self):
         """Loads recent games and extracts information from them
         """
+        self.window.status.message("Loading list of recent games")
         for i in range(4, self.window.table.rowCount()):
             self._setRowColor.emit(i, "dark-yellow")
-        self.window.status.message("Loading recent games")
         correct = 0
         maximum = 0
         for gameValues in self.window.player.loadRecentGames():
             maximum = gameValues[1]
             correct += 1
             self.__processGameData(gameValues[2])
-            self.window.status.progress(gameValues[0], gameValues[1])
+            if not gameValues[1] == 0 and gameValues[0] == gameValues[1]:
+                self.window.status.resultProgress("Loading recent games", correct, maximum)
+            else:
+                self.window.status.message("Loading recent games")
+                self.window.status.progress(gameValues[0], gameValues[1])
         # Printing out message
         if maximum > 0:
             self.window.status.resultProgress("Finished loading games", correct, maximum)

@@ -186,6 +186,17 @@ class Overview(Window):
         else:
             player.window.raise_()
             player.window.activateWindow()
+    
+
+    def __getOpenWindowCount(self):
+        """Counts currently open PlayerInfo windows
+        """
+        openWindowCount = 0
+        for player in self.players:
+            if player.window is not None:
+                openWindowCount += 1
+        print("Current window count: " + str(openWindowCount))
+        return openWindowCount
 
     
     def __deletePlayerInfo(self, player: Player):
@@ -195,6 +206,8 @@ class Overview(Window):
             player (Player): Player instance
         """
         player.window = None
+        if self.closing and self.__getOpenWindowCount() == 0:
+            self.close()
     
 
     def __search(self, text: str):
@@ -269,7 +282,18 @@ class Overview(Window):
         Args:
             event: Event
         """
-        QApplication.instance().closeAllWindows()
+        # Closing child windows
+        for player in self.players:
+            if player.window is not None:
+                player.window.close()
+        # Closing self
+        super().closeEvent(event, False)
+        if self.closing and self.__getOpenWindowCount() == 0:
+            if self.worker.isFinished():
+                self.close()
+            else:
+                self.worker.finished.connect(self.close)
+        
     
 
     def keyPressEvent(self, event):
