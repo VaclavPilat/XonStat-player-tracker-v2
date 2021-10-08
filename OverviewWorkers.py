@@ -11,12 +11,16 @@ class OverviewLoader(Worker):
 
 
     _showPlayer = pyqtSignal(Player) # Signal for adding new player to table
+    _setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
         self._showPlayer.connect(self.window.showPlayer)
+        self._setButtonsEnabled.connect(self.window.table.setButtonsEnabled)
+        self._updateRefreshButton.connect(self.window.updateRefreshButton)
 
 
     def __init__(self, window: Window):
@@ -89,6 +93,10 @@ class OverviewLoader(Worker):
     def after(self):
         """This method is called after this worker is finished
         """
+        self.window.refreshButton.setEnabled(True)
+        self._updateRefreshButton.emit()
+        self.window.addButton.setEnabled(True)
+        self._setButtonsEnabled.emit(6, True)
         if self.correct > 0:
             self.window.status.resultProgress("Finished loading players from file", self.correct, self.maximum)
         else: 

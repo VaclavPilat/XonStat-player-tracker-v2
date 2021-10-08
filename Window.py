@@ -71,11 +71,12 @@ class Window(QMainWindow):
             event: Closing event
             isChildWindow (bool): Has this window a parent window?
         """
-        if self.worker.isRunning() and not self.closing:
-            self.closing = True
-            event.ignore()
-            self.status.lock()
-            self.worker.cancel = True
-            self.setEnabled(False)
-            if isChildWindow:
-                self.worker.finished.connect(self.close)
+        if self.worker is not None:
+            if self.worker.isRunning() and not self.closing:
+                self.closing = True
+                event.ignore()
+                self.status.lock()
+                self.worker.cancel = True
+                self.setEnabled(False)
+                if isChildWindow:
+                    self.worker.finished.connect(self.close)

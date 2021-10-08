@@ -146,13 +146,13 @@ class Overview(Window):
     def __updatePlayers(self):
         """Attempts to update player variables
         """
-        self.refreshButton.setEnabled(True)
-        if self.worker.isRunning():
-            self.worker.cancel = True
-            self.refreshButton.setEnabled(False)
-        else:
-            self.worker = OverviewUpdater(self)
-            self.worker.start()
+        if len(self.players) > 0:
+            if self.worker.isRunning():
+                self.worker.cancel = True
+                self.refreshButton.setEnabled(False)
+            else:
+                self.worker = OverviewUpdater(self)
+                self.worker.start()
     
 
     def updateRefreshButton(self):
@@ -293,7 +293,6 @@ class Overview(Window):
                 self.close()
             else:
                 self.worker.finished.connect(self.close)
-        
     
 
     def keyPressEvent(self, event):
