@@ -1,7 +1,9 @@
 from Worker import *
 from ColoredWidgets import *
 from bs4 import BeautifulSoup
-import time
+from PIL import Image, ImageQt
+from PyQt5.QtGui import QPixmap, QImage
+import time, io
 
 
 
@@ -18,6 +20,7 @@ class PlayerInfoWorker(Worker):
     _showTime = pyqtSignal(str) # Showing total time spent playing
     _showUsedNames = pyqtSignal(str) # Showing recently used names
     _showGames = pyqtSignal() # Showing number of recently played games
+    _showHeatmap = pyqtSignal(QPixmap) # Shows created heatmap image
     
 
     def connectSlots(self):
@@ -31,6 +34,7 @@ class PlayerInfoWorker(Worker):
         self._showTime.connect(self.window.time.setText)
         self._showUsedNames.connect(self.window.showUsedNames)
         self._showGames.connect(self.window.showGames)
+        self._showHeatmap.connect(self.window.showHeatmap)
 
 
     def __init__(self, window: Window):
@@ -97,6 +101,30 @@ class PlayerInfoWorker(Worker):
                 self._showGames.emit()
         except:
             pass
+        # Updating heatmap
+        self._showHeatmap.emit(self.__pillowToPixmap(self.heatmapImage))
+    
+
+    def __createHeatmap(self):
+        """Creates heatmp using Pillow
+        """
+        self.heatmapImage = Image.new('RGB', (300, 200), color = (200, 200, 200))
+    
+
+    def __pillowToPixmap(self, image: Image):
+        """Converts Pillow Image object to QPixmap object
+
+        Args:
+            image (Image): Pillow image object
+
+        Returns:
+            QPixmap: QPixmp object
+        """
+        imageBytes = io.BytesIO()
+        image.save(imageBytes, format='JPEG')
+        qimage = QImage()
+        qimage.loadFromData(imageBytes.getvalue())
+        return QPixmap.fromImage(qimage)
     
 
     def __loadRecentGames(self):
@@ -105,6 +133,9 @@ class PlayerInfoWorker(Worker):
         self.window.status.message("Loading list of recent games")
         for i in range(4, self.window.table.rowCount()):
             self._setRowColor.emit(i, "dark-yellow")
+        # Creating a heatmap
+        self.__createHeatmap()
+        # Loading recent games
         correct = 0
         maximum = 0
         for gameValues in self.window.player.loadRecentGames():

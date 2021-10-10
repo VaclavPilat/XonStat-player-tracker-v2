@@ -32,7 +32,7 @@ class PlayerInfo(Window):
         """Setting winow properties
         """
         self.setWindowTitle("Player information")
-        self.resize(500, 600)
+        self.resize(500, 700)
     
 
     def createLayout(self):
@@ -65,8 +65,8 @@ class PlayerInfo(Window):
         # Setting up a table
         self.table = ColoredTable(self)
         self.table.setColumnCount(2)
-        for i in range(2):
-            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
+        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.horizontalHeader().hide()
         self.table.verticalHeader().hide()
@@ -101,8 +101,8 @@ class PlayerInfo(Window):
         self.names.setReadOnly(True)
         self.table.setCellWidget(5, 1, self.names)
         self.heatmap = ColoredLabel(self.table, None, "dark-grey")
+        self.heatmap.setFixedSize(300, 200)
         self.table.setCellWidget(6, 1, self.heatmap)
-        self.heatmap.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), "Icon.png")))
     
 
     def showUsedNames(self, name: str):
@@ -132,3 +132,12 @@ class PlayerInfo(Window):
         """
         self.__gamesPlayed += 1
         self.games.setText(str(self.__gamesPlayed) + " (~" + str(int(self.__gamesPlayed / 7)) + " games a day)")
+    
+
+    def showHeatmap(self, pixmap: QPixmap):
+        """Shows heatmap image
+
+        Args:
+            pixmap (QPixmap): Pixmap of heatmap image
+        """
+        self.heatmap.setPixmap(pixmap)
