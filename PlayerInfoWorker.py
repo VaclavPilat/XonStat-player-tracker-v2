@@ -1,7 +1,7 @@
 from Worker import *
 from ColoredWidgets import *
 from bs4 import BeautifulSoup
-import time
+import traceback, time, datetime
 
 
 
@@ -11,6 +11,7 @@ class PlayerInfoWorker(Worker):
 
 
     _setRowColor = pyqtSignal(int, str) # Signal for changing row color
+    _setWidgetColor = pyqtSignal(int, int, str) # Signal for changing widget color
     _showName = pyqtSignal(str) # Showing current player name
     _showSince = pyqtSignal(str) # Showing since when this player is playing
     _showActive = pyqtSignal(str) # Showing the last time this player joined a game
@@ -24,6 +25,7 @@ class PlayerInfoWorker(Worker):
         """Connecting signals to slots (called from Worker class)
         """
         self._setRowColor.connect(self.window.table.setRowColor)
+        self._setWidgetColor.connect(self.window.heatmap.setWidgetColor)
         self._showName.connect(self.window.name.setText)
         self._showSince.connect(self.window.since.setText)
         self._showActive.connect(self.window.active.setText)
@@ -86,7 +88,8 @@ class PlayerInfoWorker(Worker):
             element = data.find("a", href="/player/" + str(self.window.player["id"]))
             self._showUsedNames.emit(self.window.player.loadName(element))
         except:
-            pass
+            print("\n--------------- CAUGHT EXCEPTION ---------------")
+            print(traceback.format_exc())
         # Checking if this game happened within the last 7 days
         try:
             currentTime = int(time.time())
@@ -95,8 +98,23 @@ class PlayerInfoWorker(Worker):
             week = 60 * 60 * 24 * 7
             if (currentTime - gameTime) <= week:
                 self._showGames.emit()
+                # Getting information from datetime
+                gameDatetime = datetime.datetime.utcfromtimestamp(gameTime)
+                print(gameDatetime.strftime('%Y-%m-%d %H:%M:%S'))
+                row = gameDatetime.date().weekday()
+                column = gameDatetime.hour // self.window.timeSpan
+                print(str(row) + "-" + str(column))
+                # Updating heatmap
+                currentColor = self.window.heatmap.cellWidget(row, column).property("background")
+                if currentColor is not None:
+                    currentColorIndex = int(currentColor.split('-')[1])
+                    if int(currentColor.split('-')[1]) > 1:
+                        self._setWidgetColor.emit(row, column, "active-" + str(currentColorIndex -1))
+                else:
+                    self._setWidgetColor.emit(row, column, "active-7")
         except:
-            pass
+            print("\n--------------- CAUGHT EXCEPTION ---------------")
+            print(traceback.format_exc())
     
 
     def __loadRecentGames(self):

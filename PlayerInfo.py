@@ -14,6 +14,9 @@ class PlayerInfo(Window):
     """
 
 
+    timeSpan = 3 # Timespan in hours
+
+
     def __init__(self, player: Player):
         """Initialising GUI
 
@@ -79,7 +82,7 @@ class PlayerInfo(Window):
         """Adding widgets to QTableView widget
         """
         headers = ["Current player name", "Playing since", "Last active", "Total time spent", "Games played this week", 
-            "Recently used names"]
+            "Recently used names", "Heatmap of recently played games"]
         for header in headers:
             rowIndex = self.table.rowCount()
             self.table.insertRow(rowIndex)
@@ -100,11 +103,11 @@ class PlayerInfo(Window):
         self.names.setLineWrapMode(QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(5, 1, self.names)
-        # Adding heatmap table
-        self.table.insertRow(6)
-        self.__createHeatmap()
-        self.table.setCellWidget(6, 0, self.heatmap)
         self.table.setSpan(6, 0, 1, 2)
+        # Adding heatmap table
+        self.table.insertRow(7)
+        self.__createHeatmap()
+        self.table.setCellWidget(7, 0, self.heatmap, 1, 2)
     
 
     def __createHeatmap(self):
@@ -113,9 +116,8 @@ class PlayerInfo(Window):
         self.heatmap = ColoredTable(self)
         # Generating column headers
         columns = []
-        timeSpan = 3 # Timespan in hours
-        for i in range(0, 24, timeSpan):
-            columns.append(str(i) + "-" + str(i + timeSpan))
+        for i in range(0, 24, self.timeSpan):
+            columns.append(str(i) + "-" + str(i + self.timeSpan))
         # Setting columns
         self.heatmap.setColumnCount(len(columns))
         self.heatmap.setHorizontalHeaderLabels(columns)

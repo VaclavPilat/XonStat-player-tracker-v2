@@ -115,10 +115,21 @@ class ColoredTable(QTableWidget):
             background (str, optional): Background color value defined in stylesheets. Defaults to None.
         """
         for column in range(self.columnCount()):
-            widget = self.cellWidget(row, column)
-            if not widget == None:
-                if type(widget) == ColoredLabel:
-                    widget.setBackground(background)
+            self.setWidgetColor(row, column, background)
+    
+
+    def setWidgetColor(self, row: int, column: int, background: str = None):
+        """Changes background color of a selected ColoredLabel in a table
+
+        Args:
+            row (int): Row index
+            column (int): Column index
+            background (str, optional): Background color value defined in stylesheets. Defaults to None.
+        """
+        widget = self.cellWidget(row, column)
+        if not widget == None:
+            if type(widget) == ColoredLabel:
+                widget.setBackground(background)
     
 
     def setButtonsEnabled(self, column: int, enabled: bool):
@@ -132,3 +143,19 @@ class ColoredTable(QTableWidget):
             widget = self.cellWidget(i, column)
             if not widget == None and type(widget) == ColoredButton:
                 widget.setEnabled(enabled)
+    
+
+    def setCellWidget(self, row: int, column: int, widget: QWidget, rowSpan: int = None, columnSpan: int = None):
+        """Overriding setCellWidget method for setting widget position and span at the same time
+
+        Args:
+            row (int): Row index
+            column (int): Column index
+            widget (QWidget): Widget
+            rowSpan (int, optional): Row span. Defaults to None.
+            columnSpan (int, optional): Column span. Defaults to None.
+        """
+        super().setCellWidget(row, column, widget)
+        # Sets widget span if arguments are not empty
+        if rowSpan is not None and columnSpan is not None:
+            super().setSpan(row, column, rowSpan, columnSpan)

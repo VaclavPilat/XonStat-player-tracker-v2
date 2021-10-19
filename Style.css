@@ -49,6 +49,14 @@ QTableWidget ColoredButton {
 [background="dark-red"],    ColoredButton[background="red"]:disabled    { background-color: #381b1b }
 [background="dark-green"],  ColoredButton[background="green"]:disabled  { background-color: #1f3118 }
 
+[background="active-1"] { background-color: #ff6200 }
+[background="active-2"] { background-color: #ff8a46 }
+[background="active-3"] { background-color: #ffac79 }
+[background="active-4"] { background-color: #ffcdaf }
+[background="active-5"] { background-color: #ffffff }
+[background="active-6"] { background-color: #acacac }
+[background="active-7"] { background-color: #595959 }
+
 /*#####################################  BORDER COLOR  #####################################*/
 
 [background="grey"]   { border-color: #636363 }
