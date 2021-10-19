@@ -159,7 +159,8 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            time = self.__profileSoup.select("div.cell.small-6 p")[1].select("small")[0].text
+            time = self.__profileSoup.select("div.cell.small-6 p")[0].select("small")[1].text
+            print(time)
             hours = 0
             timeList = time.split(" ")
             for i in range(0, (len(timeList) // 2) * 2, 2):

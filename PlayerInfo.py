@@ -65,8 +65,8 @@ class PlayerInfo(Window):
         # Setting up a table
         self.table = ColoredTable(self)
         self.table.setColumnCount(2)
-        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        for i in range(self.table.columnCount()):
+            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
         self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.horizontalHeader().hide()
         self.table.verticalHeader().hide()
@@ -79,7 +79,7 @@ class PlayerInfo(Window):
         """Adding widgets to QTableView widget
         """
         headers = ["Current player name", "Playing since", "Last active", "Total time spent", "Games played this week", 
-            "Recently used names", "Activity heatmap"]
+            "Recently used names"]
         for header in headers:
             rowIndex = self.table.rowCount()
             self.table.insertRow(rowIndex)
@@ -100,9 +100,35 @@ class PlayerInfo(Window):
         self.names.setLineWrapMode(QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(5, 1, self.names)
-        self.heatmap = ColoredLabel(self.table, None, "dark-grey")
-        self.heatmap.setFixedSize(300, 200)
-        self.table.setCellWidget(6, 1, self.heatmap)
+        # Adding heatmap table
+        self.table.insertRow(6)
+        self.__createHeatmap()
+        self.table.setCellWidget(6, 0, self.heatmap)
+        self.table.setSpan(6, 0, 1, 2)
+    
+
+    def __createHeatmap(self):
+        """Creates a heatmap table
+        """
+        self.heatmap = ColoredTable(self)
+        # Generating column headers
+        columns = []
+        timeSpan = 3 # Timespan in hours
+        for i in range(0, 24, timeSpan):
+            columns.append(str(i) + "-" + str(i + timeSpan))
+        # Setting columns
+        self.heatmap.setColumnCount(len(columns))
+        self.heatmap.setHorizontalHeaderLabels(columns)
+        self.heatmap.horizontalHeader().setMinimumSectionSize(50)
+        for i in range(self.heatmap.columnCount()):
+            self.heatmap.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # Generating rows
+        for i in range(7):
+            self.heatmap.insertRow(i)
+            self.heatmap.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            for j in range(self.heatmap.columnCount()):
+                self.heatmap.setCellWidget(i, j, ColoredLabel(self.heatmap))
+        self.heatmap.setVerticalHeaderLabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
     
 
     def showUsedNames(self, name: str):
@@ -132,12 +158,3 @@ class PlayerInfo(Window):
         """
         self.__gamesPlayed += 1
         self.games.setText(str(self.__gamesPlayed) + " (~" + str(int(self.__gamesPlayed / 7)) + " games a day)")
-    
-
-    def showHeatmap(self, pixmap: QPixmap):
-        """Shows heatmap image
-
-        Args:
-            pixmap (QPixmap): Pixmap of heatmap image
-        """
-        self.heatmap.setPixmap(pixmap)
