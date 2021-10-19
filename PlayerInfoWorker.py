@@ -1,7 +1,8 @@
 from Worker import *
 from ColoredWidgets import *
 from bs4 import BeautifulSoup
-import traceback, time, datetime
+import time, datetime
+from Functions import *
 
 
 
@@ -88,8 +89,7 @@ class PlayerInfoWorker(Worker):
             element = data.find("a", href="/player/" + str(self.window.player["id"]))
             self._showUsedNames.emit(self.window.player.loadName(element))
         except:
-            print("\n--------------- CAUGHT EXCEPTION ---------------")
-            print(traceback.format_exc())
+            printException()
         # Checking if this game happened within the last 7 days
         try:
             currentTime = int(time.time())
@@ -100,10 +100,8 @@ class PlayerInfoWorker(Worker):
                 self._showGames.emit()
                 # Getting information from datetime
                 gameDatetime = datetime.datetime.utcfromtimestamp(gameTime)
-                print(gameDatetime.strftime('%Y-%m-%d %H:%M:%S'))
                 row = gameDatetime.date().weekday()
                 column = gameDatetime.hour // self.window.timeSpan
-                print(str(row) + "-" + str(column))
                 # Updating heatmap
                 currentColor = self.window.heatmap.cellWidget(row, column).property("background")
                 if currentColor is not None:
@@ -113,8 +111,7 @@ class PlayerInfoWorker(Worker):
                 else:
                     self._setWidgetColor.emit(row, column, "active-7")
         except:
-            print("\n--------------- CAUGHT EXCEPTION ---------------")
-            print(traceback.format_exc())
+            printException()
     
 
     def __loadRecentGames(self):

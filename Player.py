@@ -2,6 +2,7 @@ import urllib3, webbrowser
 from bs4 import BeautifulSoup
 from http.client import responses
 import time
+from Functions import *
 
 
 class Player(dict):
@@ -160,7 +161,6 @@ class Player(dict):
             if self.error is not None:
                 raise Exception
             time = self.__profileSoup.select("div.cell.small-6 p")[0].select("small")[1].text
-            print(time)
             hours = 0
             timeList = time.split(" ")
             for i in range(0, (len(timeList) // 2) * 2, 2):
@@ -211,9 +211,9 @@ class Player(dict):
                                     gameSoup = BeautifulSoup(gameResponse.data, "html.parser")
                                     yield [current, maximum, gameSoup]
                             except:
-                                pass
+                                printException()
                         except:
-                            pass
+                            printException()
                 else:
                     self.error = responses[gameListResponse.status]
                 # Getting new URL
@@ -224,5 +224,7 @@ class Player(dict):
                     raise StopIteration
                 if not i == pages -1:
                     time.sleep(2)
-        except:
+        except StopIteration:
             pass
+        except:
+            printException()

@@ -2,6 +2,7 @@ from Window import *
 from Worker import *
 from Player import *
 import sys, os, json, time
+from Functions import *
 
 
 
@@ -237,7 +238,7 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
             f.write(json.dumps(self.window.players, sort_keys=False, indent=4))
             f.close()
         except:
-            pass
+            printException()
     
 
     def before(self):

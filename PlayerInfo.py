@@ -81,8 +81,8 @@ class PlayerInfo(Window):
     def __addWidgetsToTable(self):
         """Adding widgets to QTableView widget
         """
-        headers = ["Current player name", "Playing since", "Last active", "Total time spent", "Games played this week", 
-            "Recently used names", "Heatmap of recently played games"]
+        headers = ["Current player name", "Playing since", "Last active", "Total time spent", "Games played (last 7 days)", 
+            "Recently used names", "Heatmap of games played in the last 7 days"]
         for header in headers:
             rowIndex = self.table.rowCount()
             self.table.insertRow(rowIndex)
@@ -100,6 +100,7 @@ class PlayerInfo(Window):
         self.games.setText("0")
         self.table.setCellWidget(4, 1, self.games)
         self.names = QTextEdit(self.table)
+        self.names.setMaximumHeight(150)
         self.names.setLineWrapMode(QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(5, 1, self.names)
