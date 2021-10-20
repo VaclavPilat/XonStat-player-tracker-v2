@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from http.client import responses
 import time
 from Functions import *
+from Settings import *
 
 
 class Player(dict):
@@ -202,7 +203,7 @@ class Player(dict):
                         if self.window.worker.cancel:
                             raise StopIteration
                         try:
-                            time.sleep(0.3)
+                            time.sleep(Settings.instance()["singleRequestInterval"])
                             current += 1
                             gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
                             try:
@@ -223,7 +224,7 @@ class Player(dict):
                 else:
                     raise StopIteration
                 if not i == pages -1:
-                    time.sleep(2)
+                    time.sleep(Settings.instance()["groupRequestInterval"])
         except StopIteration:
             pass
         except:

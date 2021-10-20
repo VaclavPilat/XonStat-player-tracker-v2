@@ -3,6 +3,7 @@ from Worker import *
 from Player import *
 import sys, os, json, time
 from Functions import *
+from Settings import *
 
 
 
@@ -138,7 +139,9 @@ class OverviewUpdater(Worker):
         """Updating player variables of a single player
         """
         self._setRowColor.emit(self.window.getRow(player), "dark-yellow")
-        time.sleep(0.3)
+        # Sleep before loading
+        time.sleep(Settings.instance()["singleRequestInterval"])
+        # Loading information
         player.loadProfile()
         player.loadName()
         player.loadActive()

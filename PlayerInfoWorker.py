@@ -3,6 +3,7 @@ from ColoredWidgets import *
 from bs4 import BeautifulSoup
 import time, datetime
 from Functions import *
+from Settings import *
 
 
 
@@ -101,7 +102,7 @@ class PlayerInfoWorker(Worker):
                 # Getting information from datetime
                 gameDatetime = datetime.datetime.utcfromtimestamp(gameTime)
                 row = gameDatetime.date().weekday()
-                column = gameDatetime.hour // self.window.timeSpan
+                column = gameDatetime.hour // Settings.instance()["heatmapHourSpan"]
                 # Updating heatmap
                 currentColor = self.window.heatmap.cellWidget(row, column).property("background")
                 if currentColor is not None:
@@ -157,7 +158,7 @@ class PlayerInfoWorker(Worker):
             self.window.status.resultMessage("An error occured: " + self.window.player.error, False)
         else:
             self.window.status.resultMessage("Successfully loaded player profile")
-            time.sleep(1)
+            time.sleep(Settings.instance()["singleRequestInterval"])
             if self.cancel:
                 return
             self.__loadRecentGames()

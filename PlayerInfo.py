@@ -14,9 +14,6 @@ class PlayerInfo(Window):
     """
 
 
-    timeSpan = 3 # Timespan in hours
-
-
     def __init__(self, player: Player):
         """Initialising GUI
 
@@ -117,8 +114,8 @@ class PlayerInfo(Window):
         self.heatmap = ColoredTable(self)
         # Generating column headers
         columns = []
-        for i in range(0, 24, self.timeSpan):
-            columns.append(str(i) + "-" + str(i + self.timeSpan))
+        for i in range(0, 24, Settings.instance()["heatmapHourSpan"]):
+            columns.append(str(i) + "-" + str(i + Settings.instance()["heatmapHourSpan"]))
         # Setting columns
         self.heatmap.setColumnCount(len(columns))
         self.heatmap.setHorizontalHeaderLabels(columns)

@@ -1,0 +1,5 @@
+{
+    "singleRequestInterval": 0.3,
+    "groupRequestInterval": 2,
+    "heatmapHourSpan": 3
+}
