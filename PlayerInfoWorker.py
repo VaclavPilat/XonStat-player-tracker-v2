@@ -21,6 +21,7 @@ class PlayerInfoWorker(Worker):
     _showTime = pyqtSignal(str) # Showing total time spent playing
     _showUsedNames = pyqtSignal(str) # Showing recently used names
     _showGames = pyqtSignal() # Showing number of recently played games
+    _updateHeatmapGames = pyqtSignal(int, int) # Updating number of games in heatmap
     
 
     def connectSlots(self):
@@ -35,6 +36,7 @@ class PlayerInfoWorker(Worker):
         self._showTime.connect(self.window.time.setText)
         self._showUsedNames.connect(self.window.showUsedNames)
         self._showGames.connect(self.window.showGames)
+        self._updateHeatmapGames.connect(self.window.updateHeatmapGames)
 
 
     def __init__(self, window: Window):
@@ -111,6 +113,7 @@ class PlayerInfoWorker(Worker):
                         self._setWidgetColor.emit(row, column, "active-" + str(currentColorIndex -1))
                 else:
                     self._setWidgetColor.emit(row, column, "active-7")
+                self._updateHeatmapGames.emit(row, column)
         except:
             printException()
     

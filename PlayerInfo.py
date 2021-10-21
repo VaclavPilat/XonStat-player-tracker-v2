@@ -112,6 +112,7 @@ class PlayerInfo(Window):
         """Creates a heatmap table
         """
         self.heatmap = ColoredTable(self)
+        self.heatmap.setProperty("type", "heatmap")
         # Generating column headers
         columns = []
         for i in range(0, 24, Settings.instance()["heatmapHourSpan"]):
@@ -159,3 +160,12 @@ class PlayerInfo(Window):
         """
         self.__gamesPlayed += 1
         self.games.setText(str(self.__gamesPlayed) + " (~" + str(int(self.__gamesPlayed / 7)) + " games a day)")
+    
+
+    def updateHeatmapGames(self, row: int, column: int):
+        widget = self.heatmap.cellWidget(row, column)
+        if widget is not None:
+            if len(widget.text()) > 0:
+                widget.setText(str(int(widget.text()) + 1))
+            else:
+                widget.setText("1")

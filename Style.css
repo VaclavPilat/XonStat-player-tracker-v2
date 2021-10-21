@@ -94,3 +94,8 @@ ColoredButton[background="green"]:disabled  { border-color: #345328 }
     margin-bottom: 10px;
     qproperty-alignment: AlignCenter;
 }
+
+[type="heatmap"] ColoredLabel {
+    color: black;
+    qproperty-alignment: AlignCenter;
+}
