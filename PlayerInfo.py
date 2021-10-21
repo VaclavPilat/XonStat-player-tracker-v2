@@ -129,6 +129,7 @@ class PlayerInfo(Window):
             for j in range(self.heatmap.columnCount()):
                 self.heatmap.setCellWidget(i, j, ColoredLabel(self.heatmap))
         self.heatmap.setVerticalHeaderLabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+        self.heatmap.setMinimumHeight(230)
     
 
     def showUsedNames(self, name: str):

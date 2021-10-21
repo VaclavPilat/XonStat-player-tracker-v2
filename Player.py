@@ -177,18 +177,15 @@ class Player(dict):
         return self.time
     
 
-    def loadRecentGames(self, pages: int = 5):
+    def loadRecentGames(self):
         """Loads recently played games
-
-        Args:
-            pages (int, optional): Maximum number of pages the cycle will go through. Defaults to 10.
         """
         current = 0
         maximum = 0
         gameListUrl = 'https://stats.xonotic.org/games?player_id=' + str(self["id"])
         # Getting list of games
         try:
-            for i in range(pages):
+            for i in range(Settings.instance()["gameListCount"]):
                 # Canceling
                 if self.window.worker.cancel:
                     raise StopIteration
@@ -223,7 +220,7 @@ class Player(dict):
                     gameListUrl = 'https://stats.xonotic.org' + nextPageElements[0]["href"]
                 else:
                     raise StopIteration
-                if not i == pages -1:
+                if not i == Settings.instance()["gameListCount"] -1:
                     time.sleep(Settings.instance()["groupRequestInterval"])
         except StopIteration:
             pass
