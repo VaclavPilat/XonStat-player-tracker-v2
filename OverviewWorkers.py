@@ -82,7 +82,7 @@ class OverviewLoader(Worker):
     def before(self):
         """This method is called before this worker is run
         """
-        self.window.status.message("Loading players from file")
+        self.message.emit("Loading players from file")
 
 
     def run(self):
@@ -100,9 +100,9 @@ class OverviewLoader(Worker):
         self.window.addButton.setEnabled(True)
         self._setButtonsEnabled.emit(6, True)
         if self.correct > 0:
-            self.window.status.resultProgress("Finished loading players from file", self.correct, self.maximum)
+            self.resultProgress.emit("Finished loading players from file", self.correct, self.maximum)
         else: 
-            self.window.status.resultMessage("No stored players were found")
+            self.resultMessage.emit("No stored players were found", True)
 
 
 
@@ -167,14 +167,14 @@ class OverviewUpdater(Worker):
             if self.updatePlayer(player):
                 self.correct += 1
             current += 1
-            self.window.status.progress(current, self.maximum)
+            self.progress.emit(current, self.maximum)
     
 
     def before(self):
         """This method is called before this worker is run
         """
-        self.window.status.message("Loading information from player profiles")
-        self.window.status.progress(0, self.maximum)
+        self.message.emit("Loading information from player profiles")
+        self.progress.emit(0, self.maximum)
         # Disabling buttons
         self.window.addButton.setEnabled(False)
         self._setButtonsEnabled.emit(6, False)
@@ -193,7 +193,7 @@ class OverviewUpdater(Worker):
     def after(self):
         """This method is called after this worker is finished
         """
-        self.window.status.resultProgress("Finished loading player profiles", self.correct, self.maximum)
+        self.resultProgress.emit("Finished loading player profiles", self.correct, self.maximum)
         # Enabling buttons
         self.window.refreshButton.setEnabled(True)
         self._updateRefreshButton.emit()
@@ -250,7 +250,7 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         # Disabling buttons
         self.window.refreshButton.setEnabled(False)
         self.window.addButton.setEnabled(False)
-        self.window.status.message("Loading information about new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
+        self.message.emit("Loading information about new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         
     
     def run(self):
@@ -266,9 +266,9 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         """This method is called after this worker is finished
         """
         if self.correct:
-            self.window.status.resultMessage("Successfully loaded new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
+            self.resultMessage.emit("Successfully loaded new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)
         else:
-            self.window.status.resultMessage("An error occured while loading player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", False)
+            self.resultMessage.emit("An error occured while loading player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", False)
         # Enabling buttons
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
@@ -313,7 +313,7 @@ class OverviewRemover(OverviewAdder):
         self.window.refreshButton.setEnabled(False)
         self.window.addButton.setEnabled(False)
         self._setButtonsEnabled.emit(6, False)
-        self.window.status.message("Removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
+        self.message.emit("Removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         
     
     def run(self):
@@ -332,4 +332,4 @@ class OverviewRemover(OverviewAdder):
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
         self._setButtonsEnabled.emit(6, True)
-        self.window.status.resultMessage("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
+        self.resultMessage.emit("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)

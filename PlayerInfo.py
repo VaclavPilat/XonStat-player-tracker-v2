@@ -78,8 +78,8 @@ class PlayerInfo(Window):
     def __addWidgetsToTable(self):
         """Adding widgets to QTableView widget
         """
-        headers = ["Current player name", "Playing since", "Last active", "Total time spent", "Games played (last 7 days)", 
-            "Recently used names", "Heatmap of games played in the last 7 days"]
+        headers = ["Current player name", "Playing since", "Last active", "Total time spent", 
+            "Recently used names", "Games played (last 7 days)"]
         for header in headers:
             rowIndex = self.table.rowCount()
             self.table.insertRow(rowIndex)
@@ -93,19 +93,18 @@ class PlayerInfo(Window):
         self.table.setCellWidget(2, 1, self.active)
         self.time = ColoredLabel(self.table, None, "dark-grey")
         self.table.setCellWidget(3, 1, self.time)
-        self.games = ColoredLabel(self.table, None, "dark-grey")
-        self.games.setText("0")
-        self.table.setCellWidget(4, 1, self.games)
         self.names = QTextEdit(self.table)
         self.names.setMaximumHeight(150)
         self.names.setLineWrapMode(QTextEdit.NoWrap)
         self.names.setReadOnly(True)
-        self.table.setCellWidget(5, 1, self.names)
-        self.table.setSpan(6, 0, 1, 2)
+        self.table.setCellWidget(4, 1, self.names)
+        self.games = ColoredLabel(self.table, None, "dark-grey")
+        self.games.setText("0")
+        self.table.setCellWidget(5, 1, self.games)
         # Adding heatmap table
-        self.table.insertRow(7)
+        self.table.insertRow(6)
         self.__createHeatmap()
-        self.table.setCellWidget(7, 0, self.heatmap, 1, 2)
+        self.table.setCellWidget(6, 0, self.heatmap, 1, 2)
     
 
     def __createHeatmap(self):

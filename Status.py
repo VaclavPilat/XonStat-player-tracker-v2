@@ -21,7 +21,7 @@ class Status(ColoredLabel):
         self.setObjectName("status")
     
 
-    def message(self, message: str, color: str = "yellow"):
+    def message(self, message: str):
         """Changing status message and setting background color to yellow. Used for starting a new task
 
         Args:
@@ -32,7 +32,7 @@ class Status(ColoredLabel):
             message += " ..."
             self.__message = message
             self.setText(message)
-            self.setBackground(color)
+            self.setBackground("yellow")
     
 
     def progress(self, current: int, max: int, finished: bool = False):
@@ -101,5 +101,6 @@ class Status(ColoredLabel):
         """Locking status from further changes
         """
         if not self.__locked:
-            self.message("Waiting for background task to finish", "blue")
+            self.message("Waiting for background task to finish")
+            self.setBackground("blue")
             self.__locked = True

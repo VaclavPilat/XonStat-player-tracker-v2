@@ -48,7 +48,7 @@ class PlayerInfoWorker(Worker):
     def before(self):
         """This method is called before this worker is run
         """
-        self.window.status.message("Loading information from player profile")
+        self.message.emit("Loading information from player profile")
     
 
     def __fillLabels(self):
@@ -121,7 +121,7 @@ class PlayerInfoWorker(Worker):
     def __loadRecentGames(self):
         """Loads recent games and extracts information from them
         """
-        self.window.status.message("Loading list of recent games")
+        self.message.emit("Loading list of recent games")
         for i in range(4, self.window.table.rowCount()):
             self._setRowColor.emit(i, "dark-yellow")
         # Loading recent games
@@ -132,15 +132,15 @@ class PlayerInfoWorker(Worker):
             correct += 1
             self.__processGameData(gameValues[2])
             if not gameValues[1] == 0 and gameValues[0] == gameValues[1]:
-                self.window.status.resultProgress("Loading recent games", correct, maximum)
+                self.resultProgress.emit("Loading recent games", correct, maximum)
             else:
-                self.window.status.message("Loading recent games")
-                self.window.status.progress(gameValues[0], gameValues[1])
+                self.message.emit("Loading recent games")
+                self.progress.emit(gameValues[0], gameValues[1])
         # Printing out message
         if maximum > 0:
-            self.window.status.resultProgress("Finished loading games", correct, maximum)
+            self.resultProgress.emit("Finished loading games", correct, maximum)
         else:
-            self.window.status.resultMessage("No games were found", self.window.player.time == "0 hours")
+            self.resultMessage.emit("No games were found", self.window.player.time == "0 hours")
         if correct > 0 or (maximum == 0 and self.window.player.time == "0 hours"):
             for i in range(4, self.window.table.rowCount()):
                 self._setRowColor.emit(i, None)
@@ -158,9 +158,9 @@ class PlayerInfoWorker(Worker):
             return
         # Changing status
         if self.window.player.error is not None:
-            self.window.status.resultMessage("An error occured: " + self.window.player.error, False)
+            self.resultMessage.emit("An error occured: " + self.window.player.error, False)
         else:
-            self.window.status.resultMessage("Successfully loaded player profile")
+            self.resultMessage.emit("Successfully loaded player profile", True)
             time.sleep(Settings.instance()["singleRequestInterval"])
             if self.cancel:
                 return

@@ -8,6 +8,12 @@ class Worker(QThread):
     """
 
 
+    message = pyqtSignal(str)
+    progress = pyqtSignal(int, int)
+    resultMessage = pyqtSignal(str, bool)
+    resultProgress = pyqtSignal(str, int, int)
+
+
     def __init__(self, window: Window):
         """Initialising QThread, connecting slots
 
@@ -20,6 +26,10 @@ class Worker(QThread):
         # Connecting slots and signals
         self.started.connect(self.before)
         self.finished.connect(self.after)
+        self.message.connect(self.window.status.message)
+        self.progress.connect(self.window.status.progress)
+        self.resultMessage.connect(self.window.status.resultMessage)
+        self.resultProgress.connect(self.window.status.resultProgress)
         self.connectSlots()
     
 
