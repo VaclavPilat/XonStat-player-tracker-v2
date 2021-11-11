@@ -162,6 +162,12 @@ class PlayerInfo(Window):
     
 
     def updateHeatmapGames(self, row: int, column: int):
+        """Updating number of games in a selected cell in heatmap
+
+        Args:
+            row (int): Row index
+            column (int): Column index
+        """
         widget = self.heatmap.cellWidget(row, column)
         if widget is not None:
             if len(widget.text()) > 0:

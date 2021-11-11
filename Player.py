@@ -1,7 +1,5 @@
-import urllib3, webbrowser
-from bs4 import BeautifulSoup
+import urllib3, webbrowser, json, time
 from http.client import responses
-import time
 from Functions import *
 from Settings import *
 
@@ -18,13 +16,13 @@ class Player(dict):
             data (dict): Player data
         """
         self.window = None # PlayerInfo window instance
-        self.profileSource = None # HTML source of the player's profile page
-        self.__profileSoup = None # BeautifulSoup parser for parsing player profile
+        self.profileInfo = None # HTML source of the player's profile page
+        #################################self.__profileSoup = None # BeautifulSoup parser for parsing player profile
         self.gameSources = [] # List containing HTML sources of recently played games
         super().__init__()
         self.update(data)
         self.profile = "https://stats.xonotic.org/player/" + str(data["id"])
-        self.__poolManager = urllib3.PoolManager() # Pool manager for sending request with urllib3
+        self.http = urllib3.PoolManager() # Pool manager for sending request with urllib3
     
 
     def showProfile(self):
@@ -37,47 +35,32 @@ class Player(dict):
         """Loading player profile
         """
         try:
-            response = self.__poolManager.request("GET", self.profile, timeout=urllib3.util.Timeout(2))
+            response = self.http.request('GET', self.profile, headers={'Accept': 'application/json'}, timeout=urllib3.util.Timeout(2))
             if response.status == 200:
-                self.profileSource = response.data
-                self.__profileSoup = BeautifulSoup(self.profileSource, "html.parser")
-                if "Player Information" in str(self.profileSource):
-                    self.error = None
-                else:
-                    self.error = "Profile might not exist"
+                self.profileInfo = json.loads(response.data.decode('utf-8'))
+                self.error = None
             else:
                 self.error = responses[response.status]
         except urllib3.exceptions.HTTPError:
             self.error = "Cannot connect to stats"
-        except:
-            self.error = "Error: " + type(e).__name__
+        except Exception as e:
+            self.error = type(e).__name__
     
 
-    def loadName(self, element = None) -> str:
+    def loadName(self) -> str:
         """Loads and returns current player name from profile
 
         Returns:
             str: Current player name
         """
-        saveName = False
         try:
-            if element is None:
-                if self.error is not None:
-                    raise Exception
-                element = self.__profileSoup.find("h2")
-                saveName = True
-            if not element.find() == None:
-                name = str(element.find())
-            else:
-                name = element.text.strip()
-        except:
-            name = None
-            if self.error is None:
-                self.error = "Profile contains wrong info"
-        # Saving and returning name
-        if saveName:
-            self.name = name
-        return name
+            if self.error is not None:
+                raise Exception
+            self.name = self.profileInfo["player"]["stripped_nick"]
+        except Exception as e:
+            self.name = None
+            self.error = "Cannot load name"
+        return self.name
     
 
     def loadSince(self) -> str:
@@ -89,11 +72,10 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            self.since = self.__profileSoup.select("span.abstime")[0].text
-        except:
+            self.since = self.profileInfo["player"]["joined_fuzzy"]
+        except Exception as e:
             self.since = None
-            if self.error is None:
-                self.error = "Profile contains wrong info"
+            self.error = "Cannot load since"
         return self.since
     
 
@@ -106,11 +88,10 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            self.active = self.__profileSoup.select("span.abstime")[1].text
-        except:
+            self.active = self.profileInfo["overall_stats"]["overall"]["last_played_fuzzy"]
+        except Exception as e:
             self.active = None
-            if self.error is None:
-                self.error = "Profile contains wrong info"
+            self.error = "Cannot load active"
         return self.active
     
 
@@ -161,7 +142,7 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            time = self.__profileSoup.select("div.cell.small-6 p")[0].select("small")[1].text
+            #time = #################################self.__profileSoup.select("div.cell.small-6 p")[0].select("small")[1].text
             hours = 0
             timeList = time.split(" ")
             for i in range(0, (len(timeList) // 2) * 2, 2):
@@ -190,7 +171,7 @@ class Player(dict):
                 if self.window.worker.cancel:
                     raise StopIteration
                 # Getting list of games
-                gameListResponse = self.__poolManager.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
+                gameListResponse = self.http.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
                 if gameListResponse.status == 200:
                     gameListSoup = BeautifulSoup(gameListResponse.data, "html.parser")
                     gameListLinks = gameListSoup.select("tr > .text-center > a.button")
@@ -204,7 +185,7 @@ class Player(dict):
                             current += 1
                             gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
                             try:
-                                gameResponse = self.__poolManager.request("GET", gameUrl, timeout=urllib3.util.Timeout(2))
+                                gameResponse = self.http.request("GET", gameUrl, timeout=urllib3.util.Timeout(2))
                                 if gameResponse.status == 200:
                                     gameSoup = BeautifulSoup(gameResponse.data, "html.parser")
                                     yield [current, maximum, gameSoup]

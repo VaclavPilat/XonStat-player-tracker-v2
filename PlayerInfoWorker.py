@@ -90,7 +90,7 @@ class PlayerInfoWorker(Worker):
         # Getting used player name
         try:
             element = data.find("a", href="/player/" + str(self.window.player["id"]))
-            self._showUsedNames.emit(self.window.player.loadName(element))
+            self._showUsedNames.emit(self.window.player.loadName())
         except:
             printException()
         # Checking if this game happened within the last 7 days
