@@ -254,5 +254,16 @@
 	"": "|",
 	"": "}",
 	"": "~",
-	"": "◀"
+	"": "◀",
+	"^x": "",
+	"^0": "<span style='color:rgb(128,128,128)'>",
+	"^1": "<span style='color:rgb(255,0,0)'>",
+	"^2": "<span style='color:rgb(51,255,0)'>",
+	"^3": "<span style='color:rgb(255,255,0)'>",
+	"^4": "<span style='color:rgb(51,102,255)'>",
+	"^5": "<span style='color:rgb(51,255,255)'>",
+	"^6": "<span style='color:rgb(255,51,102)'>",
+	"^7": "<span style='color:rgb(255,255,255)'>",
+	"^8": "<span style='color:rgb(153,153,153)'>",
+	"^9": "<span style='color:rgb(128,128,128)'>"
 }

@@ -1,4 +1,5 @@
-import urllib3, webbrowser, json, time, re
+import urllib3, webbrowser, json, time, re, colorsys
+from xml.sax.saxutils import escape
 from http.client import responses
 from Functions import *
 from Config import *
@@ -49,6 +50,41 @@ class Player(dict):
             printException()
     
 
+    def __processColor(self, color: str):
+        """Processes color from player nickname and returns it
+        Making darker colors less dark (like on XonStat webpage)
+
+        Args:
+            hex (str): Hexadecimal 3-digit RGB color
+        
+        Returns:
+            [str]: Processed decimal RGB color
+        """
+        h, l, s = colorsys.rgb_to_hls(int(color[0]*2, 16) / 255, int(color[1]*2, 16) / 255, int(color[2]*2, 16) / 255)
+        if l < 0.5:
+            l = 0.5
+        if l > 1:
+            l = 1
+        r, g, b = colorsys.hls_to_rgb(h, l, s)
+        return "rgb" + str((r * 255, g * 255, b * 255))
+    
+
+    def __processName(self, name: str):
+        """Processes nickname from xonotic syntax to HTML
+
+        Args:
+            name (str): Raw nickname loaded from XonStat
+        """
+        name = escape(name)
+        #name = re.sub(r"(\^x*[0-9a-fA-F]{3})", r'<span style="color:#\1">', name)
+        for colorCode in re.finditer(r"(\^x*[0-9a-fA-F]{3})", name):
+            name = name.replace(colorCode.group(), '<span style="color:rgb' + self.__processColor( colorCode.group()[2:] ) + '">')
+        # Replacing special characters
+        for character, replacement in Config.instance()["Characters"].items():
+            name = name.replace(character, replacement)
+        return name
+    
+
     def loadName(self) -> str:
         """Loads and returns current player name from profile
 
@@ -58,31 +94,7 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            # Processing pllayer name
-            name = self.profileInfo["player"]["nick"]
-            for a, b in {
-                "<": "&lt;", 
-                ">": "&gt;"
-            }.items():
-                name = name.replace(a, b)
-            name = re.sub(r"(\^x*[0-9a-fA-F]{3})", r'<span style="color:#\1">', name)
-            for a, b in {
-                "^x": "",
-                "^0": "<span style='color:rgb(128,128,128)'>",
-                "^1": "<span style='color:rgb(255,0,0)'>",
-                "^2": "<span style='color:rgb(51,255,0)'>",
-                "^3": "<span style='color:rgb(255,255,0)'>",
-                "^4": "<span style='color:rgb(51,102,255)'>",
-                "^5": "<span style='color:rgb(51,255,255)'>",
-                "^6": "<span style='color:rgb(255,51,102)'>",
-                "^7": "<span style='color:rgb(255,255,255)'>",
-                "^8": "<span style='color:rgb(153,153,153)'>",
-                "^9": "<span style='color:rgb(128,128,128)'>",
-            }.items():
-                name = name.replace(a, b)
-            for character, replacement in Config.instance()["Characters"].items():
-                name = name.replace(character, replacement)
-            self.name = name
+            self.name = self.__processName( self.profileInfo["player"]["nick"] )
         except Exception as e:
             self.name = None
             if self.error is None:

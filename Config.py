@@ -36,4 +36,3 @@ class Config(dict):
                 self[filename.split(".")[0]] = json.loads(f.read())
         except:
             printException()
-        print(self)
