@@ -83,19 +83,24 @@ ColoredButton[background="green"]:disabled  { border-color: #345328 }
 [color="active-6"] { color: #acacac }
 [color="active-7"] { color: #595959 }
 
-/*#####################################  TEXT TYPE  #####################################*/
+/*#####################################  CLASSES  #####################################*/
 
-[type="header"] {
+.center {
+    qproperty-alignment: AlignCenter;
+}
+
+.header {
     font-size: 30px;
     font-weight: bold;
-    qproperty-alignment: AlignCenter;
 }
-[type="subheader"] {
+.subheader {
     margin-bottom: 10px;
-    qproperty-alignment: AlignCenter;
 }
 
-[type="heatmap"] ColoredLabel {
+.heatmap ColoredLabel {
     color: black;
-    qproperty-alignment: AlignCenter;
+}
+
+.xolonium {
+    font-family: Xolonium !important;
 }

@@ -108,6 +108,7 @@ class Overview(Window):
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(player["id"]))
         self.table.cellWidget(row, 1).setText(player["nick"])
+        self.table.cellWidget(row, 2).setProperty("class", "xolonium")
         # Adding buttons
         self.table.setCellWidget(row, 4, ColoredButton(self.table, "Show player profile", "blue"))
         self.table.cellWidget(row, 4).clicked.connect(player.showProfile)

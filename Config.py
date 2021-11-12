@@ -1,4 +1,5 @@
 from Functions import *
+from PyQt5 import QtGui
 import os, json
 
 
@@ -26,13 +27,17 @@ class Config(dict):
     def __load(self):
         """Loading all config files
         """
-        # Getting abolute path to config folder
-        folder = os.path.join(os.path.dirname(__file__), "config/")
-        # Loading json from files into self
         try:
+            # Loading json from config files into self
+            folder = os.path.join(os.path.dirname(__file__), "config/")
             for filename in os.listdir(folder):
                 filepath = folder + filename
                 f = open(filepath, "r")
                 self[filename.split(".")[0]] = json.loads(f.read())
+            # Loading fonts
+            folder = os.path.join(os.path.dirname(__file__), "fonts/")
+            for filename in os.listdir(folder):
+                filepath = folder + filename
+                QtGui.QFontDatabase.addApplicationFont(filepath)
         except:
             printException()

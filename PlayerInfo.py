@@ -46,10 +46,10 @@ class PlayerInfo(Window):
         self.setCentralWidget(widget)
         # Adding top widgets
         playerNick = ColoredLabel(self, self.player["nick"])
-        playerNick.setProperty("type", "header")
+        playerNick.setProperty("class", "center header")
         layout.addWidget(playerNick)
         playerID = ColoredLabel(self, "ID#" + str(self.player["id"]))
-        playerID.setProperty("type", "subheader")
+        playerID.setProperty("class", "center subheader")
         layout.addWidget(playerID)
         layout.addWidget(self.__createTable())
         # Adding status
@@ -87,6 +87,7 @@ class PlayerInfo(Window):
             self.table.setCellWidget(rowIndex, 0, ColoredLabel(self.table, header, "dark-grey"))
         # Adding widgets to table
         self.name = ColoredLabel(self.table, None, "dark-grey")
+        self.name.setProperty("class", "xolonium")
         self.table.setCellWidget(0, 1, self.name)
         self.since = ColoredLabel(self.table, None, "dark-grey")
         self.table.setCellWidget(1, 1, self.since)
@@ -112,7 +113,7 @@ class PlayerInfo(Window):
         """Creates a heatmap table
         """
         self.heatmap = ColoredTable(self)
-        self.heatmap.setProperty("type", "heatmap")
+        self.heatmap.setProperty("class", "heatmap")
         # Generating column headers
         columns = []
         for i in range(0, 24, Config.instance()["Settings"]["heatmapHourSpan"]):
