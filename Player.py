@@ -1,4 +1,4 @@
-import urllib3, webbrowser, json, time
+import urllib3, webbrowser, json, time, re
 from http.client import responses
 from Functions import *
 from Settings import *
@@ -56,10 +56,34 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            self.name = self.profileInfo["player"]["stripped_nick"]
+            # Processing pllayer name
+            name = self.profileInfo["player"]["nick"]
+            for a, b in {
+                "<": "&lt;", 
+                ">": "&gt;"
+            }.items():
+                name = name.replace(a, b)
+            name = re.sub(r"(\^x*[0-9a-fA-F]{3})", r'<span style="color:#\1">', name)
+            for a, b in {
+                "^x": "",
+                "^0": "<span style='color:rgb(128,128,128)'>",
+                "^1": "<span style='color:rgb(255,0,0)'>",
+                "^2": "<span style='color:rgb(51,255,0)'>",
+                "^3": "<span style='color:rgb(255,255,0)'>",
+                "^4": "<span style='color:rgb(51,102,255)'>",
+                "^5": "<span style='color:rgb(51,255,255)'>",
+                "^6": "<span style='color:rgb(255,51,102)'>",
+                "^7": "<span style='color:rgb(255,255,255)'>",
+                "^8": "<span style='color:rgb(153,153,153)'>",
+                "^9": "<span style='color:rgb(128,128,128)'>",
+            }.items():
+                name = name.replace(a, b)
+            #print(name)
+            self.name = name
         except Exception as e:
             self.name = None
-            self.error = "Cannot load name"
+            if self.error is None:
+                self.error = "Cannot load name"
         return self.name
     
 
@@ -75,7 +99,8 @@ class Player(dict):
             self.since = self.profileInfo["player"]["joined_fuzzy"]
         except Exception as e:
             self.since = None
-            self.error = "Cannot load since"
+            if self.error is None:
+                self.error = "Cannot load since"
         return self.since
     
 
@@ -91,7 +116,8 @@ class Player(dict):
             self.active = self.profileInfo["overall_stats"]["overall"]["last_played_fuzzy"]
         except Exception as e:
             self.active = None
-            self.error = "Cannot load active"
+            if self.error is None:
+                self.error = "Cannot load active"
         return self.active
     
 
@@ -142,19 +168,11 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            #time = #################################self.__profileSoup.select("div.cell.small-6 p")[0].select("small")[1].text
-            hours = 0
-            timeList = time.split(" ")
-            for i in range(0, (len(timeList) // 2) * 2, 2):
-                if "day" in timeList[i + 1]:
-                    hours += int(timeList[i]) * 24
-                elif "hour" in timeList[i + 1]:
-                    hours += int(timeList[i])
-            self.time = str(hours) + " hours"
-        except:
+            self.time = str(round(self.profileInfo["overall_stats"]["overall"]["total_playing_time"] / 3600)) + " hours"
+        except Exception as e:
             self.time = None
             if self.error is None:
-                self.error = "Profile contains wrong info"
+                self.error = "Cannot load time time spent"
         return self.time
     
 
