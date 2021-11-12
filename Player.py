@@ -17,7 +17,6 @@ class Player(dict):
         """
         self.window = None # PlayerInfo window instance
         self.profileInfo = None # HTML source of the player's profile page
-        #################################self.__profileSoup = None # BeautifulSoup parser for parsing player profile
         self.gameSources = [] # List containing HTML sources of recently played games
         super().__init__()
         self.update(data)
@@ -78,9 +77,16 @@ class Player(dict):
                 "^9": "<span style='color:rgb(128,128,128)'>",
             }.items():
                 name = name.replace(a, b)
-            #print(name)
+            # Getting abolute path to file
+            absolutePath = os.path.join(os.path.dirname(__file__), "Characters.json") # Absolute path to the file with players
+            # Opening file
+            if os.path.isfile(absolutePath):
+                f = open(absolutePath, "r")
+                characters = json.loads(f.read())
+                for character in characters:
+                    name = name.replace(character, characters[character])
             self.name = name
-        except Exception as e:
+        except BufferError as e:
             self.name = None
             if self.error is None:
                 self.error = "Cannot load name"

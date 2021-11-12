@@ -1,6 +1,5 @@
 from Worker import *
 from ColoredWidgets import *
-from bs4 import BeautifulSoup
 import time, datetime
 from Functions import *
 from Settings import *
@@ -80,13 +79,13 @@ class PlayerInfoWorker(Worker):
             else:
                 self._setRowColor.emit(label[0], None)
     
-
+    """
     def __processGameData(self, data: BeautifulSoup):
-        """Processes game data retrieved from game pages
+        ""Processes game data retrieved from game pages
 
         Args:
             data (BeautifulSoup): Beutiful soup object for game page
-        """
+        ""
         # Getting used player name
         try:
             element = data.find("a", href="/player/" + str(self.window.player["id"]))
@@ -116,7 +115,7 @@ class PlayerInfoWorker(Worker):
                 self._updateHeatmapGames.emit(row, column)
         except:
             printException()
-    
+    """
 
     def __loadRecentGames(self):
         """Loads recent games and extracts information from them
