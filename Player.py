@@ -1,7 +1,8 @@
 import urllib3, webbrowser, json, time, re
 from http.client import responses
 from Functions import *
-from Settings import *
+from Config import *
+
 
 
 class Player(dict):
@@ -42,8 +43,10 @@ class Player(dict):
                 self.error = responses[response.status]
         except urllib3.exceptions.HTTPError:
             self.error = "Cannot connect to stats"
+            printException()
         except Exception as e:
             self.error = type(e).__name__
+            printException()
     
 
     def loadName(self) -> str:
@@ -77,19 +80,14 @@ class Player(dict):
                 "^9": "<span style='color:rgb(128,128,128)'>",
             }.items():
                 name = name.replace(a, b)
-            # Getting abolute path to file
-            absolutePath = os.path.join(os.path.dirname(__file__), "Characters.json") # Absolute path to the file with players
-            # Opening file
-            if os.path.isfile(absolutePath):
-                f = open(absolutePath, "r")
-                characters = json.loads(f.read())
-                for character in characters:
-                    name = name.replace(character, characters[character])
+            for character, replacement in Config.instance()["Characters"].items():
+                name = name.replace(character, replacement)
             self.name = name
-        except BufferError as e:
+        except Exception as e:
             self.name = None
             if self.error is None:
                 self.error = "Cannot load name"
+            printException()
         return self.name
     
 
@@ -190,7 +188,7 @@ class Player(dict):
         gameListUrl = 'https://stats.xonotic.org/games?player_id=' + str(self["id"])
         # Getting list of games
         try:
-            for i in range(Settings.instance()["gameListCount"]):
+            for i in range( Config.instance()["Settings"]["gameListCount"] ):
                 # Canceling
                 if self.window.worker.cancel:
                     raise StopIteration
@@ -205,7 +203,7 @@ class Player(dict):
                         if self.window.worker.cancel:
                             raise StopIteration
                         try:
-                            time.sleep(Settings.instance()["singleRequestInterval"])
+                            time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
                             current += 1
                             gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
                             try:
@@ -225,8 +223,8 @@ class Player(dict):
                     gameListUrl = 'https://stats.xonotic.org' + nextPageElements[0]["href"]
                 else:
                     raise StopIteration
-                if not i == Settings.instance()["gameListCount"] -1:
-                    time.sleep(Settings.instance()["groupRequestInterval"])
+                if not i == Config.instance()["Settings"]["gameListCount"] -1:
+                    time.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
         except StopIteration:
             pass
         except:

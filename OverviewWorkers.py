@@ -3,7 +3,7 @@ from Worker import *
 from Player import *
 import sys, os, json, time
 from Functions import *
-from Settings import *
+from Config import *
 
 
 
@@ -43,23 +43,16 @@ class OverviewLoader(Worker):
     def __loadPlayers(self):
         """Loads players from file
         """
-        # Getting abolute path to file
-        absolutePath = os.path.join(os.path.dirname(__file__), "Players.json") # Absolute path to the file with players
-        # Opening file
         try:
-            if os.path.isfile(absolutePath):
-                f = open(absolutePath, "r")
-                loadedPlayers = json.loads(f.read())
-                for loadedPlayer in loadedPlayers:
-                    if len(loadedPlayer) == 2 and "id" in loadedPlayer and "nick" in loadedPlayer \
-                        and type(loadedPlayer["id"]) == int and type(loadedPlayer["nick"]) == str:
-                        player = Player(loadedPlayer)
-                        self.loadPlayer(player)
-                f.close()
+            for loadedPlayer in Config.instance()["Players"]:
+                if len(loadedPlayer) == 2 and "id" in loadedPlayer and "nick" in loadedPlayer \
+                    and type(loadedPlayer["id"]) == int and type(loadedPlayer["nick"]) == str:
+                    player = Player(loadedPlayer)
+                    self.loadPlayer(player)
         except:
             loadedPlayers = []
         self.correct = len(self.window.players)
-        self.maximum = len(loadedPlayers)
+        self.maximum = len(Config.instance()["Players"])
     
 
     def showPlayer(self, player: Player):
@@ -140,7 +133,7 @@ class OverviewUpdater(Worker):
         """
         self._setRowColor.emit(self.window.getRow(player), "dark-yellow")
         # Sleep before loading
-        time.sleep(Settings.instance()["singleRequestInterval"])
+        time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
         # Loading information
         player.loadProfile()
         player.loadName()

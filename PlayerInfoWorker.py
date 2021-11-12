@@ -2,7 +2,7 @@ from Worker import *
 from ColoredWidgets import *
 import time, datetime
 from Functions import *
-from Settings import *
+from Config import *
 
 
 
@@ -103,7 +103,7 @@ class PlayerInfoWorker(Worker):
                 # Getting information from datetime
                 gameDatetime = datetime.datetime.utcfromtimestamp(gameTime)
                 row = gameDatetime.date().weekday()
-                column = gameDatetime.hour // Settings.instance()["heatmapHourSpan"]
+                column = gameDatetime.hour // Config.i()["heatmapHourSpan"]
                 # Updating heatmap
                 currentColor = self.window.heatmap.cellWidget(row, column).property("background")
                 if currentColor is not None:
@@ -160,7 +160,7 @@ class PlayerInfoWorker(Worker):
             self.resultMessage.emit("An error occured: " + self.window.player.error, False)
         else:
             self.resultMessage.emit("Successfully loaded player profile", True)
-            time.sleep(Settings.instance()["singleRequestInterval"])
+            time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
             if self.cancel:
                 return
             self.__loadRecentGames()

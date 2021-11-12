@@ -5,6 +5,7 @@ from Status import *
 from ColoredWidgets import *
 from Player import *
 from PlayerInfoWorker import *
+from Config import *
 import os
 
 
@@ -114,8 +115,8 @@ class PlayerInfo(Window):
         self.heatmap.setProperty("type", "heatmap")
         # Generating column headers
         columns = []
-        for i in range(0, 24, Settings.instance()["heatmapHourSpan"]):
-            columns.append(str(i) + "-" + str(i + Settings.instance()["heatmapHourSpan"]))
+        for i in range(0, 24, Config.instance()["Settings"]["heatmapHourSpan"]):
+            columns.append(str(i) + "-" + str(i + Config.instance()["Settings"]["heatmapHourSpan"]))
         # Setting columns
         self.heatmap.setColumnCount(len(columns))
         self.heatmap.setHorizontalHeaderLabels(columns)
