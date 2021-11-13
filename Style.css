@@ -99,6 +99,7 @@ ColoredButton[background="green"]:disabled  { border-color: #345328 }
 
 .heatmap ColoredLabel {
     color: black;
+    qproperty-alignment: AlignCenter;
 }
 
 .xolonium {

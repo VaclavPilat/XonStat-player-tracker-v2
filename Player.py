@@ -199,44 +199,44 @@ class Player(dict):
         """
         current = 0
         maximum = 0
-        gameListUrl = 'https://stats.xonotic.org/games?player_id=' + str(self["id"])
-        # Getting list of games
+        # Loading list of games
+        gameListUrl = "https://stats.xonotic.org/games?player_id=" + str(self["id"])
         try:
             for i in range( Config.instance()["Settings"]["gameListCount"] ):
                 # Canceling
                 if self.window.worker.cancel:
                     raise StopIteration
                 # Getting list of games
-                gameListResponse = self.http.request("GET", gameListUrl, timeout=urllib3.util.Timeout(2))
+                gameListResponse = self.http.request('GET', gameListUrl, headers=self.headers, timeout=self.timeout)
                 if gameListResponse.status == 200:
-                    gameListSoup = BeautifulSoup(gameListResponse.data, "html.parser")
-                    gameListLinks = gameListSoup.select("tr > .text-center > a.button")
-                    # Looping through game links
-                    maximum += len(gameListLinks)
-                    for gameLink in gameListLinks:
+                    gameList = json.loads(gameListResponse.data.decode('utf-8'))
+                    if gameList is not None:
+                        maximum += len(gameList)
+                    else:
+                        raise StopIteration
+                    for link in gameList:
+                        # Canceling
                         if self.window.worker.cancel:
                             raise StopIteration
                         try:
                             time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
                             current += 1
-                            gameUrl = 'https://stats.xonotic.org' + gameLink["href"]
                             try:
-                                gameResponse = self.http.request("GET", gameUrl, timeout=urllib3.util.Timeout(2))
+                                gameResponse = self.http.request("GET", "https://stats.xonotic.org/game/" + str(link["game_id"]), headers=self.headers, timeout=self.timeout)
                                 if gameResponse.status == 200:
-                                    gameSoup = BeautifulSoup(gameResponse.data, "html.parser")
-                                    yield [current, maximum, gameSoup]
+                                    gameObject = json.loads(gameResponse.data.decode('utf-8'))
+                                    yield [current, maximum, gameObject]
                             except:
                                 printException()
                         except:
                             printException()
+                    # Getting new URL
+                    if gameList is not None and len(gameList) > 0:
+                        gameListUrl = "https://stats.xonotic.org/games?player_id=" + str(self["id"]) + "&start_game_id=" + str(gameList[-1]["game_id"] -1)
+                    else:
+                        raise StopIteration
                 else:
                     self.error = responses[gameListResponse.status]
-                # Getting new URL
-                nextPageElements = gameListSoup.select('a[name="Next Page"]')
-                if len(nextPageElements) >= 0:
-                    gameListUrl = 'https://stats.xonotic.org' + nextPageElements[0]["href"]
-                else:
-                    raise StopIteration
                 if not i == Config.instance()["Settings"]["gameListCount"] -1:
                     time.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
         except StopIteration:

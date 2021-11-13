@@ -3,6 +3,7 @@ from ColoredWidgets import *
 import time, datetime
 from Functions import *
 from Config import *
+from xml.sax.saxutils import escape
 
 
 
@@ -79,31 +80,29 @@ class PlayerInfoWorker(Worker):
             else:
                 self._setRowColor.emit(label[0], None)
     
-    """
-    def __processGameData(self, data: BeautifulSoup):
-        ""Processes game data retrieved from game pages
+    
+    def __processGameData(self, data: dict):
+        """Processes game data retrieved from game pages
 
         Args:
-            data (BeautifulSoup): Beutiful soup object for game page
-        ""
-        # Getting used player name
+            data (dict): Json object with game data
+        """
         try:
-            element = data.find("a", href="/player/" + str(self.window.player["id"]))
-            self._showUsedNames.emit(self.window.player.loadName())
-        except:
-            printException()
-        # Checking if this game happened within the last 7 days
-        try:
+            # Getting used player name
+            for player in data["player_game_stats"]:
+                if player["player_id"] == self.window.player["id"]:
+                    self._showUsedNames.emit(escape(player["nick"]))
+                    break
+            # Checking if this game happened within the last 7 days
+            gameDatetime = datetime.datetime.strptime(data["create_dt"],"%Y-%m-%dT%H:%M:%SZ")
+            gameTime = gameDatetime.timestamp()
             currentTime = int(time.time())
-            element = data.select("span.abstime")[0]
-            gameTime = int(element["data-epoch"])
             week = 60 * 60 * 24 * 7
             if (currentTime - gameTime) <= week:
                 self._showGames.emit()
                 # Getting information from datetime
-                gameDatetime = datetime.datetime.utcfromtimestamp(gameTime)
                 row = gameDatetime.date().weekday()
-                column = gameDatetime.hour // Config.i()["heatmapHourSpan"]
+                column = gameDatetime.hour // Config.instance()["Settings"]["heatmapHourSpan"]
                 # Updating heatmap
                 currentColor = self.window.heatmap.cellWidget(row, column).property("background")
                 if currentColor is not None:
@@ -115,7 +114,7 @@ class PlayerInfoWorker(Worker):
                 self._updateHeatmapGames.emit(row, column)
         except:
             printException()
-    """
+
 
     def __loadRecentGames(self):
         """Loads recent games and extracts information from them
