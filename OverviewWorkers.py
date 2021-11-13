@@ -223,20 +223,6 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         self.player = player
     
 
-    def savePlayers(self):
-        """Attempts to save current list of players into file
-        """
-        # Getting abolute path to file
-        absolutePath = os.path.join(os.path.dirname(__file__), "Players.json") # Absolute path to the file with players
-        # Saving file
-        try:
-            f = open(absolutePath, "w")
-            f.write(json.dumps(self.window.players, sort_keys=False, indent=4))
-            f.close()
-        except:
-            printException()
-    
-
     def before(self):
         """This method is called before this worker is run
         """
@@ -252,7 +238,8 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         self.loadPlayer(self.player)
         self.showPlayer(self.player)
         self.correct = self.updatePlayer(self.player)
-        self.savePlayers()
+        Config.instance()["Players"] = json.loads( json.dumps(self.window.players) )
+        Config.save("Players")
 
 
     def after(self):
@@ -315,7 +302,8 @@ class OverviewRemover(OverviewAdder):
         # Deleting player
         self._hidePlayer.emit(self.player)
         self.__removePlayer()
-        self.savePlayers()
+        Config.instance()["Players"] = json.loads( json.dumps(self.window.players) )
+        Config.save("Players")
 
 
     def after(self):

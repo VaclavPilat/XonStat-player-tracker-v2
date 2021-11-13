@@ -41,3 +41,18 @@ class Config(dict):
                 QtGui.QFontDatabase.addApplicationFont(filepath)
         except:
             printException()
+    
+
+    def save(filename: str):
+        """Saves a selected config file
+
+        Args:
+            filename (str): Name of config file
+        """
+        try:
+            filepath = os.path.join(os.path.dirname(__file__), "config/" + filename + ".json")
+            f = open(filepath, "w")
+            f.write(json.dumps(Config.instance()[filename], sort_keys=False, indent=4))
+            f.close()
+        except:
+            printException()

@@ -224,8 +224,7 @@ class Overview(Window):
                 if not widget == None and type(widget) == ColoredLabel:
                     # Checking if this label contins HTML
                     if "<" in widget.text().lower():
-                        soup = BeautifulSoup(widget.text().lower(), 'html.parser')
-                        labelText = soup.get_text()
+                        labelText = re.sub(re.compile('<.*?>'), '', widget.text().lower())
                     else:
                         labelText = widget.text().lower()
                     if text.lower() in labelText:

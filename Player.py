@@ -24,7 +24,9 @@ class Player(dict):
         self.update(data)
         self.profile = "https://stats.xonotic.org/player/" + str(data["id"])
         self.http = urllib3.PoolManager() # Pool manager for sending request with urllib3
-    
+        self.headers = {'Accept': 'application/json'}
+        self.timeout = urllib3.util.Timeout(2)
+
 
     def showProfile(self):
         """Opening player profile in a new tab of a browser
@@ -36,7 +38,7 @@ class Player(dict):
         """Loading player profile
         """
         try:
-            response = self.http.request('GET', self.profile, headers={'Accept': 'application/json'}, timeout=urllib3.util.Timeout(2))
+            response = self.http.request('GET', self.profile, headers=self.headers, timeout=self.timeout)
             if response.status == 200:
                 self.profileInfo = json.loads(response.data.decode('utf-8'))
                 self.error = None
