@@ -32,7 +32,7 @@ class Config(dict):
             folder = os.path.join(os.path.dirname(__file__), "config/")
             for filename in os.listdir(folder):
                 filepath = folder + filename
-                f = open(filepath, "r")
+                f = open(filepath, "r", encoding="utf8")
                 self[filename.split(".")[0]] = json.loads(f.read())
             # Loading fonts
             folder = os.path.join(os.path.dirname(__file__), "fonts/")

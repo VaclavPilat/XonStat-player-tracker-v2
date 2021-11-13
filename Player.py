@@ -68,7 +68,7 @@ class Player(dict):
         if l > 1:
             l = 1
         r, g, b = colorsys.hls_to_rgb(h, l, s)
-        return "rgb" + str((r * 255, g * 255, b * 255))
+        return "rgb(" + str(r * 255) + "," + str(g * 255) + "," + str(b * 255) + ")"
     
 
     def __processName(self, name: str):
@@ -78,9 +78,8 @@ class Player(dict):
             name (str): Raw nickname loaded from XonStat
         """
         name = escape(name)
-        #name = re.sub(r"(\^x*[0-9a-fA-F]{3})", r'<span style="color:#\1">', name)
         for colorCode in re.finditer(r"(\^x*[0-9a-fA-F]{3})", name):
-            name = name.replace(colorCode.group(), '<span style="color:rgb' + self.__processColor( colorCode.group()[2:] ) + '">')
+            name = name.replace(colorCode.group(), '<span style="color:' + self.__processColor( colorCode.group()[2:] ) + '">')
         # Replacing special characters
         for character, replacement in Config.instance()["Characters"].items():
             name = name.replace(character, replacement)
