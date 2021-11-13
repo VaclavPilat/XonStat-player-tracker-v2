@@ -130,7 +130,7 @@ class PlayerInfo(Window):
             self.heatmap.insertRow(i)
             self.heatmap.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
             for j in range(self.heatmap.columnCount()):
-                self.heatmap.setCellWidget(i, j, ColoredLabel(self.heatmap))
+                self.heatmap.setCellWidget(i, j, ColoredLabel(self.heatmap, None, "heatmap-0"))
         self.heatmap.setVerticalHeaderLabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
         self.heatmap.setMinimumHeight(230)
     
@@ -173,7 +173,11 @@ class PlayerInfo(Window):
         """
         widget = self.heatmap.cellWidget(row, column)
         if widget is not None:
+            count = 0
             if len(widget.text()) > 0:
-                widget.setText(str(int(widget.text()) + 1))
+                count = int(widget.text()) + 1
             else:
-                widget.setText("1")
+                count = 1
+            widget.setText(str(count))
+            if count <= Config.instance()["Colors"]["heatmap"]["count"]:
+                widget.setBackground("heatmap-" + str(count))

@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget
 from PyQt5.QtGui import QIcon
 from ColoredWidgets import *
 import os, qdarkstyle
+from Functions import *
 
 
 
@@ -37,6 +38,8 @@ class Window(QMainWindow):
             myCSS = myCSSFile.read()
             if myCSS is not None and myCSS != "":
                 stylesheet += myCSS
+        # Adding generated color styles
+        stylesheet += getColorStyles()
         # Applying stylesheet
         self.setStyleSheet(stylesheet)
     

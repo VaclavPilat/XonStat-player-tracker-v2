@@ -105,12 +105,6 @@ class PlayerInfoWorker(Worker):
                 column = gameDatetime.hour // Config.instance()["Settings"]["heatmapHourSpan"]
                 # Updating heatmap
                 currentColor = self.window.heatmap.cellWidget(row, column).property("background")
-                if currentColor is not None:
-                    currentColorIndex = int(currentColor.split('-')[1])
-                    if int(currentColor.split('-')[1]) > 1:
-                        self._setWidgetColor.emit(row, column, "active-" + str(currentColorIndex -1))
-                else:
-                    self._setWidgetColor.emit(row, column, "active-7")
                 self._updateHeatmapGames.emit(row, column)
         except:
             printException()

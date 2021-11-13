@@ -1,0 +1,48 @@
+{
+    "presets": {
+        "grey": {
+            "normal": "#444444",
+            "light": "#636363",
+            "dark": "#252525"
+        },
+        "blue": {
+            "normal": "#2c4a58",
+            "light": "#3a667c",
+            "dark": "#1c2f38"
+        },
+        "yellow": {
+            "normal": "#5a582c",
+            "light": "#726e38",
+            "dark": "#333218"
+        },
+        "orange": {
+            "normal": "#5a452c",
+            "light": "#775b38",
+            "dark": "#3a2c1c"
+        },
+        "red": {
+            "normal": "#582a2a",
+            "light": "#793838",
+            "dark": "#381b1b"
+        },
+        "green": {
+            "normal": "#345328",
+            "light": "#497437",
+            "dark": "#1f3118"
+        }
+    },
+    "heatmap": {
+        "min": "#CCCCCC",
+        "max": "#FF6000",
+        "count": 10
+    },
+    "activity": [
+        "#ff6200",
+        "#ff8a46",
+        "#ffac79",
+        "#ffcdaf",
+        "#ffffff",
+        "#acacac",
+        "#595959"
+    ]
+}
