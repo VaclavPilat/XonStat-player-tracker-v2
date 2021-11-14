@@ -6,6 +6,7 @@ from OverviewWorkers import *
 from AddPlayer import *
 from ColoredWidgets import *
 from PlayerInfo import *
+import qtawesome as qta
 
 
 
@@ -64,7 +65,7 @@ class Overview(Window):
         self.refreshButton.clicked.connect(self.__updatePlayers)
         layout.addWidget(self.refreshButton)
         # Creating button for adding new player
-        self.addButton = ColoredButton(self, "Add new player", "green", False)
+        self.addButton = ColoredButton(self, qta.icon("fa.user-plus", color="#DDD"), "green", False)
         self.addButton.clicked.connect(self.__openAddPlayer)
         layout.addWidget(self.addButton)
         #return search
@@ -84,7 +85,7 @@ class Overview(Window):
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
-        self.table.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
+        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         for i in range(1, 3):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
@@ -110,31 +111,27 @@ class Overview(Window):
         self.table.cellWidget(row, 1).setText(player["nick"])
         self.table.cellWidget(row, 2).setProperty("class", "xolonium")
         # Adding buttons
-        """
-        self.table.setCellWidget(row, 4, ColoredButton(self.table, "Show player profile", "blue"))
-        self.table.cellWidget(row, 4).clicked.connect(player.showProfile)
-        self.table.setCellWidget(row, 5, ColoredButton(self.table, "Show more info", "yellow"))
-        self.table.cellWidget(row, 5)
-        self.table.setCellWidget(row, 6, ColoredButton(self.table, "Delete this player", "red"))
-        self.table.cellWidget(row, 6).
-        if not self.worker.isFinished():
-            self.table.cellWidget(row, 6).setEnabled(False)
-        """
-        actions = QWidget()
+        actions = ColoredWidget()
         buttonGroup = QHBoxLayout()
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
+        # Up button
+        upButton = ColoredButton(self.table, qta.icon("ei.caret-up", color="#DDD"), "grey")
+        buttonGroup.addWidget(upButton)
+        # Down button
+        downButton = ColoredButton(self.table, qta.icon("ei.caret-down", color="#DDD"), "grey")
+        buttonGroup.addWidget(downButton)
         # Profile button
-        profileButton = ColoredButton(self.table, "Show player profile", "blue")
+        profileButton = ColoredButton(self.table, qta.icon("ri.file-user-fill", color="#DDD"), "blue")
         profileButton.clicked.connect(player.showProfile)
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
-        infoButton = ColoredButton(self.table, "Show more info", "yellow")
+        infoButton = ColoredButton(self.table, qta.icon("msc.graph", color="#DDD"), "yellow")
         infoButton.clicked.connect(lambda: self.__openPlayerInfo(player))
         buttonGroup.addWidget(infoButton)
         # Delete button
-        deleteButton = ColoredButton(self.table, "Delete this player", "red")
+        deleteButton = ColoredButton(self.table, qta.icon("fa5s.trash-alt", color="#DDD"), "red")
         deleteButton.setObjectName("deleteButton")
         deleteButton.clicked.connect(lambda: self.__removePlayer(player))
         buttonGroup.addWidget(deleteButton)
@@ -181,10 +178,10 @@ class Overview(Window):
         """Updates visuals of "Refresh" button
         """
         if self.worker.isRunning():
-            self.refreshButton.setText("Stop updating table")
+            self.refreshButton.setIcon(qta.icon("mdi6.close", color="#DDD"))
             self.refreshButton.setBackground("orange")
         else:
-            self.refreshButton.setText("Refresh table")
+            self.refreshButton.setIcon(qta.icon("mdi6.reload", color="#DDD"))
             self.refreshButton.setBackground("yellow")
 
 
