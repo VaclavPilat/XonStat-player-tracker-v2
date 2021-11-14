@@ -91,7 +91,7 @@ class OverviewLoader(Worker):
         self.window.refreshButton.setEnabled(True)
         self._updateRefreshButton.emit()
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit("deleteButton", True)
+        self._setButtonsEnabled.emit("unsafeButton", True)
         if self.correct > 0:
             self.resultProgress.emit("Finished loading players from file", self.correct, self.maximum)
         else: 
@@ -170,7 +170,7 @@ class OverviewUpdater(Worker):
         self.progress.emit(0, self.maximum)
         # Disabling buttons
         self.window.addButton.setEnabled(False)
-        self._setButtonsEnabled.emit("deleteButton", False)
+        self._setButtonsEnabled.emit("unsafeButton", False)
         
 
     def run(self):
@@ -191,7 +191,7 @@ class OverviewUpdater(Worker):
         self.window.refreshButton.setEnabled(True)
         self._updateRefreshButton.emit()
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit("deleteButton", True)
+        self._setButtonsEnabled.emit("unsafeButton", True)
 
 
 
@@ -292,7 +292,7 @@ class OverviewRemover(OverviewAdder):
         # Disabling buttons
         self.window.refreshButton.setEnabled(False)
         self.window.addButton.setEnabled(False)
-        self._setButtonsEnabled.emit("deleteButton", False)
+        self._setButtonsEnabled.emit("unsafeButton", False)
         self.message.emit("Removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         
     
@@ -312,5 +312,5 @@ class OverviewRemover(OverviewAdder):
         # Enabling buttons
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit("deleteButton", True)
+        self._setButtonsEnabled.emit("unsafeButton", True)
         self.resultMessage.emit("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)

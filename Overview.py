@@ -86,6 +86,7 @@ class Overview(Window):
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
         self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.table.verticalHeader().setMinimumSectionSize(30)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         for i in range(1, 3):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
@@ -112,15 +113,18 @@ class Overview(Window):
         self.table.cellWidget(row, 2).setProperty("class", "xolonium")
         # Adding buttons
         actions = ColoredWidget()
+        actions.setBackground("dark-grey")
         buttonGroup = QHBoxLayout()
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
         # Up button
         upButton = ColoredButton(self.table, qta.icon("ei.caret-up", color="#DDD"), "grey")
+        upButton.setObjectName("unsafeButton")
         buttonGroup.addWidget(upButton)
         # Down button
         downButton = ColoredButton(self.table, qta.icon("ei.caret-down", color="#DDD"), "grey")
+        downButton.setObjectName("unsafeButton")
         buttonGroup.addWidget(downButton)
         # Profile button
         profileButton = ColoredButton(self.table, qta.icon("ri.file-user-fill", color="#DDD"), "blue")
@@ -132,7 +136,7 @@ class Overview(Window):
         buttonGroup.addWidget(infoButton)
         # Delete button
         deleteButton = ColoredButton(self.table, qta.icon("fa5s.trash-alt", color="#DDD"), "red")
-        deleteButton.setObjectName("deleteButton")
+        deleteButton.setObjectName("unsafeButton")
         deleteButton.clicked.connect(lambda: self.__removePlayer(player))
         buttonGroup.addWidget(deleteButton)
         self.table.setCellWidget(row, 4, actions)
@@ -282,7 +286,7 @@ class Overview(Window):
                 self.worker.start()
         except:
             self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
-            self.setButtonsEnabled("deleteButton", True)
+            self.setButtonsEnabled("unsafeButton", True)
     
 
     def hidePlayer(self, player: Player):

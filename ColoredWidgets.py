@@ -26,6 +26,7 @@ class ColoredWidget(QWidget):
         Args:
             value (str, optional): Background color value, defined in stylesheets. Defaults to None.
         """
+        self.setAttribute(Qt.WA_StyledBackground, True)
         self.setProperty("background", value)
         
 
@@ -112,7 +113,6 @@ class ColoredTable(QTableWidget):
         super().__init__(parent)
         self.setEditTriggers(QTableWidget.NoEditTriggers)
         self.horizontalHeader().setMinimumSectionSize(150)
-        self.verticalHeader().setMinimumSectionSize(30)
 
     
     def setRowColor(self, row: int, background: str = None):
@@ -136,7 +136,8 @@ class ColoredTable(QTableWidget):
         """
         widget = self.cellWidget(row, column)
         if not widget == None:
-            widget.setBackground(background)
+            if type(widget) is ColoredLabel or type(widget) is ColoredWidget:
+                widget.setBackground(background)
     
 
     def setButtonsEnabled(self, name: str, enabled: bool):

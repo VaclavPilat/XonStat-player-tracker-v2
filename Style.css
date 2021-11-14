@@ -7,7 +7,7 @@ ColoredLabel {
     padding: 5px;
 }
 
-ColoredButton {
+Overview ColoredButton {
     min-width: 25px;
     max-width: 25px;
     min-height: 20px;
