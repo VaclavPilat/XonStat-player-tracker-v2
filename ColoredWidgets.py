@@ -132,17 +132,15 @@ class ColoredTable(QTableWidget):
                 widget.setBackground(background)
     
 
-    def setButtonsEnabled(self, column: int, enabled: bool):
-        """Sets "enabled" property to a specified value for each button in the column
+    def setButtonsEnabled(self, name: str, enabled: bool):
+        """Sets "enabled" property to all buttons with specified object name
 
         Args:
-            column (int): Column index
+            name (str): Object name
             enabled (bool): Should the buttons be enabled?
         """
-        for i in range(self.rowCount()):
-            widget = self.cellWidget(i, column)
-            if not widget == None and type(widget) == ColoredButton:
-                widget.setEnabled(enabled)
+        for button in self.findChildren(ColoredButton, name):
+            button.setEnabled(enabled)
     
 
     def setCellWidget(self, row: int, column: int, widget: QWidget, rowSpan: int = None, columnSpan: int = None):

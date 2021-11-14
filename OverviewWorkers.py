@@ -13,7 +13,7 @@ class OverviewLoader(Worker):
 
 
     _showPlayer = pyqtSignal(Player) # Signal for adding new player to table
-    _setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    _setButtonsEnabled = pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
     _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
@@ -91,7 +91,7 @@ class OverviewLoader(Worker):
         self.window.refreshButton.setEnabled(True)
         self._updateRefreshButton.emit()
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit(6, True)
+        self._setButtonsEnabled.emit("deleteButton", True)
         if self.correct > 0:
             self.resultProgress.emit("Finished loading players from file", self.correct, self.maximum)
         else: 
@@ -108,7 +108,7 @@ class OverviewUpdater(Worker):
 
     _updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
     _setRowColor = pyqtSignal(int, str) # Signal for changing row color
-    _setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    _setButtonsEnabled = pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
     _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
@@ -170,7 +170,7 @@ class OverviewUpdater(Worker):
         self.progress.emit(0, self.maximum)
         # Disabling buttons
         self.window.addButton.setEnabled(False)
-        self._setButtonsEnabled.emit(6, False)
+        self._setButtonsEnabled.emit("deleteButton", False)
         
 
     def run(self):
@@ -191,7 +191,7 @@ class OverviewUpdater(Worker):
         self.window.refreshButton.setEnabled(True)
         self._updateRefreshButton.emit()
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit(6, True)
+        self._setButtonsEnabled.emit("deleteButton", True)
 
 
 
@@ -263,7 +263,7 @@ class OverviewRemover(OverviewAdder):
 
 
     _hidePlayer = pyqtSignal(Player) # Signal for removing a player from table
-    _setButtonsEnabled = pyqtSignal(int, bool) # Signal for changing "enabled" property of buttons
+    _setButtonsEnabled = pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
     
 
     def connectSlots(self):
@@ -292,7 +292,7 @@ class OverviewRemover(OverviewAdder):
         # Disabling buttons
         self.window.refreshButton.setEnabled(False)
         self.window.addButton.setEnabled(False)
-        self._setButtonsEnabled.emit(6, False)
+        self._setButtonsEnabled.emit("deleteButton", False)
         self.message.emit("Removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         
     
@@ -312,5 +312,5 @@ class OverviewRemover(OverviewAdder):
         # Enabling buttons
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit(6, True)
+        self._setButtonsEnabled.emit("deleteButton", True)
         self.resultMessage.emit("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)

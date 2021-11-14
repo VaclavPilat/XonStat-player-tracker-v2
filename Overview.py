@@ -80,7 +80,7 @@ class Overview(Window):
         self.table = ColoredTable(self)
         # Setting columns
         headers = ["ID", "Player nickname", "Current player name", "Last played", 
-                        "Player profile", "More information", "Delete player"]
+                        "Actions"]
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
@@ -88,7 +88,7 @@ class Overview(Window):
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         for i in range(1, 3):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
-        for i in range(3, 7):
+        for i in range(3, len(headers)):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeToContents)
         return self.table
 
@@ -110,14 +110,35 @@ class Overview(Window):
         self.table.cellWidget(row, 1).setText(player["nick"])
         self.table.cellWidget(row, 2).setProperty("class", "xolonium")
         # Adding buttons
+        """
         self.table.setCellWidget(row, 4, ColoredButton(self.table, "Show player profile", "blue"))
         self.table.cellWidget(row, 4).clicked.connect(player.showProfile)
         self.table.setCellWidget(row, 5, ColoredButton(self.table, "Show more info", "yellow"))
-        self.table.cellWidget(row, 5).clicked.connect(lambda: self.__openPlayerInfo(player))
+        self.table.cellWidget(row, 5)
         self.table.setCellWidget(row, 6, ColoredButton(self.table, "Delete this player", "red"))
-        self.table.cellWidget(row, 6).clicked.connect(lambda: self.__removePlayer(player))
+        self.table.cellWidget(row, 6).
         if not self.worker.isFinished():
             self.table.cellWidget(row, 6).setEnabled(False)
+        """
+        actions = QWidget()
+        buttonGroup = QHBoxLayout()
+        actions.setLayout(buttonGroup)
+        buttonGroup.setContentsMargins(0, 0, 0, 0)
+        buttonGroup.setSpacing(0)
+        # Profile button
+        profileButton = ColoredButton(self.table, "Show player profile", "blue")
+        profileButton.clicked.connect(player.showProfile)
+        buttonGroup.addWidget(profileButton)
+        # PlayerInfo button
+        infoButton = ColoredButton(self.table, "Show more info", "yellow")
+        infoButton.clicked.connect(lambda: self.__openPlayerInfo(player))
+        buttonGroup.addWidget(infoButton)
+        # Delete button
+        deleteButton = ColoredButton(self.table, "Delete this player", "red")
+        deleteButton.setObjectName("deleteButton")
+        deleteButton.clicked.connect(lambda: self.__removePlayer(player))
+        buttonGroup.addWidget(deleteButton)
+        self.table.setCellWidget(row, 4, actions)
 
     
     def updatePlayer(self, player: Player):
@@ -264,7 +285,7 @@ class Overview(Window):
                 self.worker.start()
         except:
             self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
-            self.setButtonsEnabled(6, True)
+            self.setButtonsEnabled("deleteButton", True)
     
 
     def hidePlayer(self, player: Player):
