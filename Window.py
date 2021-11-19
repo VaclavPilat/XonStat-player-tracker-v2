@@ -14,7 +14,6 @@ class Window(QMainWindow):
     def __init__(self):
         """Initializes window, adds stylesheet, sets properties using methods implemented by derived classes.
         """
-        print(str(type(self)) + " window opened")
         self.closing = False
         self.worker = None
         super().__init__()
@@ -25,7 +24,6 @@ class Window(QMainWindow):
         self.createLayout()
         self.show()
         self.__centerWindow()
-        self.destroyed.connect(lambda: print(str(type(self)) + " window destroyed"))
     
 
     def __addStylesheet(self):

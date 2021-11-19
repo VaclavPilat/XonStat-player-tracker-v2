@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QTableWidget
 from PyQt5.QtGui import QCursor, QIcon
 from PyQt5.QtCore import Qt
+import qtawesome as qta
 
 
 
@@ -67,14 +68,22 @@ class ColoredButton(QPushButton, ColoredWidget):
         """
         if content is None:
             content = ""
-        if type(content) is QIcon:
-            content.color = "#fff"
-            super().__init__(content, None, parent)
-        elif type(content) is str:
+        if "." in content:
+            super().__init__(None, parent)
+            self.setIcon(content)
+        else:
             super().__init__(content, parent)
         self.setBackground(background)
         self.setCursor(QCursor(Qt.PointingHandCursor))
         self.setEnabled(enabled)
+
+    def setIcon(self, icon: str):
+        """Sets button icon
+
+        Args:
+            icon (str): Icon name
+        """
+        super().setIcon(qta.icon(icon, color="#DDD"))
 
 
 
@@ -112,7 +121,7 @@ class ColoredTable(QTableWidget):
         """
         super().__init__(parent)
         self.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.horizontalHeader().setMinimumSectionSize(150)
+        self.horizontalHeader().setMinimumSectionSize(140)
 
     
     def setRowColor(self, row: int, background: str = None):

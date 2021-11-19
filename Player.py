@@ -45,8 +45,7 @@ class Player(dict):
             else:
                 self.error = responses[response.status]
         except urllib3.exceptions.HTTPError:
-            self.error = "Cannot connect to stats"
-            printException()
+            self.error = "Cannot connect to XonStat"
         except Exception as e:
             self.error = type(e).__name__
             printException()
@@ -100,7 +99,6 @@ class Player(dict):
             self.name = None
             if self.error is None:
                 self.error = "Cannot load name"
-            printException()
         return self.name
     
 

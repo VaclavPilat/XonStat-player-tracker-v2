@@ -65,7 +65,7 @@ class Overview(Window):
         self.refreshButton.clicked.connect(self.__updatePlayers)
         layout.addWidget(self.refreshButton)
         # Creating button for adding new player
-        self.addButton = ColoredButton(self, qta.icon("fa.user-plus", color="#DDD"), "green", False)
+        self.addButton = ColoredButton(self, "fa.user-plus", "green", False)
         self.addButton.clicked.connect(self.__openAddPlayer)
         layout.addWidget(self.addButton)
         #return search
@@ -118,24 +118,20 @@ class Overview(Window):
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
-        # Up button
-        upButton = ColoredButton(self.table, qta.icon("ei.caret-up", color="#DDD"), "grey")
-        upButton.setObjectName("unsafeButton")
-        buttonGroup.addWidget(upButton)
-        # Down button
-        downButton = ColoredButton(self.table, qta.icon("ei.caret-down", color="#DDD"), "grey")
-        downButton.setObjectName("unsafeButton")
-        buttonGroup.addWidget(downButton)
+        # Edit button
         # Profile button
-        profileButton = ColoredButton(self.table, qta.icon("ri.file-user-fill", color="#DDD"), "blue")
+        profileButton = ColoredButton(self.table, "ri.file-user-fill", "blue")
         profileButton.clicked.connect(player.showProfile)
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
-        infoButton = ColoredButton(self.table, qta.icon("msc.graph", color="#DDD"), "yellow")
+        infoButton = ColoredButton(self.table, "msc.graph", "yellow")
         infoButton.clicked.connect(lambda: self.__openPlayerInfo(player))
         buttonGroup.addWidget(infoButton)
+        # Edit button
+        editButton = ColoredButton(self.table, "fa5s.pencil-alt", "grey")
+        buttonGroup.addWidget(editButton)
         # Delete button
-        deleteButton = ColoredButton(self.table, qta.icon("fa5s.trash-alt", color="#DDD"), "red")
+        deleteButton = ColoredButton(self.table, "fa5s.trash-alt", "red")
         deleteButton.setObjectName("unsafeButton")
         deleteButton.clicked.connect(lambda: self.__removePlayer(player))
         buttonGroup.addWidget(deleteButton)
@@ -182,10 +178,10 @@ class Overview(Window):
         """Updates visuals of "Refresh" button
         """
         if self.worker.isRunning():
-            self.refreshButton.setIcon(qta.icon("mdi6.close", color="#DDD"))
+            self.refreshButton.setIcon("mdi6.close")
             self.refreshButton.setBackground("orange")
         else:
-            self.refreshButton.setIcon(qta.icon("mdi6.reload", color="#DDD"))
+            self.refreshButton.setIcon("mdi6.reload")
             self.refreshButton.setBackground("yellow")
 
 
@@ -218,7 +214,6 @@ class Overview(Window):
         for player in self.players:
             if player.window is not None:
                 openWindowCount += 1
-        print("Current window count: " + str(openWindowCount))
         return openWindowCount
 
     
