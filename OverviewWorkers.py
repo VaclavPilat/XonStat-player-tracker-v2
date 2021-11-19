@@ -45,11 +45,13 @@ class OverviewLoader(Worker):
         """
         try:
             for loadedPlayer in Config.instance()["Players"]:
-                if len(loadedPlayer) == 2 and "id" in loadedPlayer and "nick" in loadedPlayer \
-                    and type(loadedPlayer["id"]) == int and type(loadedPlayer["nick"]) == str:
+                if "id" in loadedPlayer and type(loadedPlayer["id"]) == int \
+                and "nick" in loadedPlayer and type(loadedPlayer["nick"]) == str \
+                and "description" in loadedPlayer and type(loadedPlayer["description"]) == str:
                     player = Player(loadedPlayer)
                     self.loadPlayer(player)
         except:
+            printException()
             loadedPlayers = []
         self.correct = len(self.window.players)
         self.maximum = len(Config.instance()["Players"])

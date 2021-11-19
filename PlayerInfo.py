@@ -51,6 +51,9 @@ class PlayerInfo(Window):
         playerID = ColoredLabel(self, "ID#" + str(self.player["id"]))
         playerID.setProperty("class", "center subheader")
         layout.addWidget(playerID)
+        description = ColoredLabel(self, self.player["description"])
+        description.setProperty("class", "center subheader")
+        layout.addWidget(description)
         layout.addWidget(self.__createTable())
         # Adding status
         self.status = Status(self)

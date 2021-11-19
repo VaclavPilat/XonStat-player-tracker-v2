@@ -45,6 +45,9 @@ class AddPlayer(Window):
         self.nick = QLineEdit(self)
         self.nick.setPlaceholderText("Player nickname")
         layout.addWidget(self.nick)
+        self.description = QLineEdit(self)
+        self.description.setPlaceholderText("Player description")
+        layout.addWidget(self.description)
         self.addButton = ColoredButton(self, "Add player", "green")
         self.addButton.clicked.connect(self.__tryAddPlayer)
         layout.addWidget(self.addButton)
@@ -80,10 +83,10 @@ class AddPlayer(Window):
             self.status.resultMessage("This ID is already being used", False)
             return
         # Adding the player
-        self.__addPlayer(id, nick)
+        self.__addPlayer(id, nick, self.description.text())
     
 
-    def __addPlayer(self, id: int, nick: str):
+    def __addPlayer(self, id: int, nick: str, description: str):
         """Adds new player to table
 
         Args:
@@ -92,7 +95,7 @@ class AddPlayer(Window):
         """
         self.addButton.setEnabled(False)
         self.status.message("Adding new player into table")
-        player = Player({ "id": id, "nick": nick })
+        player = Player({ "id": id, "nick": nick, "description": description })
         self.worker = OverviewAdder(self.window, player)
         self.worker.start()
         self.close()

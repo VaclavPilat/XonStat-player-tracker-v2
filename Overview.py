@@ -80,7 +80,7 @@ class Overview(Window):
         """
         self.table = ColoredTable(self)
         # Setting columns
-        headers = ["ID", "Player nickname", "Current player name", "Last played", 
+        headers = ["ID", "Player nickname", "Player description", "Current player name", "Last played", 
                         "Actions"]
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
@@ -88,9 +88,9 @@ class Overview(Window):
         self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.table.verticalHeader().setMinimumSectionSize(30)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        for i in range(1, 3):
+        for i in range(1, 4):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
-        for i in range(3, len(headers)):
+        for i in range(4, len(headers)):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeToContents)
         return self.table
 
@@ -105,12 +105,13 @@ class Overview(Window):
         row = self.table.rowCount()
         self.table.insertRow(row)
         # Adding labels
-        for i in range(4):
+        for i in range(5):
             self.table.setCellWidget(row, i, ColoredLabel(self.table, "", "dark-grey"))
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(player["id"]))
         self.table.cellWidget(row, 1).setText(player["nick"])
-        self.table.cellWidget(row, 2).setProperty("class", "xolonium")
+        self.table.cellWidget(row, 2).setText(player["description"])
+        self.table.cellWidget(row, 3).setProperty("class", "xolonium")
         # Adding buttons
         actions = ColoredWidget()
         actions.setBackground("dark-grey")
@@ -135,7 +136,7 @@ class Overview(Window):
         deleteButton.setObjectName("unsafeButton")
         deleteButton.clicked.connect(lambda: self.__removePlayer(player))
         buttonGroup.addWidget(deleteButton)
-        self.table.setCellWidget(row, 4, actions)
+        self.table.setCellWidget(row, 5, actions)
 
     
     def updatePlayer(self, player: Player):
@@ -145,7 +146,7 @@ class Overview(Window):
             player (Player): Player instance
         """
         # Adding label for current player name
-        widget = self.table.cellWidget(self.getRow(player), 2)
+        widget = self.table.cellWidget(self.getRow(player), 3)
         if not player.error == None:
             widget.setText(player.error)
             widget.setAlignment(Qt.AlignCenter)
@@ -153,7 +154,7 @@ class Overview(Window):
             widget.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
             widget.setText(player.name)
         # Adding label for the last time this player was active
-        widget = self.table.cellWidget(self.getRow(player), 3)
+        widget = self.table.cellWidget(self.getRow(player), 4)
         if not player.error == None:
             widget.setText(None)
             widget.setColor(None)
