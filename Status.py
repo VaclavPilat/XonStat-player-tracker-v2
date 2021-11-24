@@ -1,10 +1,11 @@
 from Window import *
 from ColoredWidgets import *
 import math
+from PyQt5.QtWidgets import QHBoxLayout
 
 
 
-class Status(ColoredLabel):
+class Status(ColoredWidget):
     """Stylable status label
     """
 
@@ -15,10 +16,35 @@ class Status(ColoredLabel):
         Args:
             parent (Window): Parent of this widget
         """
+        super().__init__()
         self.__locked = False # Boolean for locking changes
-        super().__init__(parent, "Ready", "grey")
-        self.setAlignment(Qt.AlignCenter)
+        # Creating layout
         self.setObjectName("status")
+        layout = QHBoxLayout()
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+        # Creating inner status label
+        self.inner = ColoredLabel(parent, "Ready")
+        self.inner.setObjectName("status-inner")
+        self.inner.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.inner)
+        # Creating label for ratelimit
+        self.rate = ColoredLabel(parent)
+        self.rate.setObjectName("status-rate")
+        self.rate.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.showRate("0", "0")
+        layout.addWidget(self.rate)
+    
+
+    def showRate(self, remaining: str, limit: str):
+        """Shows x-ratelimit header
+
+        Args:
+            remaining (str): Remaining number of requests
+            limit (str): Request limit
+        """
+        self.rate.setText(remaining + " / " + limit)
     
 
     def message(self, message: str):
@@ -31,7 +57,7 @@ class Status(ColoredLabel):
         if not self.__locked:
             message += " ..."
             self.__message = message
-            self.setText(message)
+            self.inner.setText(message)
             self.setBackground("yellow")
     
 
@@ -58,7 +84,7 @@ class Status(ColoredLabel):
                 output += "done"
             # Displaying amount of parts finished
             output += " (" + str(current) + " out of " + str(max) + ")"
-            self.setText(output)
+            self.inner.setText(output)
     
 
     def resultMessage(self, message: str, correct: bool = True):

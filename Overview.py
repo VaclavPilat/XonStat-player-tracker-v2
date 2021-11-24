@@ -119,7 +119,6 @@ class Overview(Window):
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
-        # Edit button
         # Profile button
         profileButton = ColoredButton(self.table, "ri.file-user-fill", "blue")
         profileButton.clicked.connect(player.showProfile)
@@ -129,7 +128,7 @@ class Overview(Window):
         infoButton.clicked.connect(lambda: self.__openPlayerInfo(player))
         buttonGroup.addWidget(infoButton)
         # Edit button
-        editButton = ColoredButton(self.table, "fa5s.pencil-alt", "grey")
+        editButton = ColoredButton(self.table, "fa5s.pencil-alt", "orange")
         buttonGroup.addWidget(editButton)
         # Delete button
         deleteButton = ColoredButton(self.table, "fa5s.trash-alt", "red")

@@ -20,8 +20,21 @@ QTableWidget ColoredButton {
 
 #status {
     border-radius: 5px;
+}
+
+#status-inner {
+    margin-left: 50px;
     font-weight: bold;
+}
+
+#status-inner, #status-rate {
+    background-color: transparent !important;
     padding: 5px;
+}
+
+#status-rate {
+    max-width: 50px;
+    font-size: 10px;
 }
 
 #status[background], ColoredButton[background] {
