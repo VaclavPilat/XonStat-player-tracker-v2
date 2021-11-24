@@ -44,11 +44,13 @@ class Player(dict):
                 self.error = None
             else:
                 self.error = responses[response.status]
+            return response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"]
         except urllib3.exceptions.HTTPError:
             self.error = "Cannot connect to XonStat"
         except Exception as e:
             self.error = type(e).__name__
             printException()
+        return "0", "0"
     
 
     def __processColor(self, color: str):
@@ -205,6 +207,7 @@ class Player(dict):
                     raise StopIteration
                 # Getting list of games
                 gameListResponse = self.http.request('GET', gameListUrl, headers=self.headers, timeout=self.timeout)
+                self.window.status.showRate(gameListResponse.headers["X-Ratelimit-Remaining"], gameListResponse.headers["X-Ratelimit-Limit"])
                 if gameListResponse.status == 200:
                     gameList = json.loads(gameListResponse.data.decode('utf-8'))
                     if gameList is not None:
@@ -221,6 +224,8 @@ class Player(dict):
                             try:
                                 gameResponse = self.http.request("GET", "https://stats.xonotic.org/game/" + str(link["game_id"]), headers=self.headers, timeout=self.timeout)
                                 if gameResponse.status == 200:
+                                    if self.window:
+                                        self.window.status.showRate(gameResponse.headers["X-Ratelimit-Remaining"], gameResponse.headers["X-Ratelimit-Limit"])
                                     gameObject = json.loads(gameResponse.data.decode('utf-8'))
                                     yield [current, maximum, gameObject]
                             except:

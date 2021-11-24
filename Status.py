@@ -1,7 +1,7 @@
 from Window import *
 from ColoredWidgets import *
 import math
-from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QHBoxLayout
 
 
 
@@ -44,7 +44,9 @@ class Status(ColoredWidget):
             remaining (str): Remaining number of requests
             limit (str): Request limit
         """
-        self.rate.setText(remaining + " / " + limit)
+        for widget in QApplication.topLevelWidgets():
+            if issubclass(type(widget), Window) and widget.status:
+                widget.status.rate.setText(remaining + " / " + limit)
     
 
     def message(self, message: str):

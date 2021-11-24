@@ -16,6 +16,7 @@ class Window(QMainWindow):
         """
         self.closing = False
         self.worker = None
+        self.status = None
         super().__init__()
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.__addStylesheet()

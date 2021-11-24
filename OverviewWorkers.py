@@ -137,7 +137,8 @@ class OverviewUpdater(Worker):
         # Sleep before loading
         time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
         # Loading information
-        player.loadProfile()
+        remaining, limit = player.loadProfile()
+        self.window.status.showRate(remaining, limit)
         player.loadName()
         player.loadActive()
         if player.error == None:
