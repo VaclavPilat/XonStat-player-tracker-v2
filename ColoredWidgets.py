@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QTableWidget
 from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 import qtawesome as qta
 
 
@@ -87,7 +87,7 @@ class ColoredButton(QPushButton, ColoredWidget):
         """Sets button icon
 
         Args:
-            icon (str): Icon name
+            icon (str): QTAwesome icon name
         """
         super().setIcon(qta.icon(icon, color="#DDD"))
 
@@ -112,6 +112,15 @@ class ColoredLabel(QLabel, ColoredWidget):
         QLabel.__init__(self, text, parent)
         self.setBackground(background)
         self.setColor(color)
+    
+
+    def setIcon(self, icon: str):
+        """Sets label icon
+
+        Args:
+            icon (str): QTAwesome icon name
+        """
+        self.setPixmap(qta.icon(icon, color="#DDD").pixmap(QSize(20, 20)))
 
 
 

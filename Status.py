@@ -24,16 +24,20 @@ class Status(ColoredWidget):
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
+        # Creating label for displaying an icon
+        self.icon = ColoredLabel(self)
+        self.icon.setObjectName("status-icon")
+        self.icon.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        layout.addWidget(self.icon)
         # Creating inner status label
-        self.inner = ColoredLabel(parent, "Ready")
+        self.inner = ColoredLabel(self, "Ready")
         self.inner.setObjectName("status-inner")
         self.inner.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.inner)
         # Creating label for ratelimit
-        self.rate = ColoredLabel(parent)
+        self.rate = ColoredLabel(self)
         self.rate.setObjectName("status-rate")
         self.rate.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        self.showRate("0", "0")
         layout.addWidget(self.rate)
     
 
@@ -61,23 +65,28 @@ class Status(ColoredWidget):
             self.__message = message
             self.inner.setText(message)
             self.setBackground("yellow")
+            self.icon.setIcon("mdi6.dots-horizontal-circle-outline")
     
 
-    def progress(self, current: int, max: int, finished: bool = False):
+    def progress(self, current: int, maximum: int, finished: bool = False):
         """Changing status progress. Used for displaying how much work is done in a task.
 
         Args:
             current (int): Current amount of parts completed in this task
-            max (int): Maximum amount of parts that can be completed in this task
+            maximum (int): Maximum amount of parts that can be completed in this task
             finished (bool, optional): Is the task finished? Defaults to False.
         """
         if not self.__locked:
             output = self.__message + " "
             # Displaying percentage
             if current > 0:
-                output += str(math.ceil(current / max * 100))
+                division = current / maximum
+                output += str(math.ceil(division * 100))
+                number = max(1, math.floor(division * 8))
+                self.icon.setIcon("mdi6.circle-slice-" + str(number))
             else:
                 output += "0"
+                self.icon.setIcon("mdi6.circle-outline")
             output += "% "
             # Varying status message based on if the task is finished
             if finished:
@@ -85,7 +94,7 @@ class Status(ColoredWidget):
             else:
                 output += "done"
             # Displaying amount of parts finished
-            output += " (" + str(current) + " out of " + str(max) + ")"
+            output += " (" + str(current) + " out of " + str(maximum) + ")"
             self.inner.setText(output)
     
 
@@ -101,8 +110,10 @@ class Status(ColoredWidget):
             # Changing the background color based on if the task is completed successfully
             if correct:
                 self.setBackground("green")
+                self.icon.setIcon("mdi6.check-circle-outline")
             else:
                 self.setBackground("red")
+                self.icon.setIcon("mdi6.alert-circle-outline")
     
 
     def resultProgress(self, message: str, correct: int, max: int):

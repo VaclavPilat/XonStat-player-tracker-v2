@@ -33,7 +33,7 @@ class PlayerInfo(Window):
         """Setting winow properties
         """
         self.setWindowTitle("Player information")
-        self.resize(500, 700)
+        self.resize(550, 700)
     
 
     def createLayout(self):
