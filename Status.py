@@ -53,28 +53,31 @@ class Status(ColoredWidget):
                 widget.status.rate.setText(remaining + " / " + limit)
     
 
-    def message(self, message: str):
+    def message(self, message: str, changeIcon: bool = True):
         """Changing status message and setting background color to yellow. Used for starting a new task
 
         Args:
             message (str): Text that will be displayed in the status.
             color (str): New background color status
+            changeIcon (bool): Automatically update icon? Defaults to True.
         """
         if not self.__locked:
             message += " ..."
             self.__message = message
             self.inner.setText(message)
             self.setBackground("yellow")
-            self.icon.setIcon("mdi6.dots-horizontal-circle-outline")
+            if changeIcon:
+                self.icon.setIcon("mdi6.dots-horizontal-circle-outline")
     
 
-    def progress(self, current: int, maximum: int, finished: bool = False):
+    def progress(self, current: int, maximum: int, finished: bool = False, changeIcon: bool = True):
         """Changing status progress. Used for displaying how much work is done in a task.
 
         Args:
             current (int): Current amount of parts completed in this task
             maximum (int): Maximum amount of parts that can be completed in this task
             finished (bool, optional): Is the task finished? Defaults to False.
+            changeIcon (bool): Automatically update icon? Defaults to True.
         """
         if not self.__locked:
             output = self.__message + " "
@@ -83,10 +86,12 @@ class Status(ColoredWidget):
                 division = current / maximum
                 output += str(math.ceil(division * 100))
                 number = max(1, math.floor(division * 8))
-                self.icon.setIcon("mdi6.circle-slice-" + str(number))
+                if changeIcon:
+                    self.icon.setIcon("mdi6.circle-slice-" + str(number))
             else:
                 output += "0"
-                self.icon.setIcon("mdi6.circle-outline")
+                if changeIcon:
+                    self.icon.setIcon("mdi6.circle-outline")
             output += "% "
             # Varying status message based on if the task is finished
             if finished:
@@ -106,7 +111,7 @@ class Status(ColoredWidget):
             correct (bool, optional): Is the task completed successfully? Defaults to True.
         """
         if not self.__locked:
-            self.message(message)
+            self.message(message, False)
             # Changing the background color based on if the task is completed successfully
             if correct:
                 self.setBackground("green")
@@ -125,8 +130,8 @@ class Status(ColoredWidget):
             max (int): Maximum amount of parts that can be completed
         """
         if not self.__locked:
-            self.message(message)
-            self.progress(correct, max, True)
+            self.message(message, False)
+            self.progress(correct, max, True, False)
             # Changing the background color based on if the task is completed successfully
             if correct == max:
                 self.setBackground("green")

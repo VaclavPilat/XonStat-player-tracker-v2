@@ -81,12 +81,36 @@ class PlayerInfoWorker(Worker):
                 self._setRowColor.emit(label[0], None)
     
     
+    def __processGameTime(self, gametime: str):
+        """Updates heatmap and number of recent games based on game datetime
+
+        Args:
+            gametime (str): Game UTC datetime
+        """
+        try:
+            # Checking if this game happened within the last 7 days
+            gameDatetime = datetime.datetime.strptime(gametime, "%Y-%m-%dT%H:%M:%SZ")
+            gameTime = gameDatetime.timestamp()
+            currentTime = int(time.time())
+            week = 60 * 60 * 24 * 7
+            if (currentTime - gameTime) <= week:
+                self._showGames.emit()
+                # Getting information from datetime
+                row = gameDatetime.date().weekday()
+                column = gameDatetime.hour // Config.instance()["Settings"]["heatmapHourSpan"]
+                # Updating heatmap
+                currentColor = self.window.heatmap.cellWidget(row, column).property("background")
+                self._updateHeatmapGames.emit(row, column)
+        except:
+            printException()
+    
+    """
     def __processGameData(self, data: dict):
-        """Processes game data retrieved from game pages
+        ""Processes game data retrieved from game pages
 
         Args:
             data (dict): Json object with game data
-        """
+        ""
         try:
             # Getting used player name
             for player in data["player_game_stats"]:
@@ -108,23 +132,48 @@ class PlayerInfoWorker(Worker):
                 self._updateHeatmapGames.emit(row, column)
         except:
             printException()
+    """
 
-
-    def __loadRecentGames(self):
+    def __loadGamelists(self):
         """Loads recent games and extracts information from them
         """
-        self.message.emit("Loading list of recent games")
-        for i in range(4, self.window.table.rowCount()):
+        # Updating visuals
+        self.message.emit("Loading lists of recent games")
+        for i in range(4, 6):
             self._setRowColor.emit(i, "dark-yellow")
         # Loading recent games
         correct = 0
-        maximum = 0
+        maximum = Config.instance()["Settings"]["gameListCount"]
+        self.progress.emit(0, maximum)
+        games = []
+        for data in self.window.player.loadGameLists():
+            if data[1] is None:
+                maximum = current = data[0] -1
+                self.progress.emit(data[0] -1, maximum)
+            else:
+                if data[1] is not False:
+                    for game in data[1]:
+                        self.__processGameTime(game["create_dt"])
+                    games += data[1]
+                    correct += 1
+                self.progress.emit(data[0], maximum)
+        # Updating visuals
+        if correct > 0 and maximum > 0:
+            for i in range(4, 6):
+                self._setRowColor.emit(i, None)
+        else:
+            for i in range(4, self.window.table.rowCount()):
+                self._setRowColor.emit(i, "dark-red")
+        self.resultProgress.emit("Finished loading gamelists", correct, maximum)
+
+        """
         for gameValues in self.window.player.loadRecentGames():
             maximum = gameValues[1]
             correct += 1
             self.__processGameData(gameValues[2])
             if not gameValues[1] == 0 and gameValues[0] == gameValues[1]:
                 self.resultProgress.emit("Loading recent games", correct, maximum)
+                self.progress.emit(gameValues[0], gameValues[1])
             else:
                 self.message.emit("Loading recent games")
                 self.progress.emit(gameValues[0], gameValues[1])
@@ -139,6 +188,7 @@ class PlayerInfoWorker(Worker):
         else:
             for i in range(4, self.window.table.rowCount()):
                 self._setRowColor.emit(i, "dark-red")
+        """
         
 
     def run(self):
@@ -156,4 +206,4 @@ class PlayerInfoWorker(Worker):
             time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
             if self.cancel:
                 return
-            self.__loadRecentGames()
+            self.__loadGamelists()
