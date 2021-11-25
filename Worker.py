@@ -12,6 +12,7 @@ class Worker(QThread):
     progress = pyqtSignal(int, int)
     resultMessage = pyqtSignal(str, bool)
     resultProgress = pyqtSignal(str, int, int)
+    showRate = pyqtSignal(str, str)
 
 
     def __init__(self, window: Window):
@@ -30,6 +31,7 @@ class Worker(QThread):
         self.progress.connect(self.window.status.progress)
         self.resultMessage.connect(self.window.status.resultMessage)
         self.resultProgress.connect(self.window.status.resultProgress)
+        self.showRate.connect(self.window.status.showRate)
         self.connectSlots()
     
 

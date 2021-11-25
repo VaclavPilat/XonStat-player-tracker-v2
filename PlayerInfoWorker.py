@@ -104,37 +104,24 @@ class PlayerInfoWorker(Worker):
         except:
             printException()
     
-    """
-    def __processGameData(self, data: dict):
-        ""Processes game data retrieved from game pages
+    
+    def __findPlayerName(self, data: dict):
+        """Processes game data retrieved from game pages
 
         Args:
             data (dict): Json object with game data
-        ""
+        """
         try:
             # Getting used player name
             for player in data["player_game_stats"]:
                 if player["player_id"] == self.window.player["id"]:
                     self._showUsedNames.emit(escape(player["nick"]))
                     break
-            # Checking if this game happened within the last 7 days
-            gameDatetime = datetime.datetime.strptime(data["create_dt"],"%Y-%m-%dT%H:%M:%SZ")
-            gameTime = gameDatetime.timestamp()
-            currentTime = int(time.time())
-            week = 60 * 60 * 24 * 7
-            if (currentTime - gameTime) <= week:
-                self._showGames.emit()
-                # Getting information from datetime
-                row = gameDatetime.date().weekday()
-                column = gameDatetime.hour // Config.instance()["Settings"]["heatmapHourSpan"]
-                # Updating heatmap
-                currentColor = self.window.heatmap.cellWidget(row, column).property("background")
-                self._updateHeatmapGames.emit(row, column)
         except:
             printException()
-    """
 
-    def __loadGamelists(self):
+
+    def __loadGameData(self):
         """Loads recent games and extracts information from them
         """
         # Updating visuals
@@ -147,6 +134,8 @@ class PlayerInfoWorker(Worker):
         self.progress.emit(0, maximum)
         games = []
         for data in self.window.player.loadGameLists():
+            if self.cancel:
+                return
             if data[1] is None:
                 maximum = current = data[0] -1
                 self.progress.emit(data[0] -1, maximum)
@@ -165,30 +154,30 @@ class PlayerInfoWorker(Worker):
             for i in range(4, self.window.table.rowCount()):
                 self._setRowColor.emit(i, "dark-red")
         self.resultProgress.emit("Finished loading gamelists", correct, maximum)
-
-        """
-        for gameValues in self.window.player.loadRecentGames():
-            maximum = gameValues[1]
-            correct += 1
-            self.__processGameData(gameValues[2])
-            if not gameValues[1] == 0 and gameValues[0] == gameValues[1]:
-                self.resultProgress.emit("Loading recent games", correct, maximum)
-                self.progress.emit(gameValues[0], gameValues[1])
+        # Canceling
+        time.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
+        if self.cancel:
+            return
+        # Loading game data
+        if len(games) > 0:
+            current = 0
+            correct = 0
+            self.message.emit("Loading game data")
+            self.progress.emit(current, len(games))
+            self._setRowColor.emit(6, "dark-yellow")
+            current = 0
+            correct = 0
+            for gameData in self.window.player.loadGameData(games):
+                current += 1
+                if gameData is not None:
+                    correct += 1
+                self.__findPlayerName(gameData)
+                self.progress.emit(current, len(games))
+            self.resultProgress.emit("Loaded game data", correct, len(games))
+            if correct > 0:
+                self._setRowColor.emit(6, None)
             else:
-                self.message.emit("Loading recent games")
-                self.progress.emit(gameValues[0], gameValues[1])
-        # Printing out message
-        if maximum > 0:
-            self.resultProgress.emit("Finished loading games", correct, maximum)
-        else:
-            self.resultMessage.emit("No games were found", self.window.player.time == "0 hours")
-        if correct > 0 or (maximum == 0 and self.window.player.time == "0 hours"):
-            for i in range(4, self.window.table.rowCount()):
-                self._setRowColor.emit(i, None)
-        else:
-            for i in range(4, self.window.table.rowCount()):
-                self._setRowColor.emit(i, "dark-red")
-        """
+                self._setRowColor.emit(6, "dark-red")
         
 
     def run(self):
@@ -206,4 +195,4 @@ class PlayerInfoWorker(Worker):
             time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
             if self.cancel:
                 return
-            self.__loadGamelists()
+            self.__loadGameData()

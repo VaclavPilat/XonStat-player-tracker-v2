@@ -206,7 +206,7 @@ class Player(dict):
                 # Getting list of games
                 try:
                     gameListResponse = self.http.request('GET', gameListUrl, headers=self.headers, timeout=self.timeout)
-                    self.window.status.showRate(gameListResponse.headers["X-Ratelimit-Remaining"], gameListResponse.headers["X-Ratelimit-Limit"])
+                    self.window.worker.showRate.emit(gameListResponse.headers["X-Ratelimit-Remaining"], gameListResponse.headers["X-Ratelimit-Limit"])
                     if gameListResponse.status == 200:
                         gameList = json.loads(gameListResponse.data.decode('utf-8'))
                         if gameList is not None:
@@ -214,28 +214,6 @@ class Player(dict):
                         else:
                             yield [i + 1, None]
                             raise StopIteration
-                        """
-                        for link in gameList:
-                            # Canceling
-                            if self.window.worker.cancel:
-                                raise StopIteration
-                            try:
-                                time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
-                                current += 1
-                                try:
-                                    gameResponse = self.http.request("GET", "https://stats.xonotic.org/game/" + str(link["game_id"]), headers=self.headers, timeout=self.timeout)
-                                    if gameResponse.status == 200:
-                                        if self.window:
-                                            self.window.status.showRate(gameResponse.headers["X-Ratelimit-Remaining"], gameResponse.headers["X-Ratelimit-Limit"])
-                                        gameObject = json.loads(gameResponse.data.decode('utf-8'))
-                                        yield [current, maximum, gameObject]
-                                except urllib3.exceptions.HTTPError:
-                                    pass
-                                except:
-                                    printException()
-                            except:
-                                printException()
-                        """
                         # Getting new URL
                         if gameList is not None and len(gameList) > 0:
                             gameListUrl = "https://stats.xonotic.org/games?player_id=" + str(self["id"]) + "&start_game_id=" + str(gameList[-1]["game_id"] -1)
@@ -251,3 +229,26 @@ class Player(dict):
             pass
         except:
             printException()
+    
+
+    def loadGameData(self, games: list):
+        current = 0
+        for game in games:
+            # Canceling
+            if self.window.worker.cancel:
+                raise StopIteration
+            try:
+                time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
+                current += 1
+                gameResponse = self.http.request("GET", "https://stats.xonotic.org/game/" + str(game["game_id"]), headers=self.headers, timeout=self.timeout)
+                if gameResponse.status == 200:
+                    if self.window:
+                        self.window.worker.showRate.emit(gameResponse.headers["X-Ratelimit-Remaining"], gameResponse.headers["X-Ratelimit-Limit"])
+                    yield json.loads(gameResponse.data.decode('utf-8'))
+                else: 
+                    yield None
+                self.window.status.progress(current, len(games))
+            except urllib3.exceptions.HTTPError:
+                yield None
+            except:
+                printException()
