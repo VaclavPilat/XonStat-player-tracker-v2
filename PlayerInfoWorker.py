@@ -57,16 +57,16 @@ class PlayerInfoWorker(Worker):
         Yields:
             Iterator[list]: 0 => table row index, 1 => lambda of an emitted signal
         """
-        yield [3, lambda: self._showName.emit(self.window.player.loadName())]
-        yield [4, lambda: self._showSince.emit(self.window.player.loadSince())]
-        yield [5, lambda: self._showActive.emit(self.window.player.loadActive())]
-        yield [6, lambda: self._showTime.emit(self.window.player.loadTime())]
+        yield [4, lambda: self._showName.emit(self.window.player.loadName())]
+        yield [5, lambda: self._showSince.emit(self.window.player.loadSince())]
+        yield [6, lambda: self._showActive.emit(self.window.player.loadActive())]
+        yield [7, lambda: self._showTime.emit(self.window.player.loadTime())]
     
 
     def __loadSimpleValues(self):
         """Loads simple values
         """
-        for i in range(3, 7):
+        for i in range(4, 8):
             self._setRowColor.emit(i, "dark-yellow")
         self.window.player.loadProfile()
         # Filling in simple player variables
@@ -126,7 +126,7 @@ class PlayerInfoWorker(Worker):
         """
         # Updating visuals
         self.message.emit("Loading lists of recent games")
-        for i in range(7, 9):
+        for i in range(8, 10):
             self._setRowColor.emit(i, "dark-yellow")
         # Loading recent games
         correct = 0
@@ -148,10 +148,10 @@ class PlayerInfoWorker(Worker):
                 self.progress.emit(data[0], maximum)
         # Updating visuals
         if correct > 0 and maximum > 0:
-            for i in range(7, 9):
+            for i in range(8, 10):
                 self._setRowColor.emit(i, None)
         else:
-            for i in range(7, self.window.table.rowCount()):
+            for i in range(8, self.window.table.rowCount()):
                 self._setRowColor.emit(i, "dark-red")
         self.resultProgress.emit("Finished loading gamelists", correct, maximum)
         # Canceling
@@ -164,7 +164,7 @@ class PlayerInfoWorker(Worker):
             correct = 0
             self.message.emit("Loading game data")
             self.progress.emit(current, len(games))
-            self._setRowColor.emit(9, "dark-yellow")
+            self._setRowColor.emit(10, "dark-yellow")
             current = 0
             correct = 0
             for gameData in self.window.player.loadGameData(games):
@@ -175,9 +175,9 @@ class PlayerInfoWorker(Worker):
                 self.progress.emit(current, len(games))
             self.resultProgress.emit("Loaded game data", correct, len(games))
             if correct > 0:
-                self._setRowColor.emit(9, None)
+                self._setRowColor.emit(10, None)
             else:
-                self._setRowColor.emit(9, "dark-red")
+                self._setRowColor.emit(10, "dark-red")
         
 
     def run(self):
