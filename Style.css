@@ -54,14 +54,6 @@ QTableWidget ColoredButton {
     qproperty-alignment: AlignCenter;
 }
 
-.header {
-    font-size: 30px;
-    font-weight: bold;
-}
-.subheader {
-    margin-bottom: 10px;
-}
-
 .heatmap ColoredLabel {
     color: black;
 }

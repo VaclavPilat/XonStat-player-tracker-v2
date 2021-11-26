@@ -44,20 +44,38 @@ class PlayerInfo(Window):
         layout = QVBoxLayout()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-        # Adding top widgets
-        playerNick = ColoredLabel(self, self.player["nick"])
-        playerNick.setProperty("class", "center header")
-        layout.addWidget(playerNick)
-        playerID = ColoredLabel(self, "ID#" + str(self.player["id"]))
-        playerID.setProperty("class", "center subheader")
-        layout.addWidget(playerID)
-        description = ColoredLabel(self, self.player["description"])
-        description.setProperty("class", "center subheader")
-        layout.addWidget(description)
+        # Add player table
         layout.addWidget(self.__createTable())
+        # Adding top widgets
+        self.__addSimpleInfo()
+        # Hiding top widgets
+        """
+        for i in range(0, 2):
+            self.table.setRowHidden(i, True) 
+        """
+        # Adding the rest of widgets
+        self.__addWidgetsToTable()
         # Adding status
         self.status = Status(self)
         layout.addWidget(self.status)
+    
+
+    def __addSimpleInfo(self):
+        """Creates labels for displaying simple information
+        """
+        for i in range(3):
+            self.table.insertRow(i)
+        headers = ["Player ID", "Player nickname", "Player description"]
+        i = 0
+        for header in headers:
+            self.table.setCellWidget(i, 0, ColoredLabel(self.table, header))
+            i += 1
+        self.id = ColoredLabel(self, str(self.player["id"]))
+        self.table.setCellWidget(0, 1, self.id)
+        self.nick = ColoredLabel(self, self.player["nick"])
+        self.table.setCellWidget(1, 1, self.nick)
+        self.description = ColoredLabel(self, self.player["description"])
+        self.table.setCellWidget(2, 1, self.description)
 
 
     def __createTable(self) -> QTableWidget:
@@ -72,10 +90,8 @@ class PlayerInfo(Window):
         for i in range(self.table.columnCount()):
             self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
         self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().hide()
+        self.table.setHorizontalHeaderLabels( ["#" + str(self.player["id"]), self.player["nick"]] )
         self.table.verticalHeader().hide()
-        # Adding headers to table
-        self.__addWidgetsToTable()
         return self.table
     
 
@@ -91,29 +107,29 @@ class PlayerInfo(Window):
         # Adding widgets to table
         self.name = ColoredLabel(self.table, None, "dark-grey")
         self.name.setProperty("class", "xolonium")
-        self.table.setCellWidget(0, 1, self.name)
+        self.table.setCellWidget(3, 1, self.name)
         self.since = ColoredLabel(self.table, None, "dark-grey")
-        self.table.setCellWidget(1, 1, self.since)
+        self.table.setCellWidget(4, 1, self.since)
         self.active = ColoredLabel(self.table, None, "dark-grey")
-        self.table.setCellWidget(2, 1, self.active)
+        self.table.setCellWidget(5, 1, self.active)
         self.time = ColoredLabel(self.table, None, "dark-grey")
-        self.table.setCellWidget(3, 1, self.time)
+        self.table.setCellWidget(6, 1, self.time)
         self.games = ColoredLabel(self.table, None, "dark-grey")
         self.games.setText("0")
-        self.table.setCellWidget(4, 1, self.games)
+        self.table.setCellWidget(7, 1, self.games)
         # Adding heatmap table
-        self.table.insertRow(5)
+        self.table.insertRow(8)
         self.__createHeatmap()
-        self.table.setCellWidget(5, 0, self.heatmap, 1, 2)
+        self.table.setCellWidget(8, 0, self.heatmap, 1, 2)
         # Recently used names
-        self.table.insertRow(6)
-        self.table.setCellWidget(6, 0, ColoredLabel(self.table, "Recently used names", "dark-grey"))
+        self.table.insertRow(9)
+        self.table.setCellWidget(9, 0, ColoredLabel(self.table, "Recently used names", "dark-grey"))
         self.names = QTextEdit(self.table)
         self.names.setMaximumHeight(150)
         self.names.setProperty("class", "xolonium")
         self.names.setLineWrapMode(QTextEdit.NoWrap)
         self.names.setReadOnly(True)
-        self.table.setCellWidget(6, 1, self.names)
+        self.table.setCellWidget(9, 1, self.names)
     
 
     def __createHeatmap(self):

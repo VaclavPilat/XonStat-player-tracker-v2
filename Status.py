@@ -20,6 +20,7 @@ class Status(ColoredWidget):
         self.__locked = False # Boolean for locking changes
         # Creating layout
         self.setObjectName("status")
+        self.setBackground("grey")
         layout = QHBoxLayout()
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
