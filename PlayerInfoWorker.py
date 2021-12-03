@@ -22,6 +22,7 @@ class PlayerInfoWorker(Worker):
     _showUsedNames = pyqtSignal(str) # Showing recently used names
     _showGames = pyqtSignal() # Showing number of recently played games
     _updateHeatmapGames = pyqtSignal(int, int) # Updating number of games in heatmap
+    _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
     def connectSlots(self):
@@ -37,6 +38,7 @@ class PlayerInfoWorker(Worker):
         self._showUsedNames.connect(self.window.showUsedNames)
         self._showGames.connect(self.window.showGames)
         self._updateHeatmapGames.connect(self.window.updateHeatmapGames)
+        self._updateRefreshButton.connect(self.window.updateRefreshButton)
 
 
     def __init__(self, window: Window):
@@ -113,10 +115,11 @@ class PlayerInfoWorker(Worker):
         """
         try:
             # Getting used player name
-            for player in data["player_game_stats"]:
-                if player["player_id"] == self.window.player["id"]:
-                    self._showUsedNames.emit(escape(player["nick"]))
-                    break
+            if data is not None:
+                for player in data["player_game_stats"]:
+                    if player["player_id"] == self.window.player["id"]:
+                        self._showUsedNames.emit(escape(player["nick"]))
+                        break
         except:
             printException()
 
@@ -178,6 +181,12 @@ class PlayerInfoWorker(Worker):
                 self._setRowColor.emit(6, None)
             else:
                 self._setRowColor.emit(6, "dark-red")
+    
+
+    def before(self):
+        """This method is called before this worker is run
+        """
+        self._updateRefreshButton.emit()
         
 
     def run(self):
@@ -196,3 +205,9 @@ class PlayerInfoWorker(Worker):
             if self.cancel:
                 return
             self.__loadGameData()
+
+
+    def after(self):
+        """This method is called after this worker is finished
+        """
+        self._updateRefreshButton.emit()

@@ -119,6 +119,7 @@ class Overview(Window):
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
+        buttonGroup.addStretch()
         # Profile button
         profileButton = ColoredButton(self.table, "ri.file-user-fill", "blue")
         profileButton.clicked.connect(player.showProfile)
@@ -135,6 +136,7 @@ class Overview(Window):
         deleteButton.setObjectName("unsafeButton")
         deleteButton.clicked.connect(lambda: self.__removePlayer(player))
         buttonGroup.addWidget(deleteButton)
+        buttonGroup.addStretch()
         self.table.setCellWidget(row, 5, actions)
 
     

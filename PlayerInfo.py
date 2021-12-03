@@ -49,6 +49,7 @@ class PlayerInfo(Window):
         self.info.setMaximumHeight(130)
         self.info.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.info.resizeRowsToContents()
+        self.info.setShowGrid(False)
         self.__addSimpleInfo()
         layout.addWidget(self.info)
         # Adding the rest of widgets
@@ -70,6 +71,7 @@ class PlayerInfo(Window):
         i = 0
         for header in headers:
             self.info.setCellWidget(i, 0, ColoredLabel(self.info, header))
+            self.info.cellWidget(i, 0).setProperty("class", "right")
             i += 1
         self.id = ColoredLabel(self, str(self.player["id"]))
         self.info.setCellWidget(0, 1, self.id)
@@ -78,18 +80,21 @@ class PlayerInfo(Window):
         self.description = ColoredLabel(self, self.player["description"])
         self.info.setCellWidget(2, 1, self.description)
         # Adding buttons
-        self.info.setCellWidget(3, 0, ColoredLabel(self.info, "Actions"))
         actions = ColoredWidget()
         buttonGroup = QHBoxLayout()
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
+        buttonGroup.addStretch()
         # Profile button
         profileButton = ColoredButton(self.info, "ri.file-user-fill", "blue")
+        profileButton.clicked.connect(self.player.showProfile)
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
-        infoButton = ColoredButton(self.info, "msc.graph", "yellow")
-        buttonGroup.addWidget(infoButton)
+        self.refreshButton = ColoredButton(self.info)
+        self.refreshButton.clicked.connect(self.__refresh)
+        buttonGroup.addWidget(self.refreshButton)
+        self.updateRefreshButton()
         # Edit button
         editButton = ColoredButton(self.info, "fa5s.pencil-alt", "orange")
         buttonGroup.addWidget(editButton)
@@ -97,7 +102,7 @@ class PlayerInfo(Window):
         deleteButton = ColoredButton(self.info, "fa5s.trash-alt", "red")
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
-        self.info.setCellWidget(3, 1, actions, 1, 2)
+        self.info.setCellWidget(3, 0, actions, 1, 2)
 
 
     def __createTable(self) -> QTableWidget:
@@ -178,6 +183,41 @@ class PlayerInfo(Window):
         self.heatmap.setMinimumHeight(230)
     
 
+    def __refresh(self):
+        """Refreshing player information
+        """
+        if self.worker is not None:
+            if self.worker.isRunning():
+                self.worker.cancel = True
+                self.refreshButton.setEnabled(False)
+            else:
+                # Clearing label values
+                self.__gamesPlayed = 0
+                self.__usedNames.clear()
+                self.games.setText("0")
+                self.names.setText("")
+                for i in range(self.heatmap.rowCount()):
+                    for j in range(self.heatmap.columnCount()):
+                        widget = self.heatmap.cellWidget(i, j)
+                        widget.setText("")
+                        widget.setBackground("heatmap-0")
+                # Starting new worker
+                self.worker = PlayerInfoWorker(self)
+                self.worker.start()
+    
+
+    def updateRefreshButton(self):
+        """Updates visuals of "Refresh" button
+        """
+        self.refreshButton.setEnabled(True)
+        if self.worker is not None and self.worker.isRunning():
+            self.refreshButton.setIcon("mdi6.close")
+            self.refreshButton.setBackground("orange")
+        else:
+            self.refreshButton.setIcon("mdi6.reload")
+            self.refreshButton.setBackground("yellow")
+    
+
     def showUsedNames(self, name: str):
         """Shows currently used names
 
@@ -224,3 +264,18 @@ class PlayerInfo(Window):
             widget.setText(str(count))
             if count <= Config.instance()["Colors"]["heatmap"]["count"]:
                 widget.setBackground("heatmap-" + str(count))
+    
+
+    def keyPressEvent(self, event):
+        """Handling key press events
+
+        Args:
+            event: Event
+        """
+        key = event.key()
+        # Closing window
+        if key == Qt.Key_Escape:
+            self.close()
+        # Loading players
+        elif (key == Qt.Key_R and QApplication.keyboardModifiers() == Qt.ControlModifier) or key == Qt.Key_F5:
+            self.__refresh()
