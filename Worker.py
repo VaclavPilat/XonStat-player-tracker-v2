@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from Window import *
+import time
 
 
 
@@ -51,3 +52,13 @@ class Worker(QThread):
         """This method is called after this worker is finished
         """
         pass
+    
+
+    def sleep(self, amount: float):
+        """Sleep for a specified amount of time while checking if canceling is requested
+        """
+        division = 10
+        for i in range(division):
+            time.sleep(amount / division)
+            if self.cancel:
+                return

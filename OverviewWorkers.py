@@ -1,7 +1,7 @@
 from Window import *
 from Worker import *
 from Player import *
-import sys, os, json, time
+import sys, os, json
 from Functions import *
 from Config import *
 
@@ -135,7 +135,7 @@ class OverviewUpdater(Worker):
         """
         self._setRowColor.emit(self.window.getRow(player), "dark-yellow")
         # Sleep before loading
-        time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
+        self.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
         # Loading information
         remaining, limit = player.loadProfile()
         self.showRate.emit(remaining, limit)
@@ -297,6 +297,8 @@ class OverviewRemover(OverviewAdder):
         self.window.addButton.setEnabled(False)
         self._setButtonsEnabled.emit("unsafeButton", False)
         self.message.emit("Removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
+        if self.player.window is not None:
+            self.player.window.close()
         
     
     def run(self):

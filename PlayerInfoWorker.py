@@ -1,6 +1,6 @@
 from Worker import *
 from ColoredWidgets import *
-import time, datetime
+import datetime
 from Functions import *
 from Config import *
 from xml.sax.saxutils import escape
@@ -138,7 +138,7 @@ class PlayerInfoWorker(Worker):
         games = []
         for data in self.window.player.loadGameLists():
             if self.cancel:
-                return
+                break
             if data[1] is None:
                 maximum = current = data[0] -1
                 self.progress.emit(data[0] -1, maximum)
@@ -158,7 +158,7 @@ class PlayerInfoWorker(Worker):
                 self._setRowColor.emit(i, "dark-red")
         self.resultProgress.emit("Finished loading gamelists", correct, maximum)
         # Canceling
-        time.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
+        self.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
         if self.cancel:
             return
         # Loading game data
@@ -201,7 +201,7 @@ class PlayerInfoWorker(Worker):
             self.resultMessage.emit("An error occured: " + self.window.player.error, False)
         else:
             self.resultMessage.emit("Successfully loaded player profile", True)
-            time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
+            self.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
             if self.cancel:
                 return
             self.__loadGameData()
