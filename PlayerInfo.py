@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHeaderView, QTextEdit
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHeaderView, QTextEdit, QLineEdit
 from PyQt5.QtGui import QPixmap
 from Window import *
 from Status import *
@@ -15,14 +15,17 @@ class PlayerInfo(Window):
     """
 
 
+    __usedNames = {}
+    __gamesPlayed = 0
+    editing = False
+
+
     def __init__(self, player: Player):
         """Initialising GUI
 
         Args:
             player (Player): Player instance
         """
-        self.__usedNames = {}
-        self.__gamesPlayed = 0
         self.player = player
         super().__init__()
         self.worker = PlayerInfoWorker(self)
@@ -73,11 +76,15 @@ class PlayerInfo(Window):
             self.info.setCellWidget(i, 0, ColoredLabel(self.info, header))
             self.info.cellWidget(i, 0).setProperty("class", "right")
             i += 1
-        self.id = ColoredLabel(self, str(self.player["id"]))
+        # Adding editable text fields
+        self.id = QLineEdit(str(self.player["id"]), self)
+        self.id.setEnabled(False)
         self.info.setCellWidget(0, 1, self.id)
-        self.nick = ColoredLabel(self, self.player["nick"])
+        self.nick = QLineEdit(self.player["nick"], self)
+        self.nick.setEnabled(False)
         self.info.setCellWidget(1, 1, self.nick)
-        self.description = ColoredLabel(self, self.player["description"])
+        self.description = QLineEdit(self.player["description"], self)
+        self.description.setEnabled(False)
         self.info.setCellWidget(2, 1, self.description)
         # Adding buttons
         actions = ColoredWidget()
@@ -96,8 +103,10 @@ class PlayerInfo(Window):
         buttonGroup.addWidget(self.refreshButton)
         self.updateRefreshButton()
         # Edit button
-        editButton = ColoredButton(self.info, "fa5s.pencil-alt", "orange")
-        buttonGroup.addWidget(editButton)
+        self.editButton = ColoredButton(self.info)
+        self.editButton.clicked.connect(self.edit)
+        buttonGroup.addWidget(self.editButton)
+        self.updateEditButton()
         # Delete button
         deleteButton = ColoredButton(self.info, "fa5s.trash-alt", "red")
         buttonGroup.addWidget(deleteButton)
@@ -218,6 +227,17 @@ class PlayerInfo(Window):
             self.refreshButton.setBackground("yellow")
     
 
+    def updateEditButton(self):
+        """Updates visuals of "Refresh" button
+        """
+        if self.editing:
+            self.editButton.setIcon("ei.ok")
+            self.editButton.setBackground("green")
+        else:
+            self.editButton.setIcon("fa5s.pencil-alt")
+            self.editButton.setBackground("orange")
+    
+
     def showUsedNames(self, name: str):
         """Shows currently used names
 
@@ -264,6 +284,20 @@ class PlayerInfo(Window):
             widget.setText(str(count))
             if count <= Config.instance()["Colors"]["heatmap"]["count"]:
                 widget.setBackground("heatmap-" + str(count))
+    
+
+    def edit(self):
+        """Editing player info
+        """
+        if self.editing:
+            self.editing = False
+            for i in range(3):
+                self.info.cellWidget(i, 1).setEnabled(False)
+        else:
+            self.editing = True
+            for i in range(3):
+                self.info.cellWidget(i, 1).setEnabled(True)
+        self.updateEditButton()
     
 
     def keyPressEvent(self, event):

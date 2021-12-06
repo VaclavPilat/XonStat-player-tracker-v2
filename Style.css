@@ -3,6 +3,11 @@
     font-size: medium;
 }
 
+QLineEdit:disabled {
+    border-color: transparent;
+    color: #FFFFFF;
+}
+
 ColoredLabel { 
     padding: 5px;
 }
