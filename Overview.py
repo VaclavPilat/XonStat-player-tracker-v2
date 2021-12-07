@@ -134,7 +134,7 @@ class Overview(Window):
         # Delete button
         deleteButton = ColoredButton(self.table, "fa5s.trash-alt", "red")
         deleteButton.setObjectName("unsafeButton")
-        deleteButton.clicked.connect(lambda: self.__removePlayer(player))
+        deleteButton.clicked.connect(lambda: self.removePlayer(player))
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
         self.table.setCellWidget(row, 5, actions)
@@ -202,7 +202,7 @@ class Overview(Window):
             player (Player): Player instance
         """
         if player.window is None:
-            player.window = PlayerInfo(player)
+            player.window = PlayerInfo(self, player)
             player.window.destroyed.connect(lambda: self.__deletePlayerInfo(player))
         else:
             player.window.raise_()
@@ -269,21 +269,22 @@ class Overview(Window):
         return -1
     
 
-    def __removePlayer(self, player: Player):
+    def removePlayer(self, player: Player):
         """Attempts to remove a player
 
         Args:
             player (Player): Player instance
         """
-        try:
-            answer = QMessageBox.question(self, 'XonStat player tracker', "Are you sure you want to delete player \n" \
-                + "\"" + player["nick"] + "\" (ID " + str(player["id"]) + ") ?", QMessageBox.Yes | QMessageBox.Cancel)
-            if answer == QMessageBox.Yes:
-                self.worker = OverviewRemover(self, player)
-                self.worker.start()
-        except:
-            self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
-            self.setButtonsEnabled("unsafeButton", True)
+        if self.worker is None or not self.worker.isRunning():
+            try:
+                answer = QMessageBox.question(self, 'XonStat player tracker', "Are you sure you want to delete player \n" \
+                    + "\"" + player["nick"] + "\" (ID " + str(player["id"]) + ") ?", QMessageBox.Yes | QMessageBox.Cancel)
+                if answer == QMessageBox.Yes:
+                    self.worker = OverviewRemover(self, player)
+                    self.worker.start()
+            except:
+                self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
+                self.setButtonsEnabled("unsafeButton", True)
     
 
     def hidePlayer(self, player: Player):

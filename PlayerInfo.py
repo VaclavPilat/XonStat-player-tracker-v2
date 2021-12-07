@@ -20,12 +20,14 @@ class PlayerInfo(Window):
     editing = False
 
 
-    def __init__(self, player: Player):
+    def __init__(self, overview, player: Player):
         """Initialising GUI
 
         Args:
+            overview (Overview): Overview window instance
             player (Player): Player instance
         """
+        self.overview = overview
         self.player = player
         super().__init__()
         self.worker = PlayerInfoWorker(self)
@@ -79,12 +81,15 @@ class PlayerInfo(Window):
         # Adding editable text fields
         self.id = QLineEdit(str(self.player["id"]), self)
         self.id.setEnabled(False)
+        self.id.textChanged.connect(self.__setEditEnabled)
         self.info.setCellWidget(0, 1, self.id)
         self.nick = QLineEdit(self.player["nick"], self)
         self.nick.setEnabled(False)
+        self.nick.textChanged.connect(self.__setEditEnabled)
         self.info.setCellWidget(1, 1, self.nick)
         self.description = QLineEdit(self.player["description"], self)
         self.description.setEnabled(False)
+        self.description.textChanged.connect(self.__setEditEnabled)
         self.info.setCellWidget(2, 1, self.description)
         # Adding buttons
         actions = ColoredWidget()
@@ -109,6 +114,7 @@ class PlayerInfo(Window):
         self.updateEditButton()
         # Delete button
         deleteButton = ColoredButton(self.info, "fa5s.trash-alt", "red")
+        deleteButton.clicked.connect(self.__removePlayer)
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
         self.info.setCellWidget(3, 0, actions, 1, 2)
@@ -192,6 +198,12 @@ class PlayerInfo(Window):
         self.heatmap.setMinimumHeight(230)
     
 
+    def __removePlayer(self):
+        """Attempts to remove player through Overview window instance
+        """
+        self.overview.removePlayer(self.player)
+    
+
     def __refresh(self):
         """Refreshing player information
         """
@@ -231,7 +243,7 @@ class PlayerInfo(Window):
         """Updates visuals of "Refresh" button
         """
         if self.editing:
-            self.editButton.setIcon("ei.ok")
+            self.editButton.setIcon("fa.save")
             self.editButton.setBackground("green")
         else:
             self.editButton.setIcon("fa5s.pencil-alt")
@@ -290,14 +302,47 @@ class PlayerInfo(Window):
         """Editing player info
         """
         if self.editing:
-            self.editing = False
-            for i in range(3):
-                self.info.cellWidget(i, 1).setEnabled(False)
-        else:
-            self.editing = True
-            for i in range(3):
-                self.info.cellWidget(i, 1).setEnabled(True)
+            self.status.message("Saving player information")
+            self.status.resultMessage("Saved player information", True)
+        
+        for i in range(3):
+            self.info.cellWidget(i, 1).setEnabled(not self.editing)
+        self.editing = not self.editing
         self.updateEditButton()
+    
+
+    def __setEditEnabled(self):
+        """Setting edit button "enabled" property based on input validity
+        """
+        self.editButton.setEnabled(self.__validateInputs())
+    
+
+    def __validateInputs(self):
+        """Setting edit button "enabled" property based on input validity
+        """
+        # ID
+        id = self.id.text()
+        nick = self.nick.text()
+        # Checking input validity
+        if id is None or id == "" or nick is None or nick == "":
+            self.status.resultMessage("Both ID and nickname cannot be empty", False)
+            return False
+        if id.isnumeric():
+            id = int(id)
+        else:
+            self.status.resultMessage("Player ID has to be a number", False)
+            return False
+        # Checking if the ID is already in use
+        exists = False
+        for player in self.overview.players:
+            if not player == self.player and player["id"] == id:
+                exists = True
+                break
+        if exists:
+            self.status.resultMessage("This ID is already being used", False)
+            return False
+        #self.editButton.setEnabled(False)
+        return True
     
 
     def keyPressEvent(self, event):
