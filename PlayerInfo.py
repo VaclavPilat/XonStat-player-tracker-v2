@@ -303,8 +303,19 @@ class PlayerInfo(Window):
         """
         if self.editing:
             self.status.message("Saving player information")
+            # Getting edited info
+            self.player["id"] = int(self.id.text())
+            self.player["nick"] = self.nick.text()
+            self.player["description"] = self.description.text()
+            # Setting edited info to Overview
+            row = self.overview.getRow(self.player)
+            self.overview.table.cellWidget(row, 0).setText(str(self.player["id"]))
+            self.overview.table.cellWidget(row, 1).setText(self.player["nick"])
+            self.overview.table.cellWidget(row, 2).setText(self.player["description"])
+            # Saving edited info to file
+            Config.instance()["Players"] = json.loads( json.dumps(self.overview.players) )
+            Config.save("Players")
             self.status.resultMessage("Saved player information", True)
-        
         for i in range(3):
             self.info.cellWidget(i, 1).setEnabled(not self.editing)
         self.editing = not self.editing
