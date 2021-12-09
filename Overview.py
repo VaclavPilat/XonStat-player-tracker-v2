@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QHeaderView
+from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QHeaderView, QMessageBox
 from PyQt5.QtCore import Qt
 from Window import *
 from Status import *
 from OverviewWorkers import *
-from AddPlayer import *
 from ColoredWidgets import *
 from PlayerInfo import *
+from Functions import *
 import qtawesome as qta
 
 
@@ -34,7 +34,7 @@ class Overview(Window):
     
 
     def createLayout(self):
-        """Creates widnow layout with widgets
+        """Creates window layout with widgets
         """
         # Creating the layout itself
         widget = QWidget()
@@ -66,7 +66,7 @@ class Overview(Window):
         layout.addWidget(self.refreshButton)
         # Creating button for adding new player
         self.addButton = ColoredButton(self, "fa.user-plus", "green", False)
-        self.addButton.clicked.connect(self.__openAddPlayer)
+        self.addButton.clicked.connect(lambda: self.__openPlayerInfo(Player(), PlayerInfoViewMode.Add))
         layout.addWidget(self.addButton)
         return layout
 
@@ -185,14 +185,6 @@ class Overview(Window):
         else:
             self.refreshButton.setIcon("mdi6.reload")
             self.refreshButton.setBackground("yellow")
-
-
-    def __openAddPlayer(self):
-        """Opening a window for adding a new player
-        """
-        self.addButton.setEnabled(False)
-        self.refreshButton.setEnabled(False)
-        self.__addPlayerWindow = AddPlayer(self)
     
 
     def __openPlayerInfo(self, player: Player, mode: PlayerInfoViewMode = PlayerInfoViewMode.Load):
@@ -287,7 +279,9 @@ class Overview(Window):
                     self.worker.start()
             except:
                 self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
-                self.setButtonsEnabled("unsafeButton", True)
+                self.table.setButtonsEnabled("unsafeButton", True)
+                printException()
+
     
 
     def hidePlayer(self, player: Player):

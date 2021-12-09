@@ -6,6 +6,7 @@ from ColoredWidgets import *
 from Player import *
 from PlayerInfoWorker import *
 from Config import *
+from OverviewWorkers import *
 import os, enum
 
 
@@ -41,7 +42,7 @@ class PlayerInfo(Window):
         if self.mode == PlayerInfoViewMode.Load:
             self.worker = PlayerInfoWorker(self)
             self.worker.start()
-        elif self.mode == PlayerInfoViewMode.Edit:
+        elif self.mode == PlayerInfoViewMode.Edit or self.mode == PlayerInfoViewMode.Add:
             self.edit()
     
 
@@ -56,7 +57,7 @@ class PlayerInfo(Window):
     
 
     def createLayout(self):
-        """Creates widnow layout with widgets
+        """Creates window layout with widgets
         """
         # Creating the layout itself
         widget = QWidget()
@@ -333,18 +334,13 @@ class PlayerInfo(Window):
                 self.player["id"] = int(self.id.text())
             self.player["nick"] = self.nick.text()
             self.player["description"] = self.description.text()
-            # Setting edited info to Overview
-            row = self.overview.getRow(self.player)
+            # Adding new player
             if self.mode == PlayerInfoViewMode.Add:
-                self.overview.table.cellWidget(row, 0).setText(str(self.player["id"]))
-            self.overview.table.cellWidget(row, 1).setText(self.player["nick"])
-            self.overview.table.cellWidget(row, 2).setText(self.player["description"])
-            # Saving edited info to file
-            Config.instance()["Players"] = json.loads( json.dumps(self.overview.players) )
-            Config.save("Players")
-            self.status.resultMessage("Saved player information", True)
-            if self.mode == PlayerInfoViewMode.Edit:
-                self.close()
+                self.overview.worker = OverviewAdder(self.overview, self.player)
+                self.overview.worker.start()
+                self.overview.worker.finished.connect(self.__saveEditedChanges)
+            else:
+                self.__saveEditedChanges()
         if self.mode == PlayerInfoViewMode.Add:
             for i in range(3):
                 self.info.cellWidget(i, 1).setEnabled(not self.editing)
@@ -353,6 +349,25 @@ class PlayerInfo(Window):
                 self.info.cellWidget(i, 1).setEnabled(not self.editing)
         self.editing = not self.editing
         self.updateEditButton()
+    
+
+    def __saveEditedChanges(self):
+        """Saves edited player information
+        """
+        # Setting edited info to Overview
+        row = self.overview.getRow(self.player)
+        if self.mode == PlayerInfoViewMode.Add:
+            self.overview.table.cellWidget(row, 0).setText(str(self.player["id"]))
+        self.overview.table.cellWidget(row, 1).setText(self.player["nick"])
+        self.overview.table.cellWidget(row, 2).setText(self.player["description"])
+        # Saving edited info to file
+        Config.instance()["Players"] = json.loads( json.dumps(self.overview.players) )
+        Config.save("Players")
+        self.status.resultMessage("Saved player information", True)
+        if self.mode == PlayerInfoViewMode.Edit:
+            self.close()
+        elif self.mode == PlayerInfoViewMode.Add:
+            self.mode = PlayerInfoViewMode.Load
     
 
     def __setEditEnabled(self):
@@ -381,7 +396,6 @@ class PlayerInfo(Window):
             if not player == self.player and player["id"] == id:
                 self.status.resultMessage("This ID is already being used", False)
                 return False
-        #self.editButton.setEnabled(False)
         self.status.resultMessage("Ready to save player information", True)
         return True
     
