@@ -68,7 +68,6 @@ class Overview(Window):
         self.addButton = ColoredButton(self, "fa.user-plus", "green", False)
         self.addButton.clicked.connect(self.__openAddPlayer)
         layout.addWidget(self.addButton)
-        #return search
         return layout
 
 
@@ -181,7 +180,7 @@ class Overview(Window):
         """Updates visuals of "Refresh" button
         """
         if self.worker.isRunning():
-            self.refreshButton.setIcon("mdi6.close")
+            self.refreshButton.setIcon("msc.chrome-close")
             self.refreshButton.setBackground("orange")
         else:
             self.refreshButton.setIcon("mdi6.reload")

@@ -11,9 +11,9 @@ import os, enum
 
 
 class PlayerInfoViewMode(enum.Enum):
-    Load = 700
-    Edit = 180
-    Add = 180
+    Load = 0
+    Edit = 1
+    Add = 2
 
 
 
@@ -49,7 +49,10 @@ class PlayerInfo(Window):
         """Setting winow properties
         """
         self.setWindowTitle("Player information")
-        self.resize(550, self.mode.value)
+        if self.mode ==PlayerInfoViewMode.Load:
+            self.resize(550, 700)
+        else:
+            self.resize(550, 180)
     
 
     def createLayout(self):
@@ -113,23 +116,31 @@ class PlayerInfo(Window):
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
         # Profile button
-        profileButton = ColoredButton(self.info, "ri.file-user-fill", "blue")
-        profileButton.clicked.connect(self.player.showProfile)
-        buttonGroup.addWidget(profileButton)
+        if self.mode == PlayerInfoViewMode.Load:
+            profileButton = ColoredButton(self.info, "ri.file-user-fill", "blue")
+            profileButton.clicked.connect(self.player.showProfile)
+            buttonGroup.addWidget(profileButton)
         # PlayerInfo button
-        self.refreshButton = ColoredButton(self.info)
-        self.refreshButton.clicked.connect(self.__refresh)
-        buttonGroup.addWidget(self.refreshButton)
-        self.updateRefreshButton()
+        if self.mode == PlayerInfoViewMode.Load:
+            self.refreshButton = ColoredButton(self.info)
+            self.refreshButton.clicked.connect(self.__refresh)
+            buttonGroup.addWidget(self.refreshButton)
+            self.updateRefreshButton()
         # Edit button
         self.editButton = ColoredButton(self.info)
         self.editButton.clicked.connect(self.edit)
         buttonGroup.addWidget(self.editButton)
         self.updateEditButton()
         # Delete button
-        deleteButton = ColoredButton(self.info, "fa5s.trash-alt", "red")
-        deleteButton.clicked.connect(self.__removePlayer)
-        buttonGroup.addWidget(deleteButton)
+        if self.mode == PlayerInfoViewMode.Load:
+            deleteButton = ColoredButton(self.info, "fa5s.trash-alt", "red")
+            deleteButton.clicked.connect(self.__removePlayer)
+            buttonGroup.addWidget(deleteButton)
+        # Close button
+        if not self.mode == PlayerInfoViewMode.Load:
+            closeButton = ColoredButton(self.info, "msc.chrome-close", "red")
+            closeButton.clicked.connect(self.close)
+            buttonGroup.addWidget(closeButton)
         buttonGroup.addStretch()
         self.info.setCellWidget(3, 0, actions, 1, 2)
 
@@ -246,7 +257,7 @@ class PlayerInfo(Window):
         """
         self.refreshButton.setEnabled(True)
         if self.worker is not None and self.worker.isRunning():
-            self.refreshButton.setIcon("mdi6.close")
+            self.refreshButton.setIcon("msc.chrome-close")
             self.refreshButton.setBackground("orange")
         else:
             self.refreshButton.setIcon("mdi6.reload")
@@ -318,20 +329,28 @@ class PlayerInfo(Window):
         if self.editing:
             self.status.message("Saving player information")
             # Getting edited info
-            self.player["id"] = int(self.id.text())
+            if self.mode == PlayerInfoViewMode.Add:
+                self.player["id"] = int(self.id.text())
             self.player["nick"] = self.nick.text()
             self.player["description"] = self.description.text()
             # Setting edited info to Overview
             row = self.overview.getRow(self.player)
-            self.overview.table.cellWidget(row, 0).setText(str(self.player["id"]))
+            if self.mode == PlayerInfoViewMode.Add:
+                self.overview.table.cellWidget(row, 0).setText(str(self.player["id"]))
             self.overview.table.cellWidget(row, 1).setText(self.player["nick"])
             self.overview.table.cellWidget(row, 2).setText(self.player["description"])
             # Saving edited info to file
             Config.instance()["Players"] = json.loads( json.dumps(self.overview.players) )
             Config.save("Players")
             self.status.resultMessage("Saved player information", True)
-        for i in range(3):
-            self.info.cellWidget(i, 1).setEnabled(not self.editing)
+            if self.mode == PlayerInfoViewMode.Edit:
+                self.close()
+        if self.mode == PlayerInfoViewMode.Add:
+            for i in range(3):
+                self.info.cellWidget(i, 1).setEnabled(not self.editing)
+        else:
+            for i in range(1, 3):
+                self.info.cellWidget(i, 1).setEnabled(not self.editing)
         self.editing = not self.editing
         self.updateEditButton()
     
@@ -358,14 +377,10 @@ class PlayerInfo(Window):
             self.status.resultMessage("Player ID has to be a number", False)
             return False
         # Checking if the ID is already in use
-        exists = False
         for player in self.overview.players:
             if not player == self.player and player["id"] == id:
-                exists = True
-                break
-        if exists:
-            self.status.resultMessage("This ID is already being used", False)
-            return False
+                self.status.resultMessage("This ID is already being used", False)
+                return False
         #self.editButton.setEnabled(False)
         self.status.resultMessage("Ready to save player information", True)
         return True
