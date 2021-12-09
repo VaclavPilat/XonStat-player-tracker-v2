@@ -6,7 +6,15 @@ from ColoredWidgets import *
 from Player import *
 from PlayerInfoWorker import *
 from Config import *
-import os
+import os, enum
+
+
+
+class PlayerInfoViewMode(enum.Enum):
+    Load = 700
+    Edit = 180
+    Add = 180
+
 
 
 
@@ -15,30 +23,33 @@ class PlayerInfo(Window):
     """
 
 
-    __usedNames = {}
-    __gamesPlayed = 0
-    editing = False
-
-
-    def __init__(self, overview, player: Player):
+    def __init__(self, overview, player: Player, mode: PlayerInfoViewMode = PlayerInfoViewMode.Load):
         """Initialising GUI
 
         Args:
             overview (Overview): Overview window instance
             player (Player): Player instance
+            mode (PlayerInfoViewMode): View mode
         """
+        self.__usedNames = {}
+        self.__gamesPlayed = 0
+        self.editing = False
         self.overview = overview
         self.player = player
+        self.mode = mode
         super().__init__()
-        self.worker = PlayerInfoWorker(self)
-        self.worker.start()
+        if self.mode == PlayerInfoViewMode.Load:
+            self.worker = PlayerInfoWorker(self)
+            self.worker.start()
+        elif self.mode == PlayerInfoViewMode.Edit:
+            self.edit()
     
 
     def setProperties(self):
         """Setting winow properties
         """
         self.setWindowTitle("Player information")
-        self.resize(550, 700)
+        self.resize(550, self.mode.value)
     
 
     def createLayout(self):
@@ -58,11 +69,14 @@ class PlayerInfo(Window):
         self.__addSimpleInfo()
         layout.addWidget(self.info)
         # Adding the rest of widgets
-        self.table = self.__createTable()
-        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
-        self.__addWidgetsToTable()
-        layout.addWidget(self.table)
+        if self.mode == PlayerInfoViewMode.Load:
+            self.table = self.__createTable()
+            self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.__addWidgetsToTable()
+            layout.addWidget(self.table)
         # Adding status
+        if not self.mode == PlayerInfoViewMode.Load:
+            layout.addStretch()
         self.status = Status(self)
         layout.addWidget(self.status)
     
@@ -353,6 +367,7 @@ class PlayerInfo(Window):
             self.status.resultMessage("This ID is already being used", False)
             return False
         #self.editButton.setEnabled(False)
+        self.status.resultMessage("Ready to save player information", True)
         return True
     
 

@@ -130,6 +130,7 @@ class Overview(Window):
         buttonGroup.addWidget(infoButton)
         # Edit button
         editButton = ColoredButton(self.table, "fa5s.pencil-alt", "orange")
+        editButton.clicked.connect(lambda: self.__openPlayerInfo(player, PlayerInfoViewMode.Edit))
         buttonGroup.addWidget(editButton)
         # Delete button
         deleteButton = ColoredButton(self.table, "fa5s.trash-alt", "red")
@@ -195,18 +196,21 @@ class Overview(Window):
         self.__addPlayerWindow = AddPlayer(self)
     
 
-    def __openPlayerInfo(self, player: Player):
+    def __openPlayerInfo(self, player: Player, mode: PlayerInfoViewMode = PlayerInfoViewMode.Load):
         """Opens PlayerInfo window if it doen't exist
 
         Args:
             player (Player): Player instance
+            mode (PlayerInfoViewMode): View mode
         """
         if player.window is None:
-            player.window = PlayerInfo(self, player)
+            player.window = PlayerInfo(self, player, mode)
             player.window.destroyed.connect(lambda: self.__deletePlayerInfo(player))
         else:
             player.window.raise_()
             player.window.activateWindow()
+            if mode == PlayerInfoViewMode.Edit:
+                player.window.edit()
     
 
     def __getOpenWindowCount(self):
