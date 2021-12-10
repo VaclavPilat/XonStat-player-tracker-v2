@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHeaderView, QTextEdit, QLineEdit
-from PyQt5.QtGui import QPixmap
+from PyQt5 import QtWidgets, QtCore, QtGui
+import os, enum
+
 from Window import *
 from Status import *
 from ColoredWidgets import *
@@ -7,7 +8,6 @@ from Player import *
 from PlayerInfoWorker import *
 from Config import *
 from OverviewWorkers import *
-import os, enum
 
 
 
@@ -15,7 +15,6 @@ class PlayerInfoViewMode(enum.Enum):
     Load = 0
     Edit = 1
     Add = 2
-
 
 
 
@@ -60,14 +59,14 @@ class PlayerInfo(Window):
         """Creates window layout with widgets
         """
         # Creating the layout itself
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
         # Adding simple information
         self.info = self.__createTable()
         self.info.setMaximumHeight(130)
-        self.info.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.info.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.info.resizeRowsToContents()
         self.info.setShowGrid(False)
         self.__addSimpleInfo()
@@ -75,7 +74,7 @@ class PlayerInfo(Window):
         # Adding the rest of widgets
         if self.mode == PlayerInfoViewMode.Load:
             self.table = self.__createTable()
-            self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+            self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
             self.__addWidgetsToTable()
             layout.addWidget(self.table)
         # Adding status
@@ -97,21 +96,21 @@ class PlayerInfo(Window):
             self.info.cellWidget(i, 0).setProperty("class", "right")
             i += 1
         # Adding editable text fields
-        self.id = QLineEdit(str(self.player["id"]), self)
+        self.id = QtWidgets.QLineEdit(str(self.player["id"]), self)
         self.id.setEnabled(False)
         self.id.textChanged.connect(self.__setEditEnabled)
         self.info.setCellWidget(0, 1, self.id)
-        self.nick = QLineEdit(self.player["nick"], self)
+        self.nick = QtWidgets.QLineEdit(self.player["nick"], self)
         self.nick.setEnabled(False)
         self.nick.textChanged.connect(self.__setEditEnabled)
         self.info.setCellWidget(1, 1, self.nick)
-        self.description = QLineEdit(self.player["description"], self)
+        self.description = QtWidgets.QLineEdit(self.player["description"], self)
         self.description.setEnabled(False)
         self.description.textChanged.connect(self.__setEditEnabled)
         self.info.setCellWidget(2, 1, self.description)
         # Adding buttons
         actions = ColoredWidget()
-        buttonGroup = QHBoxLayout()
+        buttonGroup = QtWidgets.QHBoxLayout()
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
@@ -146,17 +145,17 @@ class PlayerInfo(Window):
         self.info.setCellWidget(3, 0, actions, 1, 2)
 
 
-    def __createTable(self) -> QTableWidget:
+    def __createTable(self) -> QtWidgets.QTableWidget:
         """Creating table layout
 
         Returns:
-            QTableWidget: Created table widget
+            QtWidgets.QTableWidget: Created table widget
         """
         # Setting up a table
         table = ColoredTable(self)
         table.setColumnCount(2)
         for i in range(table.columnCount()):
-            table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
+            table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
         table.horizontalHeader().hide()
         table.verticalHeader().hide()
         return table
@@ -191,10 +190,10 @@ class PlayerInfo(Window):
         # Recently used names
         self.table.insertRow(6)
         self.table.setCellWidget(6, 0, ColoredLabel(self.table, "Recently used names", "dark-grey"))
-        self.names = QTextEdit(self.table)
+        self.names = QtWidgets.QTextEdit(self.table)
         self.names.setMaximumHeight(150)
         self.names.setProperty("class", "xolonium")
-        self.names.setLineWrapMode(QTextEdit.NoWrap)
+        self.names.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(6, 1, self.names)
     
@@ -213,11 +212,11 @@ class PlayerInfo(Window):
         self.heatmap.setHorizontalHeaderLabels(columns)
         self.heatmap.horizontalHeader().setMinimumSectionSize(50)
         for i in range(self.heatmap.columnCount()):
-            self.heatmap.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            self.heatmap.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         # Generating rows
         for i in range(7):
             self.heatmap.insertRow(i)
-            self.heatmap.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            self.heatmap.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             for j in range(self.heatmap.columnCount()):
                 self.heatmap.setCellWidget(i, j, ColoredLabel(self.heatmap, None, "heatmap-0"))
         self.heatmap.setVerticalHeaderLabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])

@@ -1,7 +1,9 @@
+from PyQt5 import QtWidgets, QtCore, QtGui
+import sys, os, json
+
 from Window import *
 from Worker import *
 from Player import *
-import sys, os, json
 from Functions import *
 from Config import *
 
@@ -12,9 +14,9 @@ class OverviewLoader(Worker):
     """
 
 
-    _showPlayer = pyqtSignal(Player) # Signal for adding new player to table
-    _setButtonsEnabled = pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
-    _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
+    _showPlayer = QtCore.pyqtSignal(Player) # Signal for adding new player to table
+    _setButtonsEnabled = QtCore.pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
+    _updateRefreshButton = QtCore.pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
     def connectSlots(self):
@@ -101,17 +103,15 @@ class OverviewLoader(Worker):
 
 
 
-
-
 class OverviewUpdater(Worker):
     """Loading information from player profiles and updating player table
     """
 
 
-    _updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
-    _setRowColor = pyqtSignal(int, str) # Signal for changing row color
-    _setButtonsEnabled = pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
-    _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
+    _updatePlayer = QtCore.pyqtSignal(Player) # Singnal for updating player variables
+    _setRowColor = QtCore.pyqtSignal(int, str) # Signal for changing row color
+    _setButtonsEnabled = QtCore.pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
+    _updateRefreshButton = QtCore.pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
     def connectSlots(self):
@@ -198,16 +198,14 @@ class OverviewUpdater(Worker):
 
 
 
-
-
 class OverviewAdder(OverviewLoader, OverviewUpdater):
     """Loading information about a single player and updating player table during runtime
     """
 
 
-    _showPlayer = pyqtSignal(Player) # Signal for adding new player to table
-    _updatePlayer = pyqtSignal(Player) # Singnal for updating player variables
-    _setRowColor = pyqtSignal(int, str) # Signal for changing row color
+    _showPlayer = QtCore.pyqtSignal(Player) # Signal for adding new player to table
+    _updatePlayer = QtCore.pyqtSignal(Player) # Singnal for updating player variables
+    _setRowColor = QtCore.pyqtSignal(int, str) # Signal for changing row color
     
 
     def connectSlots(self):
@@ -258,15 +256,13 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
 
 
 
-
-
 class OverviewRemover(OverviewAdder):
     """Removes a player from table and from files
     """
 
 
-    _hidePlayer = pyqtSignal(Player) # Signal for removing a player from table
-    _setButtonsEnabled = pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
+    _hidePlayer = QtCore.pyqtSignal(Player) # Signal for removing a player from table
+    _setButtonsEnabled = QtCore.pyqtSignal(str, bool) # Signal for changing "enabled" property of buttons
     
 
     def connectSlots(self):

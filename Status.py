@@ -1,7 +1,8 @@
+from PyQt5 import QtWidgets, QtCore, QtGui
+import math
+
 from Window import *
 from ColoredWidgets import *
-import math
-from PyQt5.QtWidgets import QApplication, QHBoxLayout
 
 
 
@@ -21,24 +22,24 @@ class Status(ColoredWidget):
         # Creating layout
         self.setObjectName("status")
         self.setBackground("grey")
-        layout = QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
         # Creating label for displaying an icon
         self.icon = ColoredLabel(self)
         self.icon.setObjectName("status-icon")
-        self.icon.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.icon.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         layout.addWidget(self.icon)
         # Creating inner status label
         self.inner = ColoredLabel(self, "Ready")
         self.inner.setObjectName("status-inner")
-        self.inner.setAlignment(Qt.AlignCenter)
+        self.inner.setAlignment(QtCore.Qt.AlignCenter)
         layout.addWidget(self.inner)
         # Creating label for ratelimit
         self.rate = ColoredLabel(self)
         self.rate.setObjectName("status-rate")
-        self.rate.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.rate.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         layout.addWidget(self.rate)
     
 
@@ -49,7 +50,7 @@ class Status(ColoredWidget):
             remaining (str): Remaining number of requests
             limit (str): Request limit
         """
-        for widget in QApplication.topLevelWidgets():
+        for widget in QtWidgets.QApplication.topLevelWidgets():
             if issubclass(type(widget), Window) and widget.status:
                 widget.status.rate.setText(remaining + " / " + limit)
     

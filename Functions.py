@@ -1,6 +1,7 @@
 import traceback
-from Config import *
 from colour import Color
+
+from Config import *
 
 
 

@@ -1,6 +1,7 @@
-from Functions import *
-from PyQt5 import QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui
 import os, json
+
+from Functions import *
 
 
 

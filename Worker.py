@@ -1,23 +1,24 @@
-from PyQt5.QtCore import QThread, pyqtSignal
-from Window import *
+from PyQt5 import QtWidgets, QtCore, QtGui
 import time
 
+from Window import *
 
 
-class Worker(QThread):
+
+class Worker(QtCore.QThread):
     """Worker class is for executing background tasks
     """
 
 
-    message = pyqtSignal(str)
-    progress = pyqtSignal(int, int)
-    resultMessage = pyqtSignal(str, bool)
-    resultProgress = pyqtSignal(str, int, int)
-    showRate = pyqtSignal(str, str)
+    message = QtCore.pyqtSignal(str)
+    progress = QtCore.pyqtSignal(int, int)
+    resultMessage = QtCore.pyqtSignal(str, bool)
+    resultProgress = QtCore.pyqtSignal(str, int, int)
+    showRate = QtCore.pyqtSignal(str, str)
 
 
     def __init__(self, window: Window):
-        """Initialising QThread, connecting slots
+        """Initialising QtCore.QThread, connecting slots
 
         Args:
             window (Window): Window object that this class ws instantiated in

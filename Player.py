@@ -1,6 +1,8 @@
+from PyQt5 import QtWidgets, QtCore, QtGui
 import urllib3, webbrowser, json, time, re, colorsys
 from xml.sax.saxutils import escape
 from http.client import responses
+
 from Functions import *
 from Config import *
 

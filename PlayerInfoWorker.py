@@ -1,9 +1,11 @@
+from PyQt5 import QtWidgets, QtCore, QtGui
+from xml.sax.saxutils import escape
+import datetime
+
 from Worker import *
 from ColoredWidgets import *
-import datetime
 from Functions import *
 from Config import *
-from xml.sax.saxutils import escape
 
 
 
@@ -12,17 +14,17 @@ class PlayerInfoWorker(Worker):
     """
 
 
-    _setRowColor = pyqtSignal(int, str) # Signal for changing row color
-    _setWidgetColor = pyqtSignal(int, int, str) # Signal for changing widget color
-    _showName = pyqtSignal(str) # Showing current player name
-    _showSince = pyqtSignal(str) # Showing since when this player is playing
-    _showActive = pyqtSignal(str) # Showing the last time this player joined a game
-    _setActiveColor = pyqtSignal(str) # Setting a color to "active" label
-    _showTime = pyqtSignal(str) # Showing total time spent playing
-    _showUsedNames = pyqtSignal(str) # Showing recently used names
-    _showGames = pyqtSignal() # Showing number of recently played games
-    _updateHeatmapGames = pyqtSignal(int, int) # Updating number of games in heatmap
-    _updateRefreshButton = pyqtSignal() # Signal for updating visuals of a "Refresh" button
+    _setRowColor = QtCore.pyqtSignal(int, str) # Signal for changing row color
+    _setWidgetColor = QtCore.pyqtSignal(int, int, str) # Signal for changing widget color
+    _showName = QtCore.pyqtSignal(str) # Showing current player name
+    _showSince = QtCore.pyqtSignal(str) # Showing since when this player is playing
+    _showActive = QtCore.pyqtSignal(str) # Showing the last time this player joined a game
+    _setActiveColor = QtCore.pyqtSignal(str) # Setting a color to "active" label
+    _showTime = QtCore.pyqtSignal(str) # Showing total time spent playing
+    _showUsedNames = QtCore.pyqtSignal(str) # Showing recently used names
+    _showGames = QtCore.pyqtSignal() # Showing number of recently played games
+    _updateHeatmapGames = QtCore.pyqtSignal(int, int) # Updating number of games in heatmap
+    _updateRefreshButton = QtCore.pyqtSignal() # Signal for updating visuals of a "Refresh" button
     
 
     def connectSlots(self):

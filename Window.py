@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDesktopWidget
-from PyQt5.QtGui import QIcon
-from ColoredWidgets import *
+from PyQt5 import QtWidgets, QtCore, QtGui
 import os, qdarkstyle
+
+from ColoredWidgets import *
 from Functions import *
 
 
 
-class Window(QMainWindow):
+class Window(QtWidgets.QMainWindow):
     """Class for creating a status label and methods for controlling status content
     """
 
@@ -18,7 +18,7 @@ class Window(QMainWindow):
         self.worker = None
         self.status = None
         super().__init__()
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.__addStylesheet()
         self.__addIcon()
         self.setProperties()
@@ -46,14 +46,14 @@ class Window(QMainWindow):
     def __addIcon(self):
         """Adds an icon to this window
         """
-        self.setWindowIcon(QIcon( os.path.join(os.path.dirname(__file__), "Icon.png") )) # Adding icon
+        self.setWindowIcon(QtGui.QIcon( os.path.join(os.path.dirname(__file__), "Icon.png") )) # Adding icon
     
 
     def __centerWindow(self):
         """Moving window to the center of the screen
         """
         frameGeometry = self.frameGeometry()
-        frameGeometry.moveCenter(QDesktopWidget().availableGeometry().center())
+        frameGeometry.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
         self.move(frameGeometry.topLeft())
     
 
@@ -63,7 +63,7 @@ class Window(QMainWindow):
         Args:
             title (str, optional): Window title. Defaults to "".
         """
-        super().setWindowTitle(str(QApplication.instance().applicationName()) + " - " + title)
+        super().setWindowTitle(str(QtWidgets.QApplication.instance().applicationName()) + " - " + title)
 
 
     def closeEvent(self, event, isChildWindow = True):

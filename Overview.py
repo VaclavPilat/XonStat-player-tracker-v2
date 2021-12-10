@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import QApplication, QVBoxLayout, QHBoxLayout, QHeaderView, QMessageBox
-from PyQt5.QtCore import Qt
+from PyQt5 import QtWidgets, QtCore, QtGui
+import qtawesome as qta
+
 from Window import *
 from Status import *
 from OverviewWorkers import *
 from ColoredWidgets import *
 from PlayerInfo import *
 from Functions import *
-import qtawesome as qta
 
 
 
@@ -37,8 +37,8 @@ class Overview(Window):
         """Creates window layout with widgets
         """
         # Creating the layout itself
-        widget = QWidget()
-        layout = QVBoxLayout()
+        widget = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
         # Adding widgets to layout
@@ -48,15 +48,15 @@ class Overview(Window):
         layout.addWidget(self.status)
     
 
-    def __createTopWidgets(self) -> QHBoxLayout:
+    def __createTopWidgets(self) -> QtWidgets.QHBoxLayout:
         """Creates a box layout with search bar and a few buttons
 
         Returns:
-            QHBoxLayout: Created layout
+            QtWidgets.QHBoxLayout: Created layout
         """
-        layout = QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         # Creating search bar
-        self.searchBar = QLineEdit(self)
+        self.searchBar = QtWidgets.QLineEdit(self)
         self.searchBar.setPlaceholderText("Search by player ID, nickname or current player name")
         self.searchBar.textChanged.connect(self.__search)
         layout.addWidget(self.searchBar)
@@ -71,11 +71,11 @@ class Overview(Window):
         return layout
 
 
-    def __createTable(self) -> QTableWidget:
+    def __createTable(self) -> QtWidgets.QTableWidget:
         """Creating table layout
 
         Returns:
-            QTableWidget: Created table widget
+            QtWidgets.QTableWidget: Created table widget
         """
         self.table = ColoredTable(self)
         # Setting columns
@@ -84,13 +84,13 @@ class Overview(Window):
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
-        self.table.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.table.verticalHeader().setMinimumSectionSize(30)
-        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.table.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         for i in range(1, 4):
-            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
+            self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
         for i in range(4, len(headers)):
-            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.ResizeToContents)
+            self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
         return self.table
 
     
@@ -114,7 +114,7 @@ class Overview(Window):
         # Adding buttons
         actions = ColoredWidget()
         actions.setBackground("dark-grey")
-        buttonGroup = QHBoxLayout()
+        buttonGroup = QtWidgets.QHBoxLayout()
         actions.setLayout(buttonGroup)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
@@ -150,9 +150,9 @@ class Overview(Window):
         widget = self.table.cellWidget(self.getRow(player), 3)
         if not player.error == None:
             widget.setText(player.error)
-            widget.setAlignment(Qt.AlignCenter)
+            widget.setAlignment(QtCore.Qt.AlignCenter)
         else:
-            widget.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+            widget.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
             widget.setText(player.name)
         # Adding label for the last time this player was active
         widget = self.table.cellWidget(self.getRow(player), 4)
@@ -272,9 +272,9 @@ class Overview(Window):
         """
         if self.worker is None or not self.worker.isRunning():
             try:
-                answer = QMessageBox.question(self, 'XonStat player tracker', "Are you sure you want to delete player \n" \
-                    + "\"" + player["nick"] + "\" (ID " + str(player["id"]) + ") ?", QMessageBox.Yes | QMessageBox.Cancel)
-                if answer == QMessageBox.Yes:
+                answer = QtWidgets.QMessageBox.question(self, 'XonStat player tracker', "Are you sure you want to delete player \n" \
+                    + "\"" + player["nick"] + "\" (ID " + str(player["id"]) + ") ?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
+                if answer == QtWidgets.QMessageBox.Yes:
                     self.worker = OverviewRemover(self, player)
                     self.worker.start()
             except:
@@ -320,11 +320,11 @@ class Overview(Window):
         """
         key = event.key()
         # Accessing search bar
-        if key == Qt.Key_Return or key == Qt.Key_Enter or ((event.modifiers() & Qt.ControlModifier) and key == Qt.Key_F):
+        if key == QtCore.Qt.Key_Return or key == QtCore.Qt.Key_Enter or ((event.modifiers() & QtCore.Qt.ControlModifier) and key == QtCore.Qt.Key_F):
             self.searchBar.setFocus()
-        elif key == Qt.Key_Escape:
+        elif key == QtCore.Qt.Key_Escape:
             self.searchBar.clear()
             self.searchBar.setFocus()
         # Loading players
-        elif (key == Qt.Key_R and QApplication.keyboardModifiers() == Qt.ControlModifier) or key == Qt.Key_F5:
+        elif (key == QtCore.Qt.Key_R and QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier) or key == QtCore.Qt.Key_F5:
             self.__updatePlayers()

@@ -1,11 +1,9 @@
-from PyQt5.QtWidgets import QWidget, QPushButton, QLabel, QTableWidget
-from PyQt5.QtGui import QCursor, QIcon
-from PyQt5.QtCore import Qt, QSize
+from PyQt5 import QtWidgets, QtCore, QtGui
 import qtawesome as qta
 
 
 
-class ColoredWidget(QWidget):
+class ColoredWidget(QtWidgets.QWidget):
     """Special methods for styling QWidget objects
     """
 
@@ -13,8 +11,8 @@ class ColoredWidget(QWidget):
     def __init__(self):
         """Init for ColoredWiget class
         """
-        QWidget.__init__(self)
-        self.setAttribute(Qt.WA_StyledBackground, True)
+        QtWidgets.QWidget.__init__(self)
+        self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
     
 
     def setProperty(self, prop: str, value: str = None):
@@ -57,16 +55,16 @@ class ColoredWidget(QWidget):
 
 
 
-class ColoredButton(QPushButton, ColoredWidget):
+class ColoredButton(QtWidgets.QPushButton, ColoredWidget):
     """Simply stylable button
     """
 
 
-    def __init__(self, parent: QWidget, content = None, background: str = "grey", enabled: bool = True):
+    def __init__(self, parent: QtWidgets.QWidget, content = None, background: str = "grey", enabled: bool = True):
         """Initializes a colored button
 
         Args:
-            parent (QWidget): Parent widget
+            parent (QtWidgets.QWidget): Parent widget
             content (str, optional): Icon name or button text content. Defaults to None.
             background (str, optional): Background color defined in generated stylesheets. Defaults to "grey".
             enabled (bool, optional): Should the button be enabled?. Defaults to True.
@@ -74,12 +72,12 @@ class ColoredButton(QPushButton, ColoredWidget):
         if content is None:
             content = ""
         if "." in content:
-            QPushButton.__init__(self, None, parent)
+            QtWidgets.QPushButton.__init__(self, None, parent)
             self.setIcon(content)
         else:
-            QPushButton.__init__(self, content, parent)
+            QtWidgets.QPushButton.__init__(self, content, parent)
         self.setBackground(background)
-        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.setEnabled(enabled)
 
 
@@ -95,21 +93,21 @@ class ColoredButton(QPushButton, ColoredWidget):
 
 
 
-class ColoredLabel(QLabel, ColoredWidget):
+class ColoredLabel(QtWidgets.QLabel, ColoredWidget):
     """Simply stylable label
     """
 
 
-    def __init__(self, parent: QWidget, text: str = None, background: str = None, color: str = None):
+    def __init__(self, parent: QtWidgets.QWidget, text: str = None, background: str = None, color: str = None):
         """Initializes a label
 
         Args:
-            parent (QWidget): Parent of this widget
+            parent (QtWidgets.QWidget): Parent of this widget
             text (str, optional): Text content of this widget. Defaults to None.
             background (str, optional): Background color value, defined in stylesheets. Defaults to None.
             color (str, optional): Text color value, defined in stylesheets. Defaults to None.
         """
-        QLabel.__init__(self, text, parent)
+        QtWidgets.QLabel.__init__(self, text, parent)
         self.setBackground(background)
         self.setColor(color)
     
@@ -120,13 +118,13 @@ class ColoredLabel(QLabel, ColoredWidget):
         Args:
             icon (str): QTAwesome icon name
         """
-        self.setPixmap(qta.icon(icon, color="#DDD").pixmap(QSize(20, 20)))
+        self.setPixmap(qta.icon(icon, color="#DDD").pixmap(QtCore.QSize(20, 20)))
 
 
 
 
 
-class ColoredTable(QTableWidget):
+class ColoredTable(QtWidgets.QTableWidget):
     """Creates a simple table with functions to easily change appearance
     """
 
@@ -134,8 +132,8 @@ class ColoredTable(QTableWidget):
     def __init__(self, parent):
         """Initializes a table
         """
-        QTableWidget.__init__(self, parent)
-        self.setEditTriggers(QTableWidget.NoEditTriggers)
+        QtWidgets.QTableWidget.__init__(self, parent)
+        self.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.horizontalHeader().setMinimumSectionSize(140)
 
     
@@ -175,13 +173,13 @@ class ColoredTable(QTableWidget):
             button.setEnabled(enabled)
     
 
-    def setCellWidget(self, row: int, column: int, widget: QWidget, rowSpan: int = None, columnSpan: int = None):
+    def setCellWidget(self, row: int, column: int, widget: QtWidgets.QWidget, rowSpan: int = None, columnSpan: int = None):
         """Overriding setCellWidget method for setting widget position and span at the same time
 
         Args:
             row (int): Row index
             column (int): Column index
-            widget (QWidget): Widget
+            widget (QtWidgets.QWidget): Widget
             rowSpan (int, optional): Row span. Defaults to None.
             columnSpan (int, optional): Column span. Defaults to None.
         """
