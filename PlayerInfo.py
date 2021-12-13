@@ -386,7 +386,8 @@ class PlayerInfo(Window):
         if self.mode == PlayerInfoViewMode.Edit:
             self.close()
         elif self.mode == PlayerInfoViewMode.Add:
-            self.mode = PlayerInfoViewMode.Load
+            self.destroyed.connect(lambda: self.overview.openPlayerInfo(self.player))
+            self.close()
     
 
     def __setEditEnabled(self):

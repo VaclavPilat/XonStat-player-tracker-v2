@@ -66,7 +66,7 @@ class Overview(Window):
         layout.addWidget(self.refreshButton)
         # Creating button for adding new player
         self.addButton = ColoredButton(self, "fa.user-plus", "green", False)
-        self.addButton.clicked.connect(lambda: self.__openPlayerInfo(Player(), PlayerInfoViewMode.Add))
+        self.addButton.clicked.connect(lambda: self.openPlayerInfo(Player(), PlayerInfoViewMode.Add))
         layout.addWidget(self.addButton)
         return layout
 
@@ -125,12 +125,12 @@ class Overview(Window):
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
         infoButton = ColoredButton(self.table, "msc.graph", "yellow")
-        infoButton.clicked.connect(lambda: self.__openPlayerInfo(player))
+        infoButton.clicked.connect(lambda: self.openPlayerInfo(player))
         buttonGroup.addWidget(infoButton)
         # Edit button
         editButton = ColoredButton(self.table, "fa5s.pencil-alt", "orange")
         editButton.setObjectName("edit-" + str(player["id"]))
-        editButton.clicked.connect(lambda: self.__openPlayerInfo(player, PlayerInfoViewMode.Edit))
+        editButton.clicked.connect(lambda: self.openPlayerInfo(player, PlayerInfoViewMode.Edit))
         buttonGroup.addWidget(editButton)
         # Delete button
         deleteButton = ColoredButton(self.table, "fa5s.trash-alt", "red")
@@ -188,7 +188,7 @@ class Overview(Window):
             self.refreshButton.setBackground("yellow")
     
 
-    def __openPlayerInfo(self, player: Player, mode: PlayerInfoViewMode = PlayerInfoViewMode.Load):
+    def openPlayerInfo(self, player: Player, mode: PlayerInfoViewMode = PlayerInfoViewMode.Load):
         """Opens PlayerInfo window if it doen't exist
 
         Args:
@@ -304,6 +304,10 @@ class Overview(Window):
         for player in self.players:
             if player.window is not None:
                 player.window.close()
+        # Closing other windows
+        for window in QtWidgets.QApplication.topLevelWidgets():
+            if type(window) == PlayerInfo and window.mode == PlayerInfoViewMode.Add:
+                window.close()
         # Closing self
         super().closeEvent(event, False)
         if self.closing and self.__getOpenWindowCount() == 0:
