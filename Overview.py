@@ -287,7 +287,6 @@ class Overview(Window):
                 printException()
 
     
-
     def hidePlayer(self, player: Player):
         """Removes a row from table that contains data about selected player
 

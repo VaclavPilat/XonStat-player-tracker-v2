@@ -3,7 +3,6 @@ import qtawesome as qta
 
 
 
-
 class ColoredWidget(QtWidgets.QWidget):
     """Special methods for styling QWidget objects
     """
@@ -54,8 +53,6 @@ class ColoredWidget(QtWidgets.QWidget):
 
 
 
-
-
 class ColoredButton(QtWidgets.QPushButton, ColoredWidget):
     """Simply stylable button
     """
@@ -92,8 +89,6 @@ class ColoredButton(QtWidgets.QPushButton, ColoredWidget):
 
 
 
-
-
 class ColoredLabel(QtWidgets.QLabel, ColoredWidget):
     """Simply stylable label
     """
@@ -120,8 +115,6 @@ class ColoredLabel(QtWidgets.QLabel, ColoredWidget):
             icon (str): QTAwesome icon name
         """
         self.setPixmap(qta.icon(icon, color="#DDD").pixmap(QtCore.QSize(20, 20)))
-
-
 
 
 

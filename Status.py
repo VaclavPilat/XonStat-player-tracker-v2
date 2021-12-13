@@ -82,6 +82,8 @@ class Status(ColoredWidget):
             changeIcon (bool): Automatically update icon? Defaults to True.
         """
         if not self.__locked:
+            if not self.property("background") == "yellow":
+                self.setBackground("yellow")
             output = self.__message + " "
             # Displaying percentage
             if current > 0:
@@ -113,7 +115,7 @@ class Status(ColoredWidget):
             correct (bool, optional): Is the task completed successfully? Defaults to True.
         """
         if not self.__locked:
-            self.message(message, False)
+            self.inner.setText(message + " ...")
             # Changing the background color based on if the task is completed successfully
             if correct:
                 self.setBackground("green")
@@ -132,7 +134,7 @@ class Status(ColoredWidget):
             max (int): Maximum amount of parts that can be completed
         """
         if not self.__locked:
-            self.message(message, False)
+            self.inner.setText(message)
             self.progress(correct, max, True, False)
             # Changing the background color based on if the task is completed successfully
             if correct == max:

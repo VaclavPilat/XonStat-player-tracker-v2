@@ -348,7 +348,6 @@ class PlayerInfo(Window):
         """Editing player info
         """
         if self.editing:
-            self.status.message("Saving player information")
             # Getting edited info
             if self.mode == PlayerInfoViewMode.Add:
                 self.player["id"] = int(self.id.text())
@@ -361,13 +360,16 @@ class PlayerInfo(Window):
                 self.overview.worker.finished.connect(self.__saveEditedChanges)
             else:
                 self.__saveEditedChanges()
+            self.editing = False
+        else:
+            self.editing = True
         if self.mode == PlayerInfoViewMode.Add:
             for i in range(3):
-                self.info.cellWidget(i, 1).setEnabled(not self.editing)
+                self.info.cellWidget(i, 1).setEnabled(self.editing)
         else:
             for i in range(1, 3):
-                self.info.cellWidget(i, 1).setEnabled(not self.editing)
-        self.editing = not self.editing
+                self.info.cellWidget(i, 1).setEnabled(self.editing)
+        
         self.updateEditButton()
     
 
@@ -446,7 +448,6 @@ class PlayerInfo(Window):
         Args:
             event: Closing event
         """
-        if self.editing:
-            self.editing = None
-            self.updateEditButton()
+        self.editing = False
+        self.updateEditButton()
         super().closeEvent(event, True)
