@@ -237,7 +237,7 @@ class Overview(Window):
         """
         for row in range(self.table.rowCount()):
             containsText = False
-            for column in range(0, 3):
+            for column in range(0, 4):
                 widget = self.table.cellWidget(row, column)
                 if not widget == None and type(widget) == ColoredLabel:
                     # Checking if this label contins HTML
