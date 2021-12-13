@@ -128,12 +128,14 @@ class PlayerInfo(Window):
             self.updateRefreshButton()
         # Edit button
         self.editButton = ColoredButton(self.info)
+        self.editButton.setObjectName("edit-" + str(self.player["id"]))
         self.editButton.clicked.connect(self.edit)
         buttonGroup.addWidget(self.editButton)
         self.updateEditButton()
         # Delete button
         if self.mode == PlayerInfoViewMode.Load:
             deleteButton = ColoredButton(self.info, "fa5s.trash-alt", "red")
+            deleteButton.setObjectName("delete")
             deleteButton.clicked.connect(self.__removePlayer)
             buttonGroup.addWidget(deleteButton)
         # Close button
@@ -264,15 +266,33 @@ class PlayerInfo(Window):
             self.refreshButton.setBackground("yellow")
     
 
+    def __editButtonSave(self, button):
+        """Callback function for updating edit buttons to match "save" state
+
+        Args:
+            button (ColoredButton): Button object
+        """
+        button.setIcon("fa.save")
+        button.setBackground("green")
+    
+
+    def __editButtonEdit(self, button):
+        """Callback function for updating edit buttons to match "edit" state
+
+        Args:
+            button (ColoredButton): Button object
+        """
+        button.setIcon("fa5s.pencil-alt")
+        button.setBackground("orange")
+
+
     def updateEditButton(self):
         """Updates visuals of "Refresh" button
         """
         if self.editing:
-            self.editButton.setIcon("fa.save")
-            self.editButton.setBackground("green")
+            executeCallbackOnButtons("edit-" + str(self.player["id"]), self.__editButtonSave)
         else:
-            self.editButton.setIcon("fa5s.pencil-alt")
-            self.editButton.setBackground("orange")
+            executeCallbackOnButtons("edit-" + str(self.player["id"]), self.__editButtonEdit)
     
 
     def showUsedNames(self, name: str):
@@ -407,8 +427,20 @@ class PlayerInfo(Window):
         """
         key = event.key()
         # Closing window
-        if key == Qt.Key_Escape:
+        if key == QtCore.Qt.Key_Escape:
             self.close()
         # Loading players
-        elif (key == Qt.Key_R and QApplication.keyboardModifiers() == Qt.ControlModifier) or key == Qt.Key_F5:
+        elif (key == QtCore.Qt.Key_R and QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier) or key == QtCore.Qt.Key_F5:
             self.__refresh()
+    
+
+    def closeEvent(self, event):
+        """Synchronizing information before closing the window
+
+        Args:
+            event: Closing event
+        """
+        if self.editing:
+            self.editing = None
+            self.updateEditButton()
+        super().closeEvent(event, True)

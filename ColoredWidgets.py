@@ -3,6 +3,7 @@ import qtawesome as qta
 
 
 
+
 class ColoredWidget(QtWidgets.QWidget):
     """Special methods for styling QWidget objects
     """
@@ -160,17 +161,6 @@ class ColoredTable(QtWidgets.QTableWidget):
         if not widget == None:
             if type(widget) is ColoredLabel or type(widget) is ColoredWidget:
                 widget.setBackground(background)
-    
-
-    def setButtonsEnabled(self, name: str, enabled: bool):
-        """Sets "enabled" property to all buttons with specified object name
-
-        Args:
-            name (str): Object name
-            enabled (bool): Should the buttons be enabled?
-        """
-        for button in self.findChildren(ColoredButton, name):
-            button.setEnabled(enabled)
     
 
     def setCellWidget(self, row: int, column: int, widget: QtWidgets.QWidget, rowSpan: int = None, columnSpan: int = None):

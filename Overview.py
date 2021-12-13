@@ -129,11 +129,12 @@ class Overview(Window):
         buttonGroup.addWidget(infoButton)
         # Edit button
         editButton = ColoredButton(self.table, "fa5s.pencil-alt", "orange")
+        editButton.setObjectName("edit-" + str(player["id"]))
         editButton.clicked.connect(lambda: self.__openPlayerInfo(player, PlayerInfoViewMode.Edit))
         buttonGroup.addWidget(editButton)
         # Delete button
         deleteButton = ColoredButton(self.table, "fa5s.trash-alt", "red")
-        deleteButton.setObjectName("unsafeButton")
+        deleteButton.setObjectName("delete")
         deleteButton.clicked.connect(lambda: self.removePlayer(player))
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
@@ -279,7 +280,7 @@ class Overview(Window):
                     self.worker.start()
             except:
                 self.status.resultMessage("An error occured while removing \"" + player["nick"] + "\" (ID " + str(player["id"]) + ")", False)
-                self.table.setButtonsEnabled("unsafeButton", True)
+                setButtonsEnabled("delete", True)
                 printException()
 
     

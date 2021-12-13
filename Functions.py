@@ -2,6 +2,7 @@ import traceback
 from colour import Color
 
 from Config import *
+from ColoredWidgets import *
 
 
 
@@ -39,3 +40,25 @@ def getColorStyles():
         style += '[color="active-' + str(i) + '"]{color:' + str(color) + '}'
         i += 1
     return style
+
+
+def executeCallbackOnButtons(name: str, callback):
+    """Executes callback on all buttons with a selected object name
+
+    Args:
+        name (str): Button object name
+        callback (function): Callback function on button
+    """
+    for window in QtWidgets.QApplication.topLevelWidgets():
+        for button in window.findChildren(ColoredButton, name):
+            callback(button)
+
+
+def setButtonsEnabled(name: str, enabled: bool):
+    """Sets "enabled" property of all buttons that match the selected object name
+
+    Args:
+        name (str): Button object name
+        enabled (bool): "Enabled" property value
+    """
+    executeCallbackOnButtons(name, lambda button: button.setEnabled(enabled))

@@ -23,7 +23,7 @@ class OverviewLoader(Worker):
         """Connecting signals to slots (called from Worker class)
         """
         self._showPlayer.connect(self.window.showPlayer)
-        self._setButtonsEnabled.connect(self.window.table.setButtonsEnabled)
+        self._setButtonsEnabled.connect(setButtonsEnabled)
         self._updateRefreshButton.connect(self.window.updateRefreshButton)
 
 
@@ -95,7 +95,7 @@ class OverviewLoader(Worker):
         self.window.refreshButton.setEnabled(True)
         self._updateRefreshButton.emit()
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit("unsafeButton", True)
+        self._setButtonsEnabled.emit("delete", True)
         if self.correct > 0:
             self.resultProgress.emit("Finished loading players from file", self.correct, self.maximum)
         else: 
@@ -119,7 +119,7 @@ class OverviewUpdater(Worker):
         """
         self._updatePlayer.connect(self.window.updatePlayer)
         self._setRowColor.connect(self.window.table.setRowColor)
-        self._setButtonsEnabled.connect(self.window.table.setButtonsEnabled)
+        self._setButtonsEnabled.connect(setButtonsEnabled)
         self._updateRefreshButton.connect(self.window.updateRefreshButton)
 
 
@@ -173,7 +173,7 @@ class OverviewUpdater(Worker):
         self.progress.emit(0, self.maximum)
         # Disabling buttons
         self.window.addButton.setEnabled(False)
-        self._setButtonsEnabled.emit("unsafeButton", False)
+        self._setButtonsEnabled.emit("delete", False)
         
 
     def run(self):
@@ -194,7 +194,7 @@ class OverviewUpdater(Worker):
         self.window.refreshButton.setEnabled(True)
         self._updateRefreshButton.emit()
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit("unsafeButton", True)
+        self._setButtonsEnabled.emit("delete", True)
 
 
 
@@ -269,7 +269,7 @@ class OverviewRemover(OverviewAdder):
         """Connecting signals to slots (called from Worker class)
         """
         self._hidePlayer.connect(self.window.hidePlayer)
-        self._setButtonsEnabled.connect(self.window.table.setButtonsEnabled)
+        self._setButtonsEnabled.connect(setButtonsEnabled)
     
 
     def __init__(self, window: Window, player: Player):
@@ -291,7 +291,7 @@ class OverviewRemover(OverviewAdder):
         # Disabling buttons
         self.window.refreshButton.setEnabled(False)
         self.window.addButton.setEnabled(False)
-        self._setButtonsEnabled.emit("unsafeButton", False)
+        self._setButtonsEnabled.emit("delete", False)
         self.message.emit("Removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")")
         if self.player.window is not None:
             self.player.window.close()
@@ -313,5 +313,5 @@ class OverviewRemover(OverviewAdder):
         # Enabling buttons
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
-        self._setButtonsEnabled.emit("unsafeButton", True)
+        self._setButtonsEnabled.emit("delete", True)
         self.resultMessage.emit("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)
