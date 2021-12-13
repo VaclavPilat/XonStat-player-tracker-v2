@@ -198,6 +198,9 @@ class Overview(Window):
         if player.window is None:
             player.window = PlayerInfo(self, player, mode)
             player.window.destroyed.connect(lambda: self.__deletePlayerInfo(player))
+            if mode == PlayerInfoViewMode.Add:
+                self.addButton.setEnabled(False)
+                player.window.destroyed.connect(lambda: self.addButton.setEnabled(True))
         else:
             player.window.raise_()
             player.window.activateWindow()

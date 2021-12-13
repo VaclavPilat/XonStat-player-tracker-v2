@@ -43,6 +43,7 @@ class PlayerInfo(Window):
             self.worker.start()
         elif self.mode == PlayerInfoViewMode.Edit or self.mode == PlayerInfoViewMode.Add:
             self.edit()
+        self.__setEditEnabled()
     
 
     def setProperties(self):
@@ -403,20 +404,24 @@ class PlayerInfo(Window):
         id = self.id.text()
         nick = self.nick.text()
         # Checking input validity
-        if id is None or id == "" or nick is None or nick == "":
-            self.status.resultMessage("Both ID and nickname cannot be empty", False)
+        if (id is None or id == "") and (nick is None or nick == ""):
+            self.status.message("Waiting for inputs")
             return False
-        if id.isnumeric():
-            id = int(id)
         else:
-            self.status.resultMessage("Player ID has to be a number", False)
-            return False
-        # Checking if the ID is already in use
-        for player in self.overview.players:
-            if not player == self.player and player["id"] == id:
-                self.status.resultMessage("This ID is already being used", False)
+            if id is None or id == "" or nick is None or nick == "":
+                self.status.resultMessage("Both ID and nickname cannot be empty", False)
                 return False
-        self.status.resultMessage("Ready to save player information", True)
+            if id.isnumeric():
+                id = int(id)
+            else:
+                self.status.resultMessage("Player ID has to be a number", False)
+                return False
+            # Checking if the ID is already in use
+            for player in self.overview.players:
+                if not player == self.player and player["id"] == id:
+                    self.status.resultMessage("This ID is already being used", False)
+                    return False
+            self.status.resultMessage("Ready to save player information", True)
         return True
     
 
