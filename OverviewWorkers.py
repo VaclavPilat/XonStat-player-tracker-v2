@@ -240,7 +240,10 @@ class OverviewAdder(OverviewLoader, OverviewUpdater):
         self.showPlayer(self.player)
         self.correct = self.updatePlayer(self.player)
         Config.instance()["Players"] = json.loads( json.dumps(self.window.players) )
-        Config.save("Players")
+        if Config.save("Players"):
+            self.resultMessage.emit("Successfully added new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)
+        else:
+            self.resultMessage.emit("An error occured while adding new player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", False)
 
 
     def after(self):
@@ -304,7 +307,10 @@ class OverviewRemover(OverviewAdder):
         self._hidePlayer.emit(self.player)
         self.__removePlayer()
         Config.instance()["Players"] = json.loads( json.dumps(self.window.players) )
-        Config.save("Players")
+        if Config.save("Players"):
+            self.resultMessage.emit("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)
+        else:
+            self.resultMessage.emit("An error occured while removing player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", False)
 
 
     def after(self):
@@ -314,4 +320,3 @@ class OverviewRemover(OverviewAdder):
         self.window.refreshButton.setEnabled(True)
         self.window.addButton.setEnabled(True)
         self._setButtonsEnabled.emit("delete", True)
-        self.resultMessage.emit("Successfully removed player \"" + self.player["nick"] + "\" (ID#" + str(self.player["id"]) + ")", True)

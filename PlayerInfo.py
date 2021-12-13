@@ -384,8 +384,10 @@ class PlayerInfo(Window):
         self.overview.table.cellWidget(row, 2).setText(self.player["description"])
         # Saving edited info to file
         Config.instance()["Players"] = json.loads( json.dumps(self.overview.players) )
-        Config.save("Players")
-        self.status.resultMessage("Saved player information", True)
+        if Config.save("Players"):
+            self.status.resultMessage("Saved player information", True)
+        else:
+            self.status.resultMessage("An error occured while saving player information", False)
         if self.mode == PlayerInfoViewMode.Edit:
             self.close()
         elif self.mode == PlayerInfoViewMode.Add:

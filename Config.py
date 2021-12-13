@@ -40,8 +40,9 @@ class Config(dict):
             for filename in os.listdir(folder):
                 filepath = folder + filename
                 QtGui.QFontDatabase.addApplicationFont(filepath)
+            return True
         except:
-            printException()
+            return False
     
 
     def save(filename: str):
@@ -55,5 +56,6 @@ class Config(dict):
             f = open(filepath, "w")
             f.write(json.dumps(Config.instance()[filename], sort_keys=False, indent=4))
             f.close()
+            return True
         except:
-            printException()
+            return False
