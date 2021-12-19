@@ -43,7 +43,8 @@ class PlayerInfo(Window):
             self.worker.start()
         elif self.mode == PlayerInfoViewMode.Edit or self.mode == PlayerInfoViewMode.Add:
             self.edit()
-        self.__setEditEnabled()
+        if not self.mode == PlayerInfoViewMode.Load:
+            self.__setEditEnabled()
     
 
     def setProperties(self):

@@ -68,6 +68,10 @@ class Overview(Window):
         self.addButton = ColoredButton(self, "fa.user-plus", "green", False)
         self.addButton.clicked.connect(lambda: self.openPlayerInfo(Player(), PlayerInfoViewMode.Add))
         layout.addWidget(self.addButton)
+        # Creating button for loading game info
+        self.gameInfo = ColoredButton(self, "fa.users", "yellow", True)
+        self.gameInfo.clicked.connect(self.__openGameInfo)
+        layout.addWidget(self.gameInfo)
         return layout
 
 
@@ -206,6 +210,12 @@ class Overview(Window):
             player.window.activateWindow()
             if mode == PlayerInfoViewMode.Edit:
                 player.window.edit()
+    
+
+    def __openGameInfo(self):
+        """Opens GameInfo window
+        """
+        pass
     
 
     def __getOpenWindowCount(self):
