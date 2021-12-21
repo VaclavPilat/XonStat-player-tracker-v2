@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-import qtawesome as qta
 
 from Window import *
 from Status import *
@@ -7,6 +6,7 @@ from OverviewWorkers import *
 from ColoredWidgets import *
 from PlayerInfo import *
 from Functions import *
+from GameInfo import *
 
 
 
@@ -19,6 +19,7 @@ class Overview(Window):
         """Initialising GUI and a worker thread
         """
         self.players = [] # List of players
+        self.gameInfo = None
         super().__init__()
         self.worker = OverviewLoader(self)
         self.worker.start()
@@ -57,7 +58,7 @@ class Overview(Window):
         layout = QtWidgets.QHBoxLayout()
         # Creating search bar
         self.searchBar = QtWidgets.QLineEdit(self)
-        self.searchBar.setPlaceholderText("Search by player ID, nickname or current player name")
+        self.searchBar.setPlaceholderText("Search by player ID, nickname, description or current player name")
         self.searchBar.textChanged.connect(self.__search)
         layout.addWidget(self.searchBar)
         # Creating button for refreshing table
@@ -69,9 +70,9 @@ class Overview(Window):
         self.addButton.clicked.connect(lambda: self.openPlayerInfo(Player(), PlayerInfoViewMode.Add))
         layout.addWidget(self.addButton)
         # Creating button for loading game info
-        self.gameInfo = ColoredButton(self, "fa.users", "yellow", True)
-        self.gameInfo.clicked.connect(self.__openGameInfo)
-        layout.addWidget(self.gameInfo)
+        self.gameInfoButton = ColoredButton(self, "fa.users", "yellow", True)
+        self.gameInfoButton.clicked.connect(self.__openGameInfo)
+        layout.addWidget(self.gameInfoButton)
         return layout
 
 
@@ -215,7 +216,18 @@ class Overview(Window):
     def __openGameInfo(self):
         """Opens GameInfo window
         """
-        pass
+        if self.gameInfo is None:
+            self.gameInfo = GameInfo(self)
+            self.gameInfo.destroyed.connect(self.__deleteGameInfo)
+        else:
+            self.gameInfo.raise_()
+            self.gameInfo.activateWindow()
+    
+
+    def __deleteGameInfo(self):
+        """Deletes GameInfo window
+        """
+        self.gameInfo = None
     
 
     def __getOpenWindowCount(self):
@@ -318,7 +330,7 @@ class Overview(Window):
                 player.window.close()
         # Closing other windows
         for window in QtWidgets.QApplication.topLevelWidgets():
-            if type(window) == PlayerInfo and window.mode == PlayerInfoViewMode.Add:
+            if type(window) == GameInfo or (type(window) == PlayerInfo and window.mode == PlayerInfoViewMode.Add):
                 window.close()
         # Closing self
         super().closeEvent(event, False)
