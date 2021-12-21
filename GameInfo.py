@@ -23,7 +23,7 @@ class GameInfo(Window):
         """Setting winow properties
         """
         self.setWindowTitle("Game information")
-        self.resize(800, 600)
+        self.resize(950, 600)
     
 
     def createLayout(self):
@@ -79,9 +79,50 @@ class GameInfo(Window):
         for i in range(3, len(headers)):
             self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
         return self.table
+    
+
+    def showPlayer(self, id: int, name: str, nickname: str, score: int):
+        """Adds a row with player information into table
+
+        Args:
+            id (int): Player ID
+            name (str): Player name (at the time this game happened)
+            nickname (str): Player nickname (if this player is being tracked)
+            score (int): Player score
+        """
+        # Creating a new row inside the table
+        row = self.table.rowCount()
+        self.table.insertRow(row)
+        # Adding labels
+        for i in range(5):
+            self.table.setCellWidget(row, i, ColoredLabel(self.table, "", "dark-grey"))
+        # Adding label text
+        self.table.cellWidget(row, 0).setText(str(id))
+        self.table.cellWidget(row, 1).setText(name)
+        self.table.cellWidget(row, 1).setProperty("class", "xolonium")
+        self.table.cellWidget(row, 2).setText(nickname)
+        self.table.cellWidget(row, 3).setText(str(score))
+        # Adding buttons
+        actions = ColoredWidget()
+        buttonGroup = QtWidgets.QHBoxLayout()
+        actions.setLayout(buttonGroup)
+        buttonGroup.setContentsMargins(0, 0, 0, 0)
+        buttonGroup.setSpacing(0)
+        buttonGroup.addStretch()
+        # Add button
+        addButton = ColoredButton(self.table, "fa.user-plus", "green")
+        #addButton.clicked.connect(player.showProfile)
+        buttonGroup.addWidget(addButton)
+        # Load button
+        loadButton = ColoredButton(self.table, "msc.graph", "yellow")
+        #loadButton.clicked.connect(lambda: self.openPlayerInfo(player))
+        buttonGroup.addWidget(loadButton)
+        buttonGroup.addStretch()
+        self.table.setCellWidget(row, 4, actions)
 
 
     def __loadGameInfo(self):
         """Starts a Worker instance for loading game data
         """
+        self.showPlayer(137012, "<nade type='napalm' />", "napalm", 154)
         pass
