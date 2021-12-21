@@ -1,6 +1,7 @@
 from Window import *
 from Status import *
 from ColoredWidgets import *
+from GameInfoWorker import *
 
 
 
@@ -122,7 +123,11 @@ class GameInfo(Window):
 
 
     def __loadGameInfo(self):
-        """Starts a Worker instance for loading game data
+        """Starts (or stops) Worker instance for loading game data
         """
-        self.showPlayer(137012, "<nade type='napalm' />", "napalm", 154)
-        pass
+        #self.showPlayer(137012, "<nade type='napalm' />", "napalm", 154)
+        if self.worker is None or not self.worker.isRunning():
+            self.worker = GameInfoWorker(self)
+            self.worker.start()
+        else:
+            self.worker.cancel = True
