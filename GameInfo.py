@@ -2,6 +2,7 @@ from Window import *
 from Status import *
 from ColoredWidgets import *
 from GameInfoWorker import *
+from Player import *
 
 
 
@@ -100,7 +101,11 @@ class GameInfo(Window):
         for i in range(5):
             self.table.setCellWidget(row, i, ColoredLabel(self.table, None, color))
         # Checking if player exists
-        nickname = self.__checkPlayerExistence(id)
+        player = self.__checkPlayerExistence(id)
+        if player is not None:
+            nickname = player["nick"]
+        else:
+            nickname = ""
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(id))
         self.table.cellWidget(row, 1).setText(name)
@@ -118,7 +123,8 @@ class GameInfo(Window):
         if nickname:
             # Load button
             loadButton = ColoredButton(self.table, "msc.graph", "yellow")
-            #loadButton.clicked.connect(lambda: self.openPlayerInfo(player))
+            if player is not None:
+                loadButton.clicked.connect(lambda: self.overview.openPlayerInfo(player))
             buttonGroup.addWidget(loadButton)
         else:
             # Add button
@@ -129,18 +135,18 @@ class GameInfo(Window):
         self.table.setCellWidget(row, 4, actions)
     
 
-    def __checkPlayerExistence(self, id: int) -> str:
+    def __checkPlayerExistence(self, id: int) -> Player:
         """Checking if player is already tracked
 
         Args:
             id (int): Player id
 
         Returns:
-            str: Player name
+            Player: Player instance
         """
         for player in self.overview.players:
             if player["id"] == id:
-                return player["nick"]
+                return player
         return None
 
 
