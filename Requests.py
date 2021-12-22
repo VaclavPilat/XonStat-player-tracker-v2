@@ -1,6 +1,7 @@
 import urllib3
 
 
+
 class Requests():
     """Singleton for sening HTTP requests
     """
@@ -36,5 +37,4 @@ class Requests():
         Returns:
             urllib3.response.HTTPResponse: Response result
         """
-        print(address)
         return cls.http.request('GET', address, headers={'Accept': 'application/json'}, timeout=urllib3.util.Timeout(2))
