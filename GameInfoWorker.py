@@ -63,7 +63,9 @@ class GameInfoWorker(Worker):
             data (dict): Dictinary with data from JSON
         """
         self.message.emit("Processing game data")
-        pass
+        for array in ["player_game_stats", "forfeits", "spectators"]:
+            for player in data[array]:
+                self._showPlayer.emit(player["player_id"], player["nick"], "", player["score"])
 
 
     def after(self):

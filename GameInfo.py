@@ -96,7 +96,7 @@ class GameInfo(Window):
         self.table.insertRow(row)
         # Adding labels
         for i in range(5):
-            self.table.setCellWidget(row, i, ColoredLabel(self.table, "", "dark-grey"))
+            self.table.setCellWidget(row, i, ColoredLabel(self.table))
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(id))
         self.table.cellWidget(row, 1).setText(name)
@@ -127,6 +127,7 @@ class GameInfo(Window):
         """
         #self.showPlayer(137012, "<nade type='napalm' />", "napalm", 154)
         if self.worker is None or not self.worker.isRunning():
+            self.table.setRowCount(0)
             self.worker = GameInfoWorker(self)
             self.worker.start()
         else:
