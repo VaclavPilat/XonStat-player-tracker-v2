@@ -92,20 +92,20 @@ class GameInfo(Window):
             score (int): Player score
             color (str): Row background color
         """
-        if not color == None:
-            color = "dark-" + color
-        # Creating a new row inside the table
-        row = self.table.rowCount()
-        self.table.insertRow(row)
-        # Adding labels
-        for i in range(5):
-            self.table.setCellWidget(row, i, ColoredLabel(self.table, None, color))
         # Checking if player exists
         player = self.__checkPlayerExistence(id)
         if player is not None:
             nickname = player["nick"]
         else:
             nickname = ""
+            if not color == None:
+                color = "dark-" + color
+        # Creating a new row inside the table
+        row = self.table.rowCount()
+        self.table.insertRow(row)
+        # Adding labels
+        for i in range(5):
+            self.table.setCellWidget(row, i, ColoredLabel(self.table, None, color))
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(id))
         self.table.cellWidget(row, 1).setText(name)
