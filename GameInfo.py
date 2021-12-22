@@ -82,13 +82,12 @@ class GameInfo(Window):
         return self.table
     
 
-    def showPlayer(self, id: int, name: str, nickname: str, score: int, color: str):
+    def showPlayer(self, id: int, name: str, score: int, color: str):
         """Adds a row with player information into table
 
         Args:
             id (int): Player ID
             name (str): Player name (at the time this game happened)
-            nickname (str): Player nickname (if this player is being tracked)
             score (int): Player score
             color (str): Row background color
         """
@@ -100,6 +99,8 @@ class GameInfo(Window):
         # Adding labels
         for i in range(5):
             self.table.setCellWidget(row, i, ColoredLabel(self.table, None, color))
+        # Checking if player exists
+        nickname = self.__checkPlayerExistence(id)
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(id))
         self.table.cellWidget(row, 1).setText(name)
@@ -114,16 +115,33 @@ class GameInfo(Window):
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
-        # Add button
-        addButton = ColoredButton(self.table, "fa.user-plus", "green")
-        #addButton.clicked.connect(player.showProfile)
-        buttonGroup.addWidget(addButton)
-        # Load button
-        loadButton = ColoredButton(self.table, "msc.graph", "yellow")
-        #loadButton.clicked.connect(lambda: self.openPlayerInfo(player))
-        buttonGroup.addWidget(loadButton)
+        if nickname:
+            # Load button
+            loadButton = ColoredButton(self.table, "msc.graph", "yellow")
+            #loadButton.clicked.connect(lambda: self.openPlayerInfo(player))
+            buttonGroup.addWidget(loadButton)
+        else:
+            # Add button
+            addButton = ColoredButton(self.table, "fa.user-plus", "green")
+            #addButton.clicked.connect(player.showProfile)
+            buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
         self.table.setCellWidget(row, 4, actions)
+    
+
+    def __checkPlayerExistence(self, id: int) -> str:
+        """Checking if player is already tracked
+
+        Args:
+            id (int): Player id
+
+        Returns:
+            str: Player name
+        """
+        for player in self.overview.players:
+            if player["id"] == id:
+                return player["nick"]
+        return None
 
 
     def __loadGameInfo(self):
