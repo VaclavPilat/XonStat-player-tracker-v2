@@ -1,10 +1,11 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-import urllib3, webbrowser, json, time, re, colorsys
+import webbrowser, json, time, re, colorsys
 from xml.sax.saxutils import escape
 from http.client import responses
 
 from Functions import *
 from Config import *
+from Requests import *
 
 
 
@@ -24,9 +25,6 @@ class Player(dict):
         self.gameSources = [] # List containing HTML sources of recently played games
         super().__init__()
         self.update(data)
-        self.http = urllib3.PoolManager() # Pool manager for sending request with urllib3
-        self.headers = {'Accept': 'application/json'}
-        self.timeout = urllib3.util.Timeout(2)
     
 
     def profile(self):
@@ -48,7 +46,7 @@ class Player(dict):
         """Loading player profile
         """
         try:
-            response = self.http.request('GET', self.profile(), headers=self.headers, timeout=self.timeout)
+            response = Requests.instance().request(self.profile())
             if response.status == 200:
                 self.profileInfo = json.loads(response.data.decode('utf-8'))
                 self.error = None
@@ -218,7 +216,7 @@ class Player(dict):
                     raise StopIteration
                 # Getting list of games
                 try:
-                    gameListResponse = self.http.request('GET', gameListUrl, headers=self.headers, timeout=self.timeout)
+                    gameListResponse = Requests.instance().request(gameListUrl)
                     self.window.worker.showRate.emit(gameListResponse.headers["X-Ratelimit-Remaining"], gameListResponse.headers["X-Ratelimit-Limit"])
                     if gameListResponse.status == 200:
                         gameList = json.loads(gameListResponse.data.decode('utf-8'))
@@ -262,7 +260,7 @@ class Player(dict):
                 try:
                     time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
                     current += 1
-                    gameResponse = self.http.request("GET", "https://stats.xonotic.org/game/" + str(game["game_id"]), headers=self.headers, timeout=self.timeout)
+                    gameResponse = Requests.instance().request("https://stats.xonotic.org/game/" + str(game["game_id"]))
                     if gameResponse.status == 200:
                         if self.window:
                             self.window.worker.showRate.emit(gameResponse.headers["X-Ratelimit-Remaining"], gameResponse.headers["X-Ratelimit-Limit"])

@@ -17,7 +17,7 @@ class Config(dict):
         """Returns instance of this singleton
 
         Returns:
-            Settings: Settings object instance
+            Config: Config object instance
         """
         if Config.__instance is None:
             Config.__instance = Config()
