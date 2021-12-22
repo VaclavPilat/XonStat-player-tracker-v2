@@ -11,7 +11,7 @@ class GameInfoWorker(Worker):
     """
 
 
-    _showPlayer = QtCore.pyqtSignal(int, str, str, int) # Signal for adding new player into table
+    _showPlayer = QtCore.pyqtSignal(int, str, str, int, str) # Signal for adding new player into table
     
 
     def connectSlots(self):
@@ -65,7 +65,11 @@ class GameInfoWorker(Worker):
         self.message.emit("Processing game data")
         for array in ["player_game_stats", "forfeits", "spectators"]:
             for player in data[array]:
-                self._showPlayer.emit(player["player_id"], player["nick"], "", player["score"])
+                if "color" in player:
+                    color = player["color"]
+                else:
+                    color = None
+                self._showPlayer.emit(player["player_id"], player["nick"], "", player["score"], color)
 
 
     def after(self):

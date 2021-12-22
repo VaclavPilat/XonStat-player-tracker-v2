@@ -82,7 +82,7 @@ class GameInfo(Window):
         return self.table
     
 
-    def showPlayer(self, id: int, name: str, nickname: str, score: int):
+    def showPlayer(self, id: int, name: str, nickname: str, score: int, color: str):
         """Adds a row with player information into table
 
         Args:
@@ -90,13 +90,16 @@ class GameInfo(Window):
             name (str): Player name (at the time this game happened)
             nickname (str): Player nickname (if this player is being tracked)
             score (int): Player score
+            color (str): Row background color
         """
+        if not color == None:
+            color = "dark-" + color
         # Creating a new row inside the table
         row = self.table.rowCount()
         self.table.insertRow(row)
         # Adding labels
         for i in range(5):
-            self.table.setCellWidget(row, i, ColoredLabel(self.table))
+            self.table.setCellWidget(row, i, ColoredLabel(self.table, None, color))
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(id))
         self.table.cellWidget(row, 1).setText(name)
@@ -107,6 +110,7 @@ class GameInfo(Window):
         actions = ColoredWidget()
         buttonGroup = QtWidgets.QHBoxLayout()
         actions.setLayout(buttonGroup)
+        actions.setBackground(color)
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
