@@ -63,12 +63,18 @@ class GameInfoWorker(Worker):
             data (dict): Dictinary with data from JSON
         """
         self.message.emit("Processing game data")
-        for array in ["player_game_stats", "forfeits", "spectators"]:
+        playerArrays = {
+            "player_game_stats": None, 
+            "forfeits": "grey", 
+            "spectators": "grey"
+        }
+        for array, colorPreset in playerArrays.items():
             for player in data[array]:
-                if "color" in player:
-                    color = player["color"]
+                if colorPreset == None:
+                    if "color" in player:
+                        color = player["color"]
                 else:
-                    color = None
+                    color = colorPreset
                 self._showPlayer.emit(player["player_id"], player["nick"], "", player["score"], color)
 
 
