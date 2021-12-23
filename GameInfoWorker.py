@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore
 from http.client import responses
+import re
 
 from Worker import *
 from Requests import *
@@ -31,7 +32,7 @@ class GameInfoWorker(Worker):
         """
         # Checking ID validity
         try:
-            gameID = int(self.window.gameID.text())
+            gameID = int(re.findall('\d+|$', self.window.gameID.text())[0])
             if gameID <= 0:
                 raise ValueError
         except:
@@ -72,7 +73,10 @@ class GameInfoWorker(Worker):
             for player in data[array]:
                 if colorPreset == None:
                     if "color" in player:
-                        color = player["color"]
+                        if player["color"] == "":
+                            color = "blue"
+                        else:
+                            color = player["color"]
                 else:
                     color = colorPreset
                 self._showPlayer.emit(player["player_id"], player["nick"], player["score"], color)

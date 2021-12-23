@@ -3,6 +3,7 @@ from Status import *
 from ColoredWidgets import *
 from GameInfoWorker import *
 from Player import *
+from PlayerInfo import *
 
 
 
@@ -129,7 +130,7 @@ class GameInfo(Window):
         else:
             # Add button
             addButton = ColoredButton(self.table, "fa.user-plus", "green")
-            #addButton.clicked.connect(player.showProfile)
+            addButton.clicked.connect(lambda: self.overview.openPlayerInfo(Player({"id": id, "nick": name, "description": ""}), PlayerInfoViewMode.Add))
             buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
         self.table.setCellWidget(row, 4, actions)
@@ -153,7 +154,6 @@ class GameInfo(Window):
     def __loadGameInfo(self):
         """Starts (or stops) Worker instance for loading game data
         """
-        #self.showPlayer(137012, "<nade type='napalm' />", "napalm", 154)
         if self.worker is None or not self.worker.isRunning():
             self.table.setRowCount(0)
             self.worker = GameInfoWorker(self)
