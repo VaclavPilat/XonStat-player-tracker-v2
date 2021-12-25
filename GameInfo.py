@@ -121,17 +121,26 @@ class GameInfo(Window):
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
-        if nickname:
-            # Load button
-            loadButton = ColoredButton(self.table, "msc.graph", "yellow")
-            if player is not None:
-                loadButton.clicked.connect(lambda: self.overview.openPlayerInfo(player))
-            buttonGroup.addWidget(loadButton)
-        else:
-            # Add button
-            addButton = ColoredButton(self.table, "fa.user-plus", "green")
-            addButton.clicked.connect(lambda: self.overview.openPlayerInfo(Player({"id": id, "nick": name, "description": ""}), PlayerInfoViewMode.Add))
-            buttonGroup.addWidget(addButton)
+        if id >= 6:
+            # Profile button
+            profileButton = ColoredButton(self.table, "ri.file-user-fill", "blue")
+            profileButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/player/" + str(id), new=2))
+            buttonGroup.addWidget(profileButton)
+            if nickname:
+                # Load button
+                infoButton = ColoredButton(self.table, "msc.graph", "yellow")
+                infoButton.clicked.connect(lambda: self.overview.openPlayerInfo(player))
+                buttonGroup.addWidget(infoButton)
+                # Edit button
+                editButton = ColoredButton(self.table, "fa5s.pencil-alt", "orange")
+                editButton.setObjectName("edit-" + str(player["id"]))
+                editButton.clicked.connect(lambda: self.overview.openPlayerInfo(player, PlayerInfoViewMode.Edit))
+                buttonGroup.addWidget(editButton)
+            else:
+                # Add button
+                addButton = ColoredButton(self.table, "fa.user-plus", "green")
+                addButton.clicked.connect(lambda: self.overview.openPlayerInfo(Player({"id": id, "nick": name, "description": ""}), PlayerInfoViewMode.Add))
+                buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
         self.table.setCellWidget(row, 4, actions)
     
