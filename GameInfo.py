@@ -169,3 +169,16 @@ class GameInfo(Window):
             self.worker.start()
         else:
             self.worker.cancel = True
+    
+
+    def showGroupName(self, name: str):
+        """Shows group name
+
+        Args:
+            name (str): Player group name
+        """
+        row = self.table.rowCount()
+        self.table.insertRow(row)
+        label = ColoredLabel(self.table, name)
+        label.setProperty("class", "center")
+        self.table.setCellWidget(row, 0, label, 1, self.table.columnCount())

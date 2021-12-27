@@ -13,12 +13,14 @@ class GameInfoWorker(Worker):
 
 
     _showPlayer = QtCore.pyqtSignal(int, str, int, str) # Signal for adding new player into table
+    _showGroupName = QtCore.pyqtSignal(str) # Shows name of a player group
     
 
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
         self._showPlayer.connect(self.window.showPlayer)
+        self._showGroupName.connect(self.window.showGroupName)
 
 
     def __init__(self, window: Window):
@@ -65,20 +67,31 @@ class GameInfoWorker(Worker):
         """
         self.message.emit("Processing game data")
         playerArrays = {
-            "player_game_stats": None, 
-            "forfeits": "grey", 
-            "spectators": "grey"
+            "player_game_stats": {
+                "group": "Players",
+                "color": None
+            },
+            "spectators": {
+                "group": "Spectators",
+                "color": "orange"
+            },
+            "forfeits": {
+                "group": "Forfeits",
+                "color": "grey"
+            }
         }
-        for array, colorPreset in playerArrays.items():
+        for array, settings in playerArrays.items():
+            if len(data[array]) > 0:
+                self._showGroupName.emit(settings["group"].upper())
             for player in data[array]:
-                if colorPreset == None:
+                if settings["color"] == None:
                     if "color" in player:
                         if player["color"] == "":
                             color = "blue"
                         else:
                             color = player["color"]
                 else:
-                    color = colorPreset
+                    color = settings["color"]
                 self._showPlayer.emit(player["player_id"], player["nick"], player["score"], color)
 
 
