@@ -80,18 +80,18 @@ class GameInfo(Window):
             self.infoTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.infoTable.verticalHeader().hide()
         self.infoTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        # Game time
-        self.gameTime = ColoredLabel(self.infoTable, "gameTime")
-        self.infoTable.setCellWidget(0, 0, self.gameTime)
-        # Game mode
-        self.gameMode = ColoredLabel(self.infoTable, "gameMode")
-        self.infoTable.setCellWidget(0, 1, self.gameMode)
         # Server name
-        self.serverName = ColoredLabel(self.infoTable, "serverName")
-        self.infoTable.setCellWidget(0, 2, self.serverName)
+        self.serverName = ColoredLabel(self.infoTable)
+        self.infoTable.setCellWidget(0, 0, self.serverName)
         # Map name
-        self.mapName = ColoredLabel(self.infoTable, "mapName")
-        self.infoTable.setCellWidget(0, 3, self.mapName)
+        self.mapName = ColoredLabel(self.infoTable)
+        self.infoTable.setCellWidget(0, 1, self.mapName)
+        # Game mode
+        self.gameMode = ColoredLabel(self.infoTable)
+        self.infoTable.setCellWidget(0, 2, self.gameMode)
+        # Game time
+        self.gameTime = ColoredLabel(self.infoTable)
+        self.infoTable.setCellWidget(0, 3, self.gameTime)
         # Setting wiidget text align
         for i in range(self.infoTable.columnCount()):
             self.infoTable.cellWidget(0, i).setProperty("class", "center")

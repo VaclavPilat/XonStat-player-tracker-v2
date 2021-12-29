@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore
 from http.client import responses
-import re
+import re, datetime
 
 from Worker import *
 from Requests import *
@@ -14,6 +14,10 @@ class GameInfoWorker(Worker):
 
     _showPlayer = QtCore.pyqtSignal(int, str, int, str) # Signal for adding new player into table
     _showGroupName = QtCore.pyqtSignal(str) # Shows name of a player group
+    _showServerName = QtCore.pyqtSignal(str) # Showing game server
+    _showMapName = QtCore.pyqtSignal(str) # Showing game map
+    _showGameMode = QtCore.pyqtSignal(str) # Showing game mode
+    _showGameTime = QtCore.pyqtSignal(str) # Showing game time
     
 
     def connectSlots(self):
@@ -21,6 +25,10 @@ class GameInfoWorker(Worker):
         """
         self._showPlayer.connect(self.window.showPlayer)
         self._showGroupName.connect(self.window.showGroupName)
+        self._showServerName.connect(self.window.serverName.setText)
+        self._showMapName.connect(self.window.mapName.setText)
+        self._showGameMode.connect(self.window.gameMode.setText)
+        self._showGameTime.connect(self.window.gameTime.setText)
 
 
     def __init__(self, window: Window):
@@ -66,6 +74,7 @@ class GameInfoWorker(Worker):
             data (dict): Dictinary with data from JSON
         """
         self.message.emit("Processing game data")
+        # Adding players to table
         playerArrays = {
             "player_game_stats": {
                 "group": "Players",
@@ -93,9 +102,9 @@ class GameInfoWorker(Worker):
                 else:
                     color = settings["color"]
                 self._showPlayer.emit(player["player_id"], player["nick"], player["score"], color)
-
-
-    def after(self):
-        """This method is called after this worker is finished
-        """
-        pass
+        # Showing game info
+        self._showServerName.emit( "Server #" + str(data["server_id"]) )
+        self._showMapName.emit( "Map #" + str(data["map_id"]) )
+        self._showGameMode.emit( data["game_type_cd"].upper() + " - " + data["game_type_descr"] )
+        gameDatetime = datetime.datetime.strptime(data["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
+        self._showGameTime.emit( gameDatetime.strftime("%d.%m.%Y %H:%M:%S UTC") )
