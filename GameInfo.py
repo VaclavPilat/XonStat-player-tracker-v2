@@ -39,6 +39,7 @@ class GameInfo(Window):
         self.setCentralWidget(widget)
         # Adding widgets to layout
         layout.addLayout(self.__createTopWidgets())
+        layout.addWidget(self.__createInfoTable())
         layout.addWidget(self.__createTable())
         self.status = Status(self)
         layout.addWidget(self.status)
@@ -60,6 +61,41 @@ class GameInfo(Window):
         self.loadButton.clicked.connect(self.__loadGameInfo)
         layout.addWidget(self.loadButton)
         return layout
+    
+
+    def __createInfoTable(self) -> ColoredTable:
+        """Creates a table with game information
+
+        Returns:
+            ColoredTable: ColoredTable instance
+        """
+        self.infoTable = ColoredTable(self)
+        # Setting table headers settings
+        self.infoTable.setColumnCount(4)
+        self.infoTable.setRowCount(1)
+        self.infoTable.setMaximumHeight(35)
+        self.infoTable.setShowGrid(False)
+        self.infoTable.horizontalHeader().hide()
+        for i in range(self.infoTable.columnCount()):
+            self.infoTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.infoTable.verticalHeader().hide()
+        self.infoTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        # Game time
+        self.gameTime = ColoredLabel(self.infoTable, "gameTime")
+        self.infoTable.setCellWidget(0, 0, self.gameTime)
+        # Game mode
+        self.gameMode = ColoredLabel(self.infoTable, "gameMode")
+        self.infoTable.setCellWidget(0, 1, self.gameMode)
+        # Server name
+        self.serverName = ColoredLabel(self.infoTable, "serverName")
+        self.infoTable.setCellWidget(0, 2, self.serverName)
+        # Map name
+        self.mapName = ColoredLabel(self.infoTable, "mapName")
+        self.infoTable.setCellWidget(0, 3, self.mapName)
+        # Setting wiidget text align
+        for i in range(self.infoTable.columnCount()):
+            self.infoTable.cellWidget(0, i).setProperty("class", "center")
+        return self.infoTable
 
     
     def __createTable(self) -> ColoredTable:
@@ -74,6 +110,7 @@ class GameInfo(Window):
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
+        self.table.verticalHeader().hide()
         self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.table.verticalHeader().setMinimumSectionSize(30)
         self.table.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)

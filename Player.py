@@ -193,7 +193,8 @@ class Player(dict):
         try:
             if self.error is not None:
                 raise Exception
-            self.time = str(round(self.profileInfo["overall_stats"]["overall"]["total_playing_time"] / 3600)) + " hours"
+            self.time = str(round(self.profileInfo["overall_stats"]["overall"]["total_playing_time"] / 3600)) + " hours; " + \
+                str(self.profileInfo["games_played"]["overall"]["games"]) + " games"
         except Exception as e:
             self.time = None
             if self.error is None:
