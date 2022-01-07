@@ -95,6 +95,7 @@ class GameInfo(Window):
         # Setting wiidget text align
         for i in range(self.infoTable.columnCount()):
             self.infoTable.cellWidget(0, i).setProperty("class", "center")
+        self.infoTable.setEnabled(False)
         return self.infoTable
 
     
@@ -118,6 +119,7 @@ class GameInfo(Window):
             self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
         for i in range(3, len(headers)):
             self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
+        self.table.setEnabled(False)
         return self.table
     
 

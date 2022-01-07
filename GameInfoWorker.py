@@ -11,7 +11,8 @@ class GameInfoWorker(Worker):
     """Loading detailed information about a player
     """
 
-
+    _setInfoTableEnabled = QtCore.pyqtSignal(bool) # Setting enabled property for info table
+    _setTableEnabled = QtCore.pyqtSignal(bool) # Setting enabled property for player table
     _showPlayer = QtCore.pyqtSignal(int, str, int, str) # Signal for adding new player into table
     _showGroupName = QtCore.pyqtSignal(str) # Shows name of a player group
     _showServerName = QtCore.pyqtSignal(str) # Showing game server
@@ -23,6 +24,8 @@ class GameInfoWorker(Worker):
     def connectSlots(self):
         """Connecting signals to slots (called from Worker class)
         """
+        self._setInfoTableEnabled.connect(self.window.infoTable.setEnabled)
+        self._setTableEnabled.connect(self.window.table.setEnabled)
         self._showPlayer.connect(self.window.showPlayer)
         self._showGroupName.connect(self.window.showGroupName)
         self._showServerName.connect(self.window.serverName.setText)
@@ -35,6 +38,17 @@ class GameInfoWorker(Worker):
         """Initialising Worker thread
         """
         super().__init__(window)
+    
+
+    def before(self):
+        """This method is called before this worker is run
+        """
+        self._setInfoTableEnabled.emit(True)
+        self._setTableEnabled.emit(True)
+        self._showServerName.emit(None)
+        self._showMapName.emit(None)
+        self._showGameMode.emit(None)
+        self._showGameTime.emit(None)
         
 
     def run(self):
@@ -53,6 +67,8 @@ class GameInfoWorker(Worker):
             self.message.emit("Loading data of game #" + str(gameID))
             response = Requests.instance().request('https://stats.xonotic.org/game/' + str(gameID))
             if response.status == 200:
+                self._setInfoTableEnabled.emit(True)
+                self._setTableEnabled.emit(True)
                 data = json.loads(response.data.decode('utf-8'))
                 self.__processData(data)
                 self.resultMessage.emit("Successfully loaded game data", True)
@@ -82,7 +98,7 @@ class GameInfoWorker(Worker):
             },
             "spectators": {
                 "group": "Spectators",
-                "color": "orange"
+                "color": "grey"
             },
             "forfeits": {
                 "group": "Forfeits",

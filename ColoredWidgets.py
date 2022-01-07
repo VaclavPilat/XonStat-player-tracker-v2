@@ -118,7 +118,7 @@ class ColoredLabel(QtWidgets.QLabel, ColoredWidget):
 
 
 
-class ColoredTable(QtWidgets.QTableWidget):
+class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
     """Creates a simple table with functions to easily change appearance
     """
 
