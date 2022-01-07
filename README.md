@@ -9,7 +9,7 @@ This program allows tracking Xonotic players by extracting information from thei
 ## How to run
 This program runs on python3, so make sure you have it already installed.
 
-[Download the latest release](https://github.com/VaclavPilat/XonStat-player-tracker-v2/releases/).
+[Download the latest release](https://github.com/VaclavPilat/XonStat-player-tracker-v2/releases/latest).
 
 Navigate to the downloaded repository and install all necessary packages using `pip install -r requirements.txt` (if you are on Windows, use `py -m pip install -r requirements.txt` instead). 
 
