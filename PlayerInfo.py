@@ -441,7 +441,7 @@ class PlayerInfo(Window):
         if key == QtCore.Qt.Key_Escape:
             self.close()
         # Loading players
-        elif (key == QtCore.Qt.Key_R and QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier) or key == QtCore.Qt.Key_F5:
+        elif (key == QtCore.Qt.Key_R and QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier) or key == QtCore.Qt.Key_F5:
             self.__refresh()
     
 

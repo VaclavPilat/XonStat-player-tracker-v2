@@ -221,3 +221,19 @@ class GameInfo(Window):
         label = ColoredLabel(self.table, name)
         label.setProperty("class", "center")
         self.table.setCellWidget(row, 0, label, 1, self.table.columnCount())
+    
+
+    def keyPressEvent(self, event):
+        """Handling key press events
+
+        Args:
+            event: Event
+        """
+        key = event.key()
+        # Accessing game id field
+        if key == QtCore.Qt.Key_Escape:
+            self.gameID.clear()
+            self.gameID.setFocus()
+        # Loading game info
+        elif (key == QtCore.Qt.Key_R and QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier) or key == QtCore.Qt.Key_F5 or key == QtCore.Qt.Key_Return or key == QtCore.Qt.Key_Enter:
+            self.__loadGameInfo()
