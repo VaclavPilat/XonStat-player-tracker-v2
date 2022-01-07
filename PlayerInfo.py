@@ -423,7 +423,7 @@ class PlayerInfo(Window):
                 return False
             # Checking if the ID is already in use
             for player in self.overview.players:
-                if not player == self.player and player["id"] == id:
+                if self.mode == PlayerInfoViewMode.Add and player["id"] == id:
                     self.status.resultMessage("This ID is already being used", False)
                     return False
             self.status.resultMessage("Ready to save player information", True)
