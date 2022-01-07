@@ -70,7 +70,7 @@ class GameInfoWorker(Worker):
                 self._setInfoTableEnabled.emit(True)
                 self._setTableEnabled.emit(True)
                 data = json.loads(response.data.decode('utf-8'))
-                self.__processData(data)
+                serverID, mapID = self.__processData(data)
                 self.resultMessage.emit("Successfully loaded game data", True)
             else:
                 self.resultMessage.emit("An error occured: " + responses[response.status], False)
@@ -81,6 +81,28 @@ class GameInfoWorker(Worker):
         except Exception as e:
             self.resultMessage.emit("An error occured: " + type(e).__name__, False)
             printException()
+        else:
+            # Making additional request
+            try:
+                # Server name
+                response = Requests.instance().request('https://stats.xonotic.org/server/' + serverID)
+                if response.status == 200:
+                    self._showServerName.emit( json.loads(response.data.decode('utf-8'))["name"] + " (#" + serverID + ")" )
+                else:
+                    self.resultMessage.emit("An error occured: " + responses[response.status], False)
+                    return
+                # Map name
+                response = Requests.instance().request('https://stats.xonotic.org/map/' + mapID)
+                if response.status == 200:
+                    self._showMapName.emit( json.loads(response.data.decode('utf-8'))["name"] + " (#" + mapID + ")" )
+                else:
+                    self.resultMessage.emit("An error occured: " + responses[response.status], False)
+                    return
+            except urllib3.exceptions.HTTPError:
+                self.resultMessage.emit("An error occured: " + "Cannot connect to XonStat", False)
+            except Exception as e:
+                self.resultMessage.emit("An error occured: " + type(e).__name__, False)
+                printException()
     
 
     def __processData(self, data: dict):
@@ -121,6 +143,7 @@ class GameInfoWorker(Worker):
         # Showing game info
         self._showServerName.emit( "Server #" + str(data["server_id"]) )
         self._showMapName.emit( "Map #" + str(data["map_id"]) )
-        self._showGameMode.emit( data["game_type_cd"].upper() + " - " + data["game_type_descr"] )
+        self._showGameMode.emit( data["game_type_descr"]  + " (" + data["game_type_cd"].upper() + ")" )
         gameDatetime = datetime.datetime.strptime(data["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
         self._showGameTime.emit( gameDatetime.strftime("%d.%m.%Y %H:%M:%S UTC") )
+        return str(data["server_id"]), str(data["map_id"])
