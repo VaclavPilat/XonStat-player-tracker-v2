@@ -98,17 +98,11 @@ class PlayerInfo(Window):
             self.info.cellWidget(i, 0).setProperty("class", "right")
             i += 1
         # Adding editable text fields
-        self.id = QtWidgets.QLineEdit(str(self.player["id"]), self)
-        self.id.setEnabled(False)
-        self.id.textChanged.connect(self.__setEditEnabled)
+        self.id = ColoredLabel(self.info, str(self.player["id"]))
         self.info.setCellWidget(0, 1, self.id)
-        self.nick = QtWidgets.QLineEdit(self.player["nick"], self)
-        self.nick.setEnabled(False)
-        self.nick.textChanged.connect(self.__setEditEnabled)
+        self.nick = ColoredLabel(self.info, self.player["nick"])
         self.info.setCellWidget(1, 1, self.nick)
-        self.description = QtWidgets.QLineEdit(self.player["description"], self)
-        self.description.setEnabled(False)
-        self.description.textChanged.connect(self.__setEditEnabled)
+        self.description = ColoredLabel(self.info, self.player["description"])
         self.info.setCellWidget(2, 1, self.description)
         # Adding buttons
         actions = ColoredWidget()
@@ -364,13 +358,26 @@ class PlayerInfo(Window):
             self.editing = False
         else:
             self.editing = True
-        if self.mode == PlayerInfoViewMode.Add:
-            for i in range(3):
-                self.info.cellWidget(i, 1).setEnabled(self.editing)
+        # Switching between labels and input fields
+        if self.editing:
+            if self.mode == PlayerInfoViewMode.Add:
+                self.id = QtWidgets.QLineEdit(str(self.player["id"]), self)
+                self.id.textChanged.connect(self.__setEditEnabled)
+                self.info.setCellWidget(0, 1, self.id)
+            self.nick = QtWidgets.QLineEdit(self.player["nick"], self)
+            self.nick.textChanged.connect(self.__setEditEnabled)
+            self.info.setCellWidget(1, 1, self.nick)
+            self.description = QtWidgets.QLineEdit(self.player["description"], self)
+            self.description.textChanged.connect(self.__setEditEnabled)
+            self.info.setCellWidget(2, 1, self.description)
         else:
-            for i in range(1, 3):
-                self.info.cellWidget(i, 1).setEnabled(self.editing)
-        
+            if self.mode == PlayerInfoViewMode.Add:
+                self.id = ColoredLabel(self.info, str(self.player["id"]))
+                self.info.setCellWidget(0, 1, self.id)
+            self.nick = ColoredLabel(self.info, self.player["nick"])
+            self.info.setCellWidget(1, 1, self.nick)
+            self.description = ColoredLabel(self.info, self.player["description"])
+            self.info.setCellWidget(2, 1, self.description)
         self.updateEditButton()
     
 
