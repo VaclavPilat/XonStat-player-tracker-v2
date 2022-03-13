@@ -115,7 +115,8 @@ class Overview(Window):
         self.table.cellWidget(row, 0).setText(str(player["id"]))
         self.table.cellWidget(row, 1).setText(player["nick"])
         self.table.cellWidget(row, 2).setText(player["description"])
-        self.table.cellWidget(row, 3).setProperty("class", "xolonium")
+        for i in range(1, 4):
+            self.table.cellWidget(row, i).setProperty("class", "xolonium")
         # Adding buttons
         actions = ColoredWidget()
         actions.setBackground("dark-grey")

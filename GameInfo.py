@@ -149,8 +149,9 @@ class GameInfo(Window):
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(id))
         self.table.cellWidget(row, 1).setText(name)
-        self.table.cellWidget(row, 1).setProperty("class", "xolonium")
         self.table.cellWidget(row, 2).setText(nickname)
+        for i in range(1, 3):
+            self.table.cellWidget(row, i).setProperty("class", "xolonium")
         self.table.cellWidget(row, 3).setText(str(score))
         # Adding buttons
         actions = ColoredWidget()

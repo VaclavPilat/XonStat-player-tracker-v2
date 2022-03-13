@@ -101,8 +101,10 @@ class PlayerInfo(Window):
         self.id = ColoredLabel(self.info, str(self.player["id"]))
         self.info.setCellWidget(0, 1, self.id)
         self.nick = ColoredLabel(self.info, self.player["nick"])
+        self.nick.setProperty("class", "xolonium")
         self.info.setCellWidget(1, 1, self.nick)
         self.description = ColoredLabel(self.info, self.player["description"])
+        self.description.setProperty("class", "xolonium")
         self.info.setCellWidget(2, 1, self.description)
         # Adding buttons
         actions = ColoredWidget()
@@ -378,6 +380,8 @@ class PlayerInfo(Window):
             self.info.setCellWidget(1, 1, self.nick)
             self.description = ColoredLabel(self.info, self.player["description"])
             self.info.setCellWidget(2, 1, self.description)
+        self.nick.setProperty("class", "xolonium")
+        self.description.setProperty("class", "xolonium")
         self.updateEditButton()
     
 
