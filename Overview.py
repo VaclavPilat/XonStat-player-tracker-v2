@@ -24,6 +24,7 @@ class Overview(Window):
         self.worker = OverviewLoader(self)
         self.worker.start()
         self.worker.finished.connect(self.__updatePlayers)
+        self.__doc = QtGui.QTextDocument() # TextDocument class for parsing text from HTML
     
 
     def setProperties(self):
@@ -264,14 +265,24 @@ class Overview(Window):
                 widget = self.table.cellWidget(row, column)
                 if not widget == None and type(widget) == ColoredLabel:
                     # Checking if this label contins HTML
-                    if "<" in widget.text().lower():
-                        labelText = re.sub(re.compile('<.*?>'), '', widget.text().lower())
-                    else:
-                        labelText = widget.text().lower()
+                    labelText = self.__getTextFromHTML(widget)
                     if text.lower() in labelText:
                         containsText = True
                         break
             self.table.setRowHidden(row, not containsText)
+    
+
+    def __getTextFromHTML(self, widget: ColoredLabel) -> str:
+        """Returns string with widget text contents without HTML tags
+
+        Args:
+            widget (ColoredLabel): Rich text label
+
+        Returns:
+            str: Parsed label contents
+        """
+        self.__doc.setHtml(widget.text())
+        return self.__doc.toPlainText()
     
     
     def getRow(self, player: Player) -> int:
