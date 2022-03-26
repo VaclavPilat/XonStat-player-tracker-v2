@@ -170,6 +170,15 @@ class Overview(Window):
         else:
             widget.setText(player.active)
             widget.setColor(player.getActiveColor())
+        # Setting row color if current name equals to a stored one
+        current = self.__parseTextFromHTML(player.name)
+        nick = self.__parseTextFromHTML(player["nick"])
+        description = self.__parseTextFromHTML(player["description"])
+        if player.error == None:
+            if current in nick or current in description:
+                self.table.setRowColor(self.getRow(player), "dark-blue")
+            else:
+                self.table.setRowColor(self.getRow(player))
     
 
     def __updatePlayers(self):
@@ -265,14 +274,14 @@ class Overview(Window):
                 widget = self.table.cellWidget(row, column)
                 if not widget == None and type(widget) == ColoredLabel:
                     # Checking if this label contins HTML
-                    labelText = self.__getTextFromHTML(widget)
+                    labelText = self.__parseTextFromLabel(widget)
                     if text.lower() in labelText:
                         containsText = True
                         break
             self.table.setRowHidden(row, not containsText)
     
 
-    def __getTextFromHTML(self, widget: ColoredLabel) -> str:
+    def __parseTextFromLabel(self, widget: ColoredLabel) -> str:
         """Returns string with widget text contents without HTML tags
 
         Args:
@@ -281,8 +290,20 @@ class Overview(Window):
         Returns:
             str: Parsed label contents
         """
-        self.__doc.setHtml(widget.text())
-        return self.__doc.toPlainText()
+        return self.__parseTextFromHTML(widget.text())
+    
+
+    def __parseTextFromHTML(self, text: str) -> str:
+        """Returns parsed text from a string with HTML
+
+        Args:
+            text (str): Rich text (HTML)
+
+        Returns:
+            str: Parsed text without HTML
+        """
+        self.__doc.setHtml(text)
+        return self.__doc.toPlainText().lower()
     
     
     def getRow(self, player: Player) -> int:
