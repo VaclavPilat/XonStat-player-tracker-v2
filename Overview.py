@@ -170,12 +170,13 @@ class Overview(Window):
         else:
             widget.setText(player.active)
             widget.setColor(player.getActiveColor())
-        # Setting row color if current name equals to a stored one
-        current = self.__parseTextFromHTML(player.name)
-        nick = self.__parseTextFromHTML(player["nick"])
-        description = self.__parseTextFromHTML(player["description"])
+        # Setting row color b ased on current name
         if player.error == None:
-            if current in nick or current in description:
+            # Setting row color if current name equals to a stored one
+            current = self.__parseTextFromHTML(player.name)
+            nick = self.__parseTextFromHTML(player["nick"])
+            description = self.__parseTextFromHTML(player["description"])
+            if current in nick or current in description or (nick in current) or (description in current and len(description) > 0):
                 self.table.setRowColor(self.getRow(player), "dark-blue")
             else:
                 self.table.setRowColor(self.getRow(player))
