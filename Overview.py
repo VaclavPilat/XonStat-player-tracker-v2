@@ -154,8 +154,9 @@ class Overview(Window):
         Args:
             player (Player): Player instance
         """
+        row = self.getRow(player)
         # Adding label for current player name
-        widget = self.table.cellWidget(self.getRow(player), 3)
+        widget = self.table.cellWidget(row, 3)
         if not player.error == None:
             widget.setText(player.error)
             widget.setAlignment(QtCore.Qt.AlignCenter)
@@ -163,7 +164,7 @@ class Overview(Window):
             widget.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
             widget.setText(player.name)
         # Adding label for the last time this player was active
-        widget = self.table.cellWidget(self.getRow(player), 4)
+        widget = self.table.cellWidget(row, 4)
         if not player.error == None:
             widget.setText(None)
             widget.setColor(None)
@@ -172,14 +173,18 @@ class Overview(Window):
             widget.setColor(player.getActiveColor())
         # Setting row color b ased on current name
         if player.error == None:
-            # Setting row color if current name equals to a stored one
             current = self.__parseTextFromHTML(player.name)
+            # Setting row color for anonymous players
+            if current == "Anonymous Player".lower():
+                self.table.setRowColor(row, "dark-grey")
+                return
+            # Setting row color if current name equals to a stored one
             nick = self.__parseTextFromHTML(player["nick"])
             description = self.__parseTextFromHTML(player["description"])
             if current in nick or current in description or (nick in current) or (description in current and len(description) > 0):
-                self.table.setRowColor(self.getRow(player), "dark-blue")
+                self.table.setRowColor(row, "dark-blue")
             else:
-                self.table.setRowColor(self.getRow(player))
+                self.table.setRowColor(row)
     
 
     def __updatePlayers(self):
