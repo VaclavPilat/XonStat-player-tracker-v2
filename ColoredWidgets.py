@@ -214,3 +214,19 @@ class WindowButton(ColoredButton):
         """
         ColoredButton.__init__(self, parent, "msc.graph", "yellow")
         self.setToolTip("More information")
+
+
+
+class CopyButton(ColoredButton):
+    """Copy button
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for copying information into clipboard
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa.copy", "grey")
+        self.setToolTip("Copy information")

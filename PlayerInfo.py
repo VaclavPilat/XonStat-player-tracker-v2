@@ -177,7 +177,7 @@ class PlayerInfo(Window):
         self.name = ColoredLabel(self.table, None, "transparent")
         self.name.setProperty("class", "xolonium")
         layout.addWidget(self.name)
-        copyButton = ColoredButton(self.info, "fa.copy", "blue")
+        copyButton = CopyButton(self.info)
         copyButton.clicked.connect(lambda: QtWidgets.QApplication.instance().clipboard().setText(self.name.text()))
         layout.addWidget(copyButton)
         widget.setLayout(layout)
