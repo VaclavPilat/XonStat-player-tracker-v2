@@ -230,3 +230,19 @@ class CopyButton(ColoredButton):
         """
         ColoredButton.__init__(self, parent, "fa.copy", "grey")
         self.setToolTip("Copy information")
+
+
+
+class AddButton(ColoredButton):
+    """Button for adding players
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for adding new players into a list with the thacked ones
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa.user-plus", "green")
+        self.setToolTip("Add player")

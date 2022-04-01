@@ -67,7 +67,7 @@ class Overview(Window):
         self.refreshButton.clicked.connect(self.__updatePlayers)
         layout.addWidget(self.refreshButton)
         # Creating button for adding new player
-        self.addButton = ColoredButton(self, "fa.user-plus", "green", False)
+        self.addButton = AddButton(self)
         self.addButton.clicked.connect(lambda: self.openPlayerInfo(Player(), PlayerInfoViewMode.Add))
         layout.addWidget(self.addButton)
         # Creating button for loading game info

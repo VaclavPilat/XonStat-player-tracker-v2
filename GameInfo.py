@@ -183,7 +183,7 @@ class GameInfo(Window):
                 buttonGroup.addWidget(deleteButton)
             else:
                 # Add button
-                addButton = ColoredButton(self.table, "fa.user-plus", "green")
+                addButton = AddButton(self.table)
                 addButton.clicked.connect(lambda: self.overview.openPlayerInfo(Player({"id": id, "nick": name, "description": ""}), PlayerInfoViewMode.Add))
                 buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
