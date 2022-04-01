@@ -25,6 +25,7 @@ class PlayerInfoWorker(Worker):
     _showGames = QtCore.pyqtSignal() # Showing number of recently played games
     _updateHeatmapGames = QtCore.pyqtSignal(int, int) # Updating number of games in heatmap
     _updateRefreshButton = QtCore.pyqtSignal() # Signal for updating visuals of a "Refresh" button
+    _showRecentGames = QtCore = QtCore.pyqtSignal(list) # Signal for adding new row into table with recent games
     
 
     def connectSlots(self):
@@ -41,6 +42,7 @@ class PlayerInfoWorker(Worker):
         self._showGames.connect(self.window.showGames)
         self._updateHeatmapGames.connect(self.window.updateHeatmapGames)
         self._updateRefreshButton.connect(self.window.updateRefreshButton)
+        self._showRecentGames.connect(self.window.showRecentGames)
 
 
     def __init__(self, window: Window):
@@ -150,6 +152,7 @@ class PlayerInfoWorker(Worker):
                         self.__processGameTime(game["create_dt"])
                     games += data[1]
                     correct += 1
+                    self._showRecentGames.emit(data[1])
                 self.progress.emit(data[0], maximum)
         # Updating visuals
         if correct > 0 and maximum > 0:

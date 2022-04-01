@@ -206,12 +206,17 @@ class PlayerInfo(Window):
         self.names.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(6, 1, self.names)
+        # List of recent games
+        self.table.insertRow(7)
+        self.__createGameList()
+        self.table.setCellWidget(7, 0, self.gameList, 1, 2)
     
 
     def __createHeatmap(self):
         """Creates a heatmap table
         """
         self.heatmap = ColoredTable(self)
+        self.heatmap.setBackground("dark-grey")
         self.heatmap.setProperty("class", "heatmap no-border")
         # Generating column headers
         columns = []
@@ -233,6 +238,23 @@ class PlayerInfo(Window):
         self.heatmap.setMinimumHeight(230)
     
 
+    def __createGameList(self):
+        """Creates a table with list of recent games
+        """
+        self.gameList = ColoredTable(self)
+        self.gameList.setBackground("dark-grey")
+        self.gameList.setProperty("class", "no-border")
+        # Generating column headers
+        columns = ["Date [UTC]", "Game mode", "Map name", "Actions"]
+        # Setting columns
+        self.gameList.setColumnCount(len(columns))
+        self.gameList.setHorizontalHeaderLabels(columns)
+        self.gameList.horizontalHeader().setMinimumSectionSize(30)
+        for i in range(self.gameList.columnCount() -1):
+            self.gameList.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.gameList.setMinimumHeight(230)
+    
+
     def __removePlayer(self):
         """Attempts to remove player through Overview window instance
         """
@@ -252,6 +274,7 @@ class PlayerInfo(Window):
                 self.__usedNames.clear()
                 self.games.setText("0")
                 self.names.setText("")
+                self.gameList.setRowCount(0)
                 for i in range(self.heatmap.rowCount()):
                     for j in range(self.heatmap.columnCount()):
                         widget = self.heatmap.cellWidget(i, j)
@@ -260,6 +283,39 @@ class PlayerInfo(Window):
                 # Starting new worker
                 self.worker = PlayerInfoWorker(self)
                 self.worker.start()
+    
+
+    def showRecentGames(self, games: list):
+        """Inserts new rows with game data into a gameList table
+
+        Args:
+            game (list): Game data list
+        """
+        for game in games:
+            # Creating new row
+            row = self.gameList.rowCount()
+            if row < Config.instance()["Settings"]["recentGamesCount"]:
+                self.gameList.insertRow(row)
+                # Adding cells
+                for i in range(3):
+                    self.gameList.setCellWidget(row, i, ColoredLabel(self.gameList))
+                # Setting cell content
+                self.gameList.cellWidget(row, 0).setText(game["create_dt"])
+                self.gameList.cellWidget(row, 1).setText(game["game_type_cd"].upper())
+                self.gameList.cellWidget(row, 2).setText(game["map_name"])
+                # Adding buttons
+                actions = ColoredWidget()
+                buttonGroup = QtWidgets.QHBoxLayout()
+                actions.setLayout(buttonGroup)
+                buttonGroup.setContentsMargins(0, 0, 0, 0)
+                buttonGroup.setSpacing(0)
+                buttonGroup.addStretch()
+                # Adding button for showing game in gameInfo window
+                gameInfoButton = ColoredButton(self.table, "msc.graph", "yellow")
+                buttonGroup.addWidget(gameInfoButton)
+                #gameInfoButton.clicked.connect(lambda: )
+                self.gameList.setCellWidget(row, 3, actions)
+                buttonGroup.addStretch()
     
 
     def updateRefreshButton(self):
