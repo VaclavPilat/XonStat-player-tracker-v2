@@ -226,12 +226,11 @@ class PlayerInfo(Window):
         self.heatmap.setColumnCount(len(columns))
         self.heatmap.setHorizontalHeaderLabels(columns)
         self.heatmap.horizontalHeader().setMinimumSectionSize(50)
-        for i in range(self.heatmap.columnCount()):
-            self.heatmap.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.heatmap.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         # Generating rows
+        self.heatmap.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         for i in range(7):
             self.heatmap.insertRow(i)
-            self.heatmap.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             for j in range(self.heatmap.columnCount()):
                 self.heatmap.setCellWidget(i, j, ColoredLabel(self.heatmap, None, "heatmap-0"))
         self.heatmap.setVerticalHeaderLabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
@@ -250,8 +249,9 @@ class PlayerInfo(Window):
         self.gameList.setColumnCount(len(columns))
         self.gameList.setHorizontalHeaderLabels(columns)
         self.gameList.horizontalHeader().setMinimumSectionSize(30)
-        for i in range(self.gameList.columnCount() -1):
-            self.gameList.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        for i in range(3):
+            self.gameList.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
+        self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         self.gameList.setMinimumHeight(230)
     
 
@@ -300,7 +300,9 @@ class PlayerInfo(Window):
                 for i in range(3):
                     self.gameList.setCellWidget(row, i, ColoredLabel(self.gameList))
                 # Setting cell content
-                self.gameList.cellWidget(row, 0).setText(game["create_dt"])
+                date = datetime.datetime.strptime(game["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
+                date_str = date.strftime("%d.%m.%Y %H:%M:%S")
+                self.gameList.cellWidget(row, 0).setText(date_str)
                 self.gameList.cellWidget(row, 1).setText(game["game_type_cd"].upper())
                 self.gameList.cellWidget(row, 2).setText(game["map_name"])
                 # Adding buttons
