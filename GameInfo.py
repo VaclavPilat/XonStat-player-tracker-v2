@@ -168,7 +168,7 @@ class GameInfo(Window):
             buttonGroup.addWidget(profileButton)
             if nickname:
                 # Load button
-                infoButton = ColoredButton(self.table, "msc.graph", "yellow")
+                infoButton = WindowButton(self.table)
                 infoButton.clicked.connect(lambda: self.overview.openPlayerInfo(player))
                 buttonGroup.addWidget(infoButton)
                 # Edit button

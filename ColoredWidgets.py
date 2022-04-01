@@ -191,10 +191,26 @@ class BrowserButton(ColoredButton):
 
 
     def __init__(self, parent: QtWidgets.QWidget):
-        """Creates a new browser button
+        """Creates a new button for opening links in a web browser
 
         Args:
             parent (QtWidgets.QWidget): Parent element
         """
-        ColoredButton.__init__(self, parent, "msc.browser", "blue", True)
+        ColoredButton.__init__(self, parent, "msc.browser", "blue")
         self.setToolTip("Open in browser")
+
+
+
+class WindowButton(ColoredButton):
+    """Window button
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for viewing more information in a new window
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "msc.graph", "yellow")
+        self.setToolTip("More information")

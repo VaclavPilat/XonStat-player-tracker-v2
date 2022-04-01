@@ -131,7 +131,7 @@ class Overview(Window):
         profileButton.clicked.connect(player.showProfile)
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
-        infoButton = ColoredButton(self.table, "msc.graph", "yellow")
+        infoButton = WindowButton(self.table)
         infoButton.clicked.connect(lambda: self.openPlayerInfo(player))
         buttonGroup.addWidget(infoButton)
         # Edit button

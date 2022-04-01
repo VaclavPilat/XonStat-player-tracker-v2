@@ -315,7 +315,7 @@ class PlayerInfo(Window):
         browserButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/game/" + str(game["game_id"]), new=2))
         buttonGroup.addWidget(browserButton)
         # Adding button for showing game in gameInfo window
-        gameInfoButton = ColoredButton(self.table, "msc.graph", "yellow")
+        gameInfoButton = WindowButton(self.table)
         gameInfoButton.clicked.connect(lambda: self.__openGameInfo(game["game_id"]))
         buttonGroup.addWidget(gameInfoButton)
         #gameInfoButton.clicked.connect(lambda: )
