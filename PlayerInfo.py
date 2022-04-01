@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-import os, enum
+import os, enum, webbrowser
 
 from Window import *
 from Status import *
@@ -114,7 +114,7 @@ class PlayerInfo(Window):
         buttonGroup.addStretch()
         # Profile button
         if self.mode == PlayerInfoViewMode.Load:
-            profileButton = ColoredButton(self.info, "ri.file-user-fill", "blue")
+            profileButton = ColoredButton(self.info, "msc.browser", "blue")
             profileButton.clicked.connect(self.player.showProfile)
             buttonGroup.addWidget(profileButton)
         # PlayerInfo button
@@ -233,12 +233,13 @@ class PlayerInfo(Window):
         self.gameList.setBackground("dark-grey")
         self.gameList.setProperty("class", "no-border")
         # Generating column headers
-        columns = ["Date [UTC]", "Game mode", "Map name", "Actions"]
+        columns = ["Date [UTC]", "Mode", "Map", "Actions"]
         # Setting columns
         self.gameList.setColumnCount(len(columns))
         self.gameList.setHorizontalHeaderLabels(columns)
         self.gameList.horizontalHeader().setMinimumSectionSize(30)
-        for i in range(3):
+        self.gameList.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        for i in range(1, 3):
             self.gameList.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
         self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
         self.gameList.setMinimumHeight(230)
@@ -309,6 +310,10 @@ class PlayerInfo(Window):
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
+        # Button for showing the selected game in browser
+        browserButton = ColoredButton(self.table, "msc.browser", "blue")
+        browserButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/game/" + str(game["game_id"]), new=2))
+        buttonGroup.addWidget(browserButton)
         # Adding button for showing game in gameInfo window
         gameInfoButton = ColoredButton(self.table, "msc.graph", "yellow")
         gameInfoButton.clicked.connect(lambda: self.__openGameInfo(game["game_id"]))

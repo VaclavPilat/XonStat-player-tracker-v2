@@ -163,7 +163,7 @@ class GameInfo(Window):
         buttonGroup.addStretch()
         if id >= 6:
             # Profile button
-            profileButton = ColoredButton(self.table, "ri.file-user-fill", "blue")
+            profileButton = ColoredButton(self.table, "msc.browser", "blue")
             profileButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/player/" + str(id), new=2))
             buttonGroup.addWidget(profileButton)
             if nickname:
