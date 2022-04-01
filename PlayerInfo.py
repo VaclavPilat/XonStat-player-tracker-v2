@@ -31,7 +31,6 @@ class PlayerInfo(Window):
             player (Player): Player instance
             mode (PlayerInfoViewMode): View mode
         """
-        self.__usedNames = {}
         self.__gamesPlayed = 0
         self.editing = False
         self.overview = overview
@@ -196,20 +195,10 @@ class PlayerInfo(Window):
         self.table.insertRow(5)
         self.__createHeatmap()
         self.table.setCellWidget(5, 0, self.heatmap, 1, 2)
-        # Recently used names
-        self.table.insertRow(6)
-        self.table.setCellWidget(6, 0, ColoredLabel(self.table, "Recently used names", "dark-grey"))
-        self.names = ColoredTextarea(self.table)
-        self.names.setMaximumHeight(150)
-        self.names.setProperty("class", "xolonium no-border")
-        self.names.setProperty("background", "dark-grey")
-        self.names.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
-        self.names.setReadOnly(True)
-        self.table.setCellWidget(6, 1, self.names)
         # List of recent games
-        self.table.insertRow(7)
+        self.table.insertRow(6)
         self.__createGameList()
-        self.table.setCellWidget(7, 0, self.gameList, 1, 2)
+        self.table.setCellWidget(6, 0, self.gameList, 1, 2)
     
 
     def __createHeatmap(self):
@@ -271,9 +260,7 @@ class PlayerInfo(Window):
             else:
                 # Clearing label values
                 self.__gamesPlayed = 0
-                self.__usedNames.clear()
                 self.games.setText("0")
-                self.names.setText("")
                 self.gameList.setRowCount(0)
                 for i in range(self.heatmap.rowCount()):
                     for j in range(self.heatmap.columnCount()):
@@ -381,28 +368,6 @@ class PlayerInfo(Window):
             executeCallbackOnButtons("edit-" + str(self.player["id"]), self.__editButtonSave)
         else:
             executeCallbackOnButtons("edit-" + str(self.player["id"]), self.__editButtonEdit)
-    
-
-    def showUsedNames(self, name: str):
-        """Shows currently used names
-
-        Args:
-            name (str): Used name
-        """
-        # Adding name to dictionary
-        if name in self.__usedNames:
-            self.__usedNames[name] += 1
-        else:
-            self.__usedNames[name] = 1
-        # Printing out names
-        output = ""
-        i = 0
-        for usedName in self.__usedNames:
-            i += 1
-            output += usedName + " (" + str(self.__usedNames[usedName]) + ")"
-            if not i == len(self.__usedNames):
-                output += "<br>"
-        self.names.setHtml(output)
     
 
     def showGames(self):

@@ -21,7 +21,6 @@ class PlayerInfoWorker(Worker):
     _showActive = QtCore.pyqtSignal(str) # Showing the last time this player joined a game
     _setActiveColor = QtCore.pyqtSignal(str) # Setting a color to "active" label
     _showTime = QtCore.pyqtSignal(str) # Showing total time spent playing
-    _showUsedNames = QtCore.pyqtSignal(str) # Showing recently used names
     _showGames = QtCore.pyqtSignal() # Showing number of recently played games
     _updateHeatmapGames = QtCore.pyqtSignal(int, int) # Updating number of games in heatmap
     _updateRefreshButton = QtCore.pyqtSignal() # Signal for updating visuals of a "Refresh" button
@@ -38,7 +37,6 @@ class PlayerInfoWorker(Worker):
         self._showActive.connect(self.window.active.setText)
         self._setActiveColor.connect(self.window.active.setColor)
         self._showTime.connect(self.window.time.setText)
-        self._showUsedNames.connect(self.window.showUsedNames)
         self._showGames.connect(self.window.showGames)
         self._updateHeatmapGames.connect(self.window.updateHeatmapGames)
         self._updateRefreshButton.connect(self.window.updateRefreshButton)
@@ -109,23 +107,6 @@ class PlayerInfoWorker(Worker):
                 self._updateHeatmapGames.emit(row, column)
         except:
             printException()
-    
-    
-    def __findPlayerName(self, data: dict):
-        """Processes game data retrieved from game pages
-
-        Args:
-            data (dict): Json object with game data
-        """
-        try:
-            # Getting used player name
-            if data is not None:
-                for player in data["player_game_stats"]:
-                    if player["player_id"] == self.window.player["id"]:
-                        self._showUsedNames.emit(escape(player["nick"]))
-                        break
-        except:
-            printException()
 
 
     def __loadGameData(self):
@@ -139,7 +120,6 @@ class PlayerInfoWorker(Worker):
         correct = 0
         maximum = Config.instance()["Settings"]["gameListCount"]
         self.progress.emit(0, maximum)
-        games = []
         for data in self.window.player.loadGameLists():
             if self.cancel:
                 break
@@ -150,8 +130,6 @@ class PlayerInfoWorker(Worker):
                 if data[1] is not False:
                     for game in data[1]:
                         self.__processGameTime(game["create_dt"])
-                    if len(games) < Config.instance()["Settings"]["maxGamesLoaded"]:
-                        games += data[1]
                     correct += 1
                     self._showRecentGames.emit(data[1])
                 self.progress.emit(data[0], maximum)
@@ -165,30 +143,6 @@ class PlayerInfoWorker(Worker):
         self.resultProgress.emit("Finished loading gamelists", correct, maximum)
         # Canceling
         self.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
-        if self.cancel:
-            return
-        # Loading game data
-        if len(games) > 0:
-            current = 0
-            correct = 0
-            self.message.emit("Loading game data")
-            self.progress.emit(current, len(games))
-            self._setRowColor.emit(6, "dark-yellow")
-            current = 0
-            correct = 0
-            for gameData in self.window.player.loadGameData(games):
-                current += 1
-                if current > Config.instance()["Settings"]["maxGamesLoaded"]:
-                    return
-                if gameData is not None:
-                    correct += 1
-                self.__findPlayerName(gameData)
-                self.progress.emit(current, len(games))
-            self.resultProgress.emit("Loaded game data", correct, len(games))
-            if correct > 0:
-                self._setRowColor.emit(6, None)
-            else:
-                self._setRowColor.emit(6, "dark-red")
     
 
     def before(self):

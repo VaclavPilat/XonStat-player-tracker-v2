@@ -3,6 +3,5 @@
     "groupRequestInterval": 2,
     "heatmapHourSpan": 3,
     "gameListCount": 5,
-    "maxGamesLoaded": 20,
     "recentGamesCount": 20
 }

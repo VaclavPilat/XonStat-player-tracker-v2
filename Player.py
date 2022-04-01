@@ -241,39 +241,3 @@ class Player(dict):
             pass
         except:
             printException()
-    
-
-    def loadGameData(self, games: list):
-        """Loads game data from list of recent games
-
-        Args:
-            games (list): List of recent games
-
-        Yields:
-            dict: Game data
-        """
-        try:
-            current = 0
-            for game in games:
-                # Canceling
-                if self.window.worker.cancel:
-                    raise StopIteration
-                try:
-                    time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
-                    current += 1
-                    gameResponse = Requests.instance().request("https://stats.xonotic.org/game/" + str(game["game_id"]))
-                    if gameResponse.status == 200:
-                        if self.window:
-                            self.window.worker.showRate.emit(gameResponse.headers["X-Ratelimit-Remaining"], gameResponse.headers["X-Ratelimit-Limit"])
-                        yield json.loads(gameResponse.data.decode('utf-8'))
-                    else: 
-                        yield None
-                    self.window.status.progress(current, len(games))
-                except urllib3.exceptions.HTTPError:
-                    yield None
-                except:
-                    printException()
-        except StopIteration:
-            pass
-        except:
-            printException()
