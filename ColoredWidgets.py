@@ -152,7 +152,7 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
         """
         widget = self.cellWidget(row, column)
         if not widget == None:
-            if type(widget) is ColoredLabel or type(widget) is ColoredWidget or type(widget) is ColoredTextarea:
+            if type(widget) is ColoredWidget or ColoredWidget in type(widget).__bases__:
                 widget.setBackground(background)
     
 
