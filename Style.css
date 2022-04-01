@@ -70,3 +70,7 @@ QTableWidget ColoredButton {
 .xolonium {
     font-family: Xolonium !important;
 }
+
+.no-border {
+    border: 0 !important;
+}

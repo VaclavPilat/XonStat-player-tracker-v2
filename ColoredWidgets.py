@@ -152,7 +152,7 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
         """
         widget = self.cellWidget(row, column)
         if not widget == None:
-            if type(widget) is ColoredLabel or type(widget) is ColoredWidget:
+            if type(widget) is ColoredLabel or type(widget) is ColoredWidget or type(widget) is ColoredTextarea:
                 widget.setBackground(background)
     
 
@@ -170,3 +170,15 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
         # Sets widget span if arguments are not empty
         if rowSpan is not None and columnSpan is not None:
             super().setSpan(row, column, rowSpan, columnSpan)
+
+
+
+class ColoredTextarea(QtWidgets.QTextEdit, ColoredWidget):
+    """Creates a simple text edit with easily modifiable appearance
+    """
+
+
+    def __init__(self, parent):
+        """Initializes a text edit widgets
+        """
+        QtWidgets.QTextEdit.__init__(self, parent)

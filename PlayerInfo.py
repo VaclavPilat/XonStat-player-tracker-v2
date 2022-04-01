@@ -199,9 +199,10 @@ class PlayerInfo(Window):
         # Recently used names
         self.table.insertRow(6)
         self.table.setCellWidget(6, 0, ColoredLabel(self.table, "Recently used names", "dark-grey"))
-        self.names = QtWidgets.QTextEdit(self.table)
+        self.names = ColoredTextarea(self.table)
         self.names.setMaximumHeight(150)
-        self.names.setProperty("class", "xolonium")
+        self.names.setProperty("class", "xolonium no-border")
+        self.names.setProperty("background", "dark-grey")
         self.names.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
         self.names.setReadOnly(True)
         self.table.setCellWidget(6, 1, self.names)
@@ -211,7 +212,7 @@ class PlayerInfo(Window):
         """Creates a heatmap table
         """
         self.heatmap = ColoredTable(self)
-        self.heatmap.setProperty("class", "heatmap")
+        self.heatmap.setProperty("class", "heatmap no-border")
         # Generating column headers
         columns = []
         for i in range(0, 24, Config.instance()["Settings"]["heatmapHourSpan"]):
