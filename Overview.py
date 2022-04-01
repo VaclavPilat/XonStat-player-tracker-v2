@@ -72,7 +72,7 @@ class Overview(Window):
         layout.addWidget(self.addButton)
         # Creating button for loading game info
         self.gameInfoButton = ColoredButton(self, "fa.users", "yellow", True)
-        self.gameInfoButton.clicked.connect(self.__openGameInfo)
+        self.gameInfoButton.clicked.connect(self.openGameInfo)
         layout.addWidget(self.gameInfoButton)
         return layout
 
@@ -230,7 +230,7 @@ class Overview(Window):
                 player.window.edit()
     
 
-    def __openGameInfo(self):
+    def openGameInfo(self):
         """Opens GameInfo window
         """
         if self.gameInfo is None:

@@ -58,7 +58,7 @@ class GameInfo(Window):
         layout.addWidget(self.gameID)
         # Creating button for loading game info
         self.loadButton = ColoredButton(self, "mdi6.reload", "yellow", True)
-        self.loadButton.clicked.connect(self.__loadGameInfo)
+        self.loadButton.clicked.connect(self.loadGameInfo)
         layout.addWidget(self.loadButton)
         return layout
     
@@ -205,7 +205,7 @@ class GameInfo(Window):
         return None
 
 
-    def __loadGameInfo(self):
+    def loadGameInfo(self):
         """Starts (or stops) Worker instance for loading game data
         """
         if self.worker is None or not self.worker.isRunning():
@@ -242,4 +242,4 @@ class GameInfo(Window):
             self.gameID.setFocus()
         # Loading game info
         elif (key == QtCore.Qt.Key_R and QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier) or key == QtCore.Qt.Key_F5 or key == QtCore.Qt.Key_Return or key == QtCore.Qt.Key_Enter:
-            self.__loadGameInfo()
+            self.loadGameInfo()

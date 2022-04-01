@@ -293,31 +293,53 @@ class PlayerInfo(Window):
         """
         for game in games:
             # Creating new row
-            row = self.gameList.rowCount()
-            if row < Config.instance()["Settings"]["recentGamesCount"]:
-                self.gameList.insertRow(row)
-                # Adding cells
-                for i in range(3):
-                    self.gameList.setCellWidget(row, i, ColoredLabel(self.gameList))
-                # Setting cell content
-                date = datetime.datetime.strptime(game["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
-                date_str = date.strftime("%d.%m.%Y %H:%M:%S")
-                self.gameList.cellWidget(row, 0).setText(date_str)
-                self.gameList.cellWidget(row, 1).setText(game["game_type_cd"].upper())
-                self.gameList.cellWidget(row, 2).setText(game["map_name"])
-                # Adding buttons
-                actions = ColoredWidget()
-                buttonGroup = QtWidgets.QHBoxLayout()
-                actions.setLayout(buttonGroup)
-                buttonGroup.setContentsMargins(0, 0, 0, 0)
-                buttonGroup.setSpacing(0)
-                buttonGroup.addStretch()
-                # Adding button for showing game in gameInfo window
-                gameInfoButton = ColoredButton(self.table, "msc.graph", "yellow")
-                buttonGroup.addWidget(gameInfoButton)
-                #gameInfoButton.clicked.connect(lambda: )
-                self.gameList.setCellWidget(row, 3, actions)
-                buttonGroup.addStretch()
+            self.__showRecentGame(game)
+    
+
+    def __showRecentGame(self, game: dict):
+        """Showing recent game by creating a new row in gameList table
+
+        Args:
+            game (dict): Game info
+        """
+        row = self.gameList.rowCount()
+        if row >= Config.instance()["Settings"]["recentGamesCount"]:
+            return
+        self.gameList.insertRow(row)
+        # Adding cells
+        for i in range(3):
+            self.gameList.setCellWidget(row, i, ColoredLabel(self.gameList))
+        # Setting cell content
+        date = datetime.datetime.strptime(game["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
+        date_str = date.strftime("%d.%m.%Y %H:%M:%S")
+        self.gameList.cellWidget(row, 0).setText(date_str)
+        self.gameList.cellWidget(row, 1).setText(game["game_type_cd"].upper())
+        self.gameList.cellWidget(row, 2).setText(game["map_name"])
+        # Adding buttons
+        actions = ColoredWidget()
+        buttonGroup = QtWidgets.QHBoxLayout()
+        actions.setLayout(buttonGroup)
+        buttonGroup.setContentsMargins(0, 0, 0, 0)
+        buttonGroup.setSpacing(0)
+        buttonGroup.addStretch()
+        # Adding button for showing game in gameInfo window
+        gameInfoButton = ColoredButton(self.table, "msc.graph", "yellow")
+        gameInfoButton.clicked.connect(lambda: self.__openGameInfo(game["game_id"]))
+        buttonGroup.addWidget(gameInfoButton)
+        #gameInfoButton.clicked.connect(lambda: )
+        self.gameList.setCellWidget(row, 3, actions)
+        buttonGroup.addStretch()
+    
+
+    def __openGameInfo(self, id: int):
+        """Opening game info window to view info about a game
+
+        Args:
+            id (int): Game id
+        """
+        self.overview.openGameInfo()
+        self.overview.gameInfo.gameID.setText(str(id))
+        self.overview.gameInfo.loadGameInfo()
     
 
     def updateRefreshButton(self):
