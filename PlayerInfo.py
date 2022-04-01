@@ -114,7 +114,7 @@ class PlayerInfo(Window):
         buttonGroup.addStretch()
         # Profile button
         if self.mode == PlayerInfoViewMode.Load:
-            profileButton = ColoredButton(self.info, "msc.browser", "blue")
+            profileButton = BrowserButton(self.info)
             profileButton.clicked.connect(self.player.showProfile)
             buttonGroup.addWidget(profileButton)
         # PlayerInfo button
@@ -311,7 +311,7 @@ class PlayerInfo(Window):
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
         # Button for showing the selected game in browser
-        browserButton = ColoredButton(self.table, "msc.browser", "blue")
+        browserButton = BrowserButton(self.table)
         browserButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/game/" + str(game["game_id"]), new=2))
         buttonGroup.addWidget(browserButton)
         # Adding button for showing game in gameInfo window

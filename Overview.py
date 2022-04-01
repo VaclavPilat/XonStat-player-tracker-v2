@@ -127,7 +127,7 @@ class Overview(Window):
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
         # Profile button
-        profileButton = ColoredButton(self.table, "msc.browser", "blue")
+        profileButton = BrowserButton(self.table)
         profileButton.clicked.connect(player.showProfile)
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button

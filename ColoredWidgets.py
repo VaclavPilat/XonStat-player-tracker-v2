@@ -182,3 +182,19 @@ class ColoredTextarea(QtWidgets.QTextEdit, ColoredWidget):
         """Initializes a text edit widgets
         """
         QtWidgets.QTextEdit.__init__(self, parent)
+
+
+
+class BrowserButton(ColoredButton):
+    """Browser button
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new browser button
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "msc.browser", "blue", True)
+        self.setToolTip("Open in browser")

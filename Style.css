@@ -23,6 +23,13 @@ QTableWidget ColoredButton {
     margin: 2px;
 }
 
+QToolTip { 
+    color: #ffffff !important; 
+    background-color: #333333 !important;
+    padding: 2px !important;
+    border: 0 !important; 
+}
+
 #status {
     border-radius: 5px;
     padding: 0 !important;
