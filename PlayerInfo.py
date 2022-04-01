@@ -131,7 +131,7 @@ class PlayerInfo(Window):
         self.updateEditButton()
         # Delete button
         if self.mode == PlayerInfoViewMode.Load:
-            deleteButton = ColoredButton(self.info, "fa5s.trash-alt", "red")
+            deleteButton = DeleteButton(self.info)
             deleteButton.setObjectName("delete")
             deleteButton.clicked.connect(self.__removePlayer)
             buttonGroup.addWidget(deleteButton)

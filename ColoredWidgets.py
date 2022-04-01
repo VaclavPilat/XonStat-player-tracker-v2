@@ -246,3 +246,19 @@ class AddButton(ColoredButton):
         """
         ColoredButton.__init__(self, parent, "fa.user-plus", "green")
         self.setToolTip("Add player")
+
+
+
+class DeleteButton(ColoredButton):
+    """Button for deleting players
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for deleting players from list of tracked ones
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa5s.trash-alt", "red")
+        self.setToolTip("Delete player")

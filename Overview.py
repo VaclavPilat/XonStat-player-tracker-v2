@@ -140,7 +140,7 @@ class Overview(Window):
         editButton.clicked.connect(lambda: self.openPlayerInfo(player, PlayerInfoViewMode.Edit))
         buttonGroup.addWidget(editButton)
         # Delete button
-        deleteButton = ColoredButton(self.table, "fa5s.trash-alt", "red")
+        deleteButton = DeleteButton(self.table)
         deleteButton.setObjectName("delete")
         deleteButton.clicked.connect(lambda: self.removePlayer(player))
         buttonGroup.addWidget(deleteButton)
