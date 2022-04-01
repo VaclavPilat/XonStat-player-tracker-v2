@@ -150,7 +150,8 @@ class PlayerInfoWorker(Worker):
                 if data[1] is not False:
                     for game in data[1]:
                         self.__processGameTime(game["create_dt"])
-                    games += data[1]
+                    if len(games) < Config.instance()["Settings"]["maxGamesLoaded"]:
+                        games += data[1]
                     correct += 1
                     self._showRecentGames.emit(data[1])
                 self.progress.emit(data[0], maximum)
@@ -177,6 +178,8 @@ class PlayerInfoWorker(Worker):
             correct = 0
             for gameData in self.window.player.loadGameData(games):
                 current += 1
+                if current > Config.instance()["Settings"]["maxGamesLoaded"]:
+                    return
                 if gameData is not None:
                     correct += 1
                 self.__findPlayerName(gameData)
