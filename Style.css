@@ -46,7 +46,7 @@ QTableWidget ColoredButton {
     max-width: 45px;
 }
 
-#status-inner, #status-rate, #status-icon {
+#status-inner, #status-rate, #status-icon, [background="transparent"] {
     background-color: transparent !important;
 }
 
