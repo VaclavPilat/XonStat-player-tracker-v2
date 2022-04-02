@@ -295,3 +295,35 @@ class SaveButton(ColoredButton):
         """
         ColoredButton.__init__(self, parent, "fa.save", "green")
         self.setToolTip("Save information")
+
+
+
+class CloseButton(ColoredButton):
+    """Button for closing the current window
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for closing the current window
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "msc.chrome-close", "red")
+        self.setToolTip("Close window")
+
+
+
+class GameButton(ColoredButton):
+    """Button for opening a GameInfo window
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for opening a GameInfo window
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa.users", "yellow")
+        self.setToolTip("Game information")

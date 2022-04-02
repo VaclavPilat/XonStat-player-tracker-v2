@@ -144,7 +144,7 @@ class PlayerInfo(Window):
             buttonGroup.addWidget(deleteButton)
         # Close button
         if not self.mode == PlayerInfoViewMode.Load:
-            closeButton = ColoredButton(self.info, "msc.chrome-close", "red")
+            closeButton = CloseButton(self.info)
             closeButton.clicked.connect(self.close)
             buttonGroup.addWidget(closeButton)
         buttonGroup.addStretch()

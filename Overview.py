@@ -71,7 +71,7 @@ class Overview(Window):
         self.addButton.clicked.connect(lambda: self.openPlayerInfo(Player(), PlayerInfoViewMode.Add))
         layout.addWidget(self.addButton)
         # Creating button for loading game info
-        self.gameInfoButton = ColoredButton(self, "fa.users", "yellow", True)
+        self.gameInfoButton = GameButton(self)
         self.gameInfoButton.clicked.connect(self.openGameInfo)
         layout.addWidget(self.gameInfoButton)
         return layout
