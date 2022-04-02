@@ -129,6 +129,7 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
         QtWidgets.QTableWidget.__init__(self, parent)
         self.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.horizontalHeader().setMinimumSectionSize(140)
+        self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
 
     
     def setRowColor(self, row: int, background: str = None):
@@ -239,7 +240,7 @@ class AddButton(ColoredButton):
 
 
     def __init__(self, parent: QtWidgets.QWidget):
-        """Creates a new button for adding new players into a list with the thacked ones
+        """Creates a new button for adding new players into a list with the tracked ones
 
         Args:
             parent (QtWidgets.QWidget): Parent element
