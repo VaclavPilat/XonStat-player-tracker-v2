@@ -410,7 +410,7 @@ class PlayerInfo(Window):
     def edit(self):
         """Editing player info
         """
-        if self.editing:
+        if self.editing and self.__validateInputs():
             # Getting edited info
             if self.mode == PlayerInfoViewMode.Add:
                 self.player["id"] = int(self.id.text())
