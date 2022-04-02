@@ -242,7 +242,8 @@ class PlayerInfo(Window):
         for i in range(1, 3):
             self.gameList.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
         self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
-        self.gameList.setMinimumHeight(230)
+        self.gameList.setMinimumHeight((Config.instance()["Settings"]["recentGamesCount"] +1) * 30)
+        self.gameList.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
     
 
     def __removePlayer(self):
