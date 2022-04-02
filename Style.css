@@ -30,6 +30,13 @@ QToolTip {
     border: 0 !important; 
 }
 
+QStackedWidget {
+    background-color: transparent !important;
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 #status {
     border-radius: 5px;
     padding: 0 !important;

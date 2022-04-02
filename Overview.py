@@ -134,11 +134,16 @@ class Overview(Window):
         infoButton = WindowButton(self.table)
         infoButton.clicked.connect(lambda: self.openPlayerInfo(player))
         buttonGroup.addWidget(infoButton)
-        # Edit button
-        editButton = ColoredButton(self.table, "fa5s.pencil-alt", "orange")
-        editButton.setObjectName("edit-" + str(player["id"]))
+        # Stacked widget with edit and save button
+        stackedButtons = QtWidgets.QStackedWidget(self.table)
+        stackedButtons.setObjectName("edit-" + str(player["id"]))
+        editButton = EditButton(self.table)
         editButton.clicked.connect(lambda: self.openPlayerInfo(player, PlayerInfoViewMode.Edit))
-        buttonGroup.addWidget(editButton)
+        stackedButtons.addWidget(editButton)
+        saveButton = SaveButton(self.table)
+        saveButton.clicked.connect(lambda: self.openPlayerInfo(player, PlayerInfoViewMode.Edit))
+        stackedButtons.addWidget(saveButton)
+        buttonGroup.addWidget(stackedButtons)
         # Delete button
         deleteButton = DeleteButton(self.table)
         deleteButton.setObjectName("delete")

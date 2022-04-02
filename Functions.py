@@ -1,3 +1,4 @@
+from PyQt5 import QtWidgets, QtCore, QtGui
 import traceback
 from colour import Color
 
@@ -50,7 +51,7 @@ def executeCallbackOnButtons(name: str, callback):
         callback (function): Callback function on button
     """
     for window in QtWidgets.QApplication.topLevelWidgets():
-        for button in window.findChildren(ColoredButton, name):
+        for button in window.findChildren(QtWidgets.QStackedWidget, name):
             callback(button)
 
 

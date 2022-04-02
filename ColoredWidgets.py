@@ -263,3 +263,35 @@ class DeleteButton(ColoredButton):
         """
         ColoredButton.__init__(self, parent, "fa5s.trash-alt", "red")
         self.setToolTip("Delete player")
+
+
+
+class EditButton(ColoredButton):
+    """Button for editing information
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for editing information about tracked players
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa5s.pencil-alt", "orange")
+        self.setToolTip("Edit information")
+
+
+
+class SaveButton(ColoredButton):
+    """Button for saving information
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for saving edited player information
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa.save", "green")
+        self.setToolTip("Save information")

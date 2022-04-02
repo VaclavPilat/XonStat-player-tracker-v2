@@ -124,10 +124,17 @@ class PlayerInfo(Window):
             buttonGroup.addWidget(self.refreshButton)
             self.updateRefreshButton()
         # Edit button
-        self.editButton = ColoredButton(self.info)
-        self.editButton.setObjectName("edit-" + str(self.player["id"]))
+        stackedButtons = QtWidgets.QStackedWidget(self.info)
+        stackedButtons.setMaximumWidth(33)
+        stackedButtons.setObjectName("edit-" + str(self.player["id"]))
+        self.editButton = EditButton(self.info)
         self.editButton.clicked.connect(self.edit)
-        buttonGroup.addWidget(self.editButton)
+        stackedButtons.addWidget(self.editButton)
+        saveButton = SaveButton(self.info)
+        saveButton.clicked.connect(self.edit)
+        stackedButtons.addWidget(saveButton)
+        buttonGroup.addWidget(stackedButtons)
+
         self.updateEditButton()
         # Delete button
         if self.mode == PlayerInfoViewMode.Load:
@@ -347,24 +354,22 @@ class PlayerInfo(Window):
             self.refreshButton.setBackground("yellow")
     
 
-    def __editButtonSave(self, button):
+    def __editButtonSave(self, buttons):
         """Callback function for updating edit buttons to match "save" state
 
         Args:
             button (ColoredButton): Button object
         """
-        button.setIcon("fa.save")
-        button.setBackground("green")
+        buttons.setCurrentIndex(1)
     
 
-    def __editButtonEdit(self, button):
+    def __editButtonEdit(self, buttons):
         """Callback function for updating edit buttons to match "edit" state
 
         Args:
             button (ColoredButton): Button object
         """
-        button.setIcon("fa5s.pencil-alt")
-        button.setBackground("orange")
+        buttons.setCurrentIndex(0)
 
 
     def updateEditButton(self):
