@@ -65,12 +65,12 @@ class Overview(Window):
         # Stacked widget with load and stop button
         self.refreshButtons = QtWidgets.QStackedWidget(self)
         self.refreshButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
-        editButton = LoadButton(self)
-        editButton.clicked.connect(self.__updatePlayers)
-        self.refreshButtons.addWidget(editButton)
-        saveButton = StopButton(self)
-        saveButton.clicked.connect(self.__updatePlayers)
-        self.refreshButtons.addWidget(saveButton)
+        loadButton = LoadButton(self)
+        loadButton.clicked.connect(self.__updatePlayers)
+        self.refreshButtons.addWidget(loadButton)
+        stopButton = StopButton(self)
+        stopButton.clicked.connect(self.__updatePlayers)
+        self.refreshButtons.addWidget(stopButton)
         layout.addWidget(self.refreshButtons)
         # Creating button for adding new player
         self.addButton = AddButton(self)

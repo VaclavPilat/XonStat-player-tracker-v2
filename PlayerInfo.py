@@ -117,11 +117,17 @@ class PlayerInfo(Window):
             profileButton = BrowserButton(self.info)
             profileButton.clicked.connect(self.player.showProfile)
             buttonGroup.addWidget(profileButton)
-        # PlayerInfo button
+        # Stacked widget with edit and save button
         if self.mode == PlayerInfoViewMode.Load:
-            self.refreshButton = ColoredButton(self.info)
-            self.refreshButton.clicked.connect(self.__refresh)
-            buttonGroup.addWidget(self.refreshButton)
+            self.refreshButtons = QtWidgets.QStackedWidget(self.info)
+            self.refreshButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+            loadButton = LoadButton(self.info)
+            loadButton.clicked.connect(self.__refresh)
+            self.refreshButtons.addWidget(loadButton)
+            stopButton = StopButton(self.info)
+            stopButton.clicked.connect(self.__refresh)
+            self.refreshButtons.addWidget(stopButton)
+            buttonGroup.addWidget(self.refreshButtons)
             self.updateRefreshButton()
         # Edit button
         stackedButtons = QtWidgets.QStackedWidget(self.info)
@@ -264,7 +270,7 @@ class PlayerInfo(Window):
         if self.worker is not None:
             if self.worker.isRunning():
                 self.worker.cancel = True
-                self.refreshButton.setEnabled(False)
+                self.refreshButtons.setEnabled(False)
             else:
                 # Clearing label values
                 self.__gamesPlayed = 0
@@ -344,13 +350,11 @@ class PlayerInfo(Window):
     def updateRefreshButton(self):
         """Updates visuals of "Refresh" button
         """
-        self.refreshButton.setEnabled(True)
+        self.refreshButtons.setEnabled(True)
         if self.worker is not None and self.worker.isRunning():
-            self.refreshButton.setIcon("msc.chrome-close")
-            self.refreshButton.setBackground("orange")
+            self.refreshButtons.setCurrentIndex(1)
         else:
-            self.refreshButton.setIcon("mdi6.reload")
-            self.refreshButton.setBackground("yellow")
+            self.refreshButtons.setCurrentIndex(0)
     
 
     def __editButtonSave(self, buttons):
