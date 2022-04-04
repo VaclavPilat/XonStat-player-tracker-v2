@@ -125,7 +125,7 @@ class PlayerInfo(Window):
             self.updateRefreshButton()
         # Edit button
         stackedButtons = QtWidgets.QStackedWidget(self.info)
-        stackedButtons.setMaximumWidth(33)
+        stackedButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         stackedButtons.setObjectName("edit-" + str(self.player["id"]))
         self.editButton = EditButton(self.info)
         self.editButton.clicked.connect(self.edit)
@@ -134,7 +134,6 @@ class PlayerInfo(Window):
         saveButton.clicked.connect(self.edit)
         stackedButtons.addWidget(saveButton)
         buttonGroup.addWidget(stackedButtons)
-
         self.updateEditButton()
         # Delete button
         if self.mode == PlayerInfoViewMode.Load:

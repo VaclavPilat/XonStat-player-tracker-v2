@@ -173,6 +173,7 @@ class GameInfo(Window):
                 buttonGroup.addWidget(infoButton)
                 # Stacked widget with edit and save button
                 stackedButtons = QtWidgets.QStackedWidget(self.table)
+                stackedButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
                 stackedButtons.setObjectName("edit-" + str(player["id"]))
                 editButton = EditButton(self.table)
                 editButton.clicked.connect(lambda: self.overview.openPlayerInfo(player, PlayerInfoViewMode.Edit))

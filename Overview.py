@@ -62,10 +62,16 @@ class Overview(Window):
         self.searchBar.setPlaceholderText("Search by player ID, nickname, description or current player name")
         self.searchBar.textChanged.connect(self.__search)
         layout.addWidget(self.searchBar)
-        # Creating button for refreshing table
-        self.refreshButton = ColoredButton(self, None, None, False)
-        self.refreshButton.clicked.connect(self.__updatePlayers)
-        layout.addWidget(self.refreshButton)
+        # Stacked widget with load and stop button
+        self.refreshButtons = QtWidgets.QStackedWidget(self)
+        self.refreshButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        editButton = LoadButton(self)
+        editButton.clicked.connect(self.__updatePlayers)
+        self.refreshButtons.addWidget(editButton)
+        saveButton = StopButton(self)
+        saveButton.clicked.connect(self.__updatePlayers)
+        self.refreshButtons.addWidget(saveButton)
+        layout.addWidget(self.refreshButtons)
         # Creating button for adding new player
         self.addButton = AddButton(self)
         self.addButton.clicked.connect(lambda: self.openPlayerInfo(Player(), PlayerInfoViewMode.Add))
@@ -136,6 +142,7 @@ class Overview(Window):
         buttonGroup.addWidget(infoButton)
         # Stacked widget with edit and save button
         stackedButtons = QtWidgets.QStackedWidget(self.table)
+        stackedButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         stackedButtons.setObjectName("edit-" + str(player["id"]))
         editButton = EditButton(self.table)
         editButton.clicked.connect(lambda: self.openPlayerInfo(player, PlayerInfoViewMode.Edit))
@@ -198,21 +205,19 @@ class Overview(Window):
         if len(self.players) > 0:
             if self.worker.isRunning():
                 self.worker.cancel = True
-                self.refreshButton.setEnabled(False)
+                self.refreshButtons.setEnabled(False)
             else:
                 self.worker = OverviewUpdater(self)
                 self.worker.start()
     
 
-    def updateRefreshButton(self):
+    def updateRefreshButtons(self):
         """Updates visuals of "Refresh" button
         """
         if self.worker.isRunning():
-            self.refreshButton.setIcon("msc.chrome-close")
-            self.refreshButton.setBackground("orange")
+            self.refreshButtons.setCurrentIndex(1)
         else:
-            self.refreshButton.setIcon("mdi6.reload")
-            self.refreshButton.setBackground("yellow")
+            self.refreshButtons.setCurrentIndex(0)
     
 
     def openPlayerInfo(self, player: Player, mode: PlayerInfoViewMode = PlayerInfoViewMode.Load):

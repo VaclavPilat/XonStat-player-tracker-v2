@@ -327,3 +327,35 @@ class GameButton(ColoredButton):
         """
         ColoredButton.__init__(self, parent, "fa.users", "yellow")
         self.setToolTip("Game information")
+
+
+
+class LoadButton(ColoredButton):
+    """Button for loading content
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for loading new content
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "mdi6.reload", "yellow")
+        self.setToolTip("Load information")
+
+
+
+class StopButton(ColoredButton):
+    """Button for stopping content loading
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for stopping content loading
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "msc.chrome-close", "orange")
+        self.setToolTip("Stop loading")
