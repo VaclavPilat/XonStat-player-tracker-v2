@@ -56,10 +56,13 @@ class GameInfo(Window):
         self.gameID = QtWidgets.QLineEdit(self)
         self.gameID.setPlaceholderText("Enter game ID or link to game info on XonStat")
         layout.addWidget(self.gameID)
-        # Creating button for loading game info
-        self.loadButton = ColoredButton(self, "mdi6.reload", "yellow", True)
-        self.loadButton.clicked.connect(self.loadGameInfo)
-        layout.addWidget(self.loadButton)
+        # Creating load/stop buttons for loading game info
+        self.refreshButtons = QtWidgets.QStackedWidget(self)
+        self.refreshButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        loadButton = LoadButton(self)
+        loadButton.clicked.connect(self.loadGameInfo)
+        self.refreshButtons.addWidget(loadButton)
+        layout.addWidget(self.refreshButtons)
         return layout
     
 
