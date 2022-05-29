@@ -1,8 +1,8 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 import math
 
-from Window import *
-from ColoredWidgets import *
+from windows.Window import *
+from widgets.ColoredWidgets import *
 
 
 

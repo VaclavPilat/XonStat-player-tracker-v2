@@ -2,7 +2,7 @@
 from PyQt5 import QtWidgets
 import faulthandler, sys
 
-from MainWindow import *
+from windows.MainWindow import *
 
 
 

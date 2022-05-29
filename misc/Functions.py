@@ -2,8 +2,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import traceback
 from colour import Color
 
-from Config import *
-from ColoredWidgets import *
+from misc.Config import *
+from widgets.ColoredWidgets import *
 
 
 

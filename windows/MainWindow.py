@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-from Window import *
-from ColoredWidgets import *
+from windows.Window import *
+from widgets.ColoredWidgets import *
 
 
 class MainWindow(Window):

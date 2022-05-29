@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 import os, json
 
-from Functions import *
+from misc.Functions import *
 
 
 
@@ -30,13 +30,13 @@ class Config(dict):
         """
         try:
             # Loading json from config files into self
-            folder = os.path.join(os.path.dirname(__file__), "config/")
+            folder = os.path.join(os.path.dirname(__file__), "../config/")
             for filename in os.listdir(folder):
                 filepath = folder + filename
                 f = open(filepath, "r", encoding="utf8")
                 self[filename.split(".")[0]] = json.loads(f.read())
             # Loading fonts
-            folder = os.path.join(os.path.dirname(__file__), "fonts/")
+            folder = os.path.join(os.path.dirname(__file__), "../fonts/")
             for filename in os.listdir(folder):
                 filepath = folder + filename
                 QtGui.QFontDatabase.addApplicationFont(filepath)
@@ -52,7 +52,7 @@ class Config(dict):
             filename (str): Name of config file
         """
         try:
-            filepath = os.path.join(os.path.dirname(__file__), "config/" + filename + ".json")
+            filepath = os.path.join(os.path.dirname(__file__), "../config/" + filename + ".json")
             f = open(filepath, "w")
             f.write(json.dumps(Config.instance()[filename], sort_keys=False, indent=4))
             f.close()

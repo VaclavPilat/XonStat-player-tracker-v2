@@ -1,8 +1,8 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 import os, qdarkstyle
 
-from ColoredWidgets import *
-from Functions import *
+from widgets.ColoredWidgets import *
+from misc.Functions import *
 
 
 
@@ -33,7 +33,7 @@ class Window(QtWidgets.QMainWindow):
         # Adding CSS stylesheet from QDarkStyle
         stylesheet = qdarkstyle.load_stylesheet()
         # Adding my own stylesheet
-        folder = os.path.join(os.path.dirname(__file__), "css/")
+        folder = os.path.join(os.path.dirname(__file__), "../css/")
         for filename in os.listdir(folder):
             filepath = folder + filename
             f = open(filepath, "r", encoding="utf8")
