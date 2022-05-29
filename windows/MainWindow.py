@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 from windows.Window import *
 from widgets.ColoredWidgets import *
+from tabs.NewTab import *
 
 
 class MainWindow(Window):
@@ -29,9 +30,7 @@ class MainWindow(Window):
         self.setCentralWidget(self.tabWidget)
         self.tabWidget.setTabsClosable(True)
         self.tabWidget.tabCloseRequested.connect(self.removeTab)
-
-        for i in range(10):
-            self.addTab(QtWidgets.QWidget(), str(i))
+        self.addNewTab()
     
 
     def addTab(self, page: QtWidgets.QWidget, title: str):
@@ -44,16 +43,34 @@ class MainWindow(Window):
         self.tabWidget.addTab(page, title)
 
 
-    def removeTab (self, index: int):
+    def addNewTab(self):
+        """Adding a new tab
+        """
+        self.addTab(NewTab(), "New Tab")
+        self.tabWidget.setCurrentIndex(self.tabWidget.count() -1)
+
+
+    def removeTab(self, index: int, recursive: bool = False):
         """Removing tab and the page under the selected index
 
         Args:
-            index (int): _description_
+            index (int): Tab index
+            recursive (bool): Is the removal recursive?
         """
         if self.tabWidget.currentIndex() >= 0:
             widget = self.tabWidget.widget(index)
             widget.deleteLater()
             self.tabWidget.removeTab(index)
+        if not recursive and self.tabWidget.currentIndex() < 0:
+            self.addNewTab()
+    
+
+    def removeTabs(self):
+        """Removes all tabs
+        """
+        while self.tabWidget.currentIndex() >= 0:
+            self.removeTab(self.tabWidget.currentIndex(), True)
+        self.addNewTab()
     
 
     def keyPressEvent(self, event):
@@ -70,5 +87,7 @@ class MainWindow(Window):
                 self.removeTab(self.tabWidget.currentIndex())
             # Closing all tabs
             if key == QtCore.Qt.Key_Q:
-                while self.tabWidget.currentIndex() >= 0:
-                    self.removeTab(self.tabWidget.currentIndex())
+                self.removeTabs()
+            # Adding a new tab
+            if key == QtCore.Qt.Key_T or key == QtCore.Qt.Key_N:
+                self.addNewTab()

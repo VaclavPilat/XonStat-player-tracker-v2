@@ -60,5 +60,4 @@ QStackedWidget {
 QTabBar::tab {
     width: 180px;
     height: 25px;
-    qproperty-alignment: AlignLeft;
 }
