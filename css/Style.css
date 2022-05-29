@@ -28,6 +28,7 @@ QToolTip {
     background-color: #333333 !important;
     padding: 2px !important;
     border: 0 !important; 
+    opacity: 222;
 }
 
 QStackedWidget {

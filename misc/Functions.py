@@ -27,6 +27,10 @@ def getColorStyles():
         style += '[background="light-' + name + '"],ColoredButton[background="' + name + '"]:hover,ColoredToolButton[background="' + name + '"]:hover{background-color:' + colors["light"] + '}'
         style += '[background="dark-' + name + '"],ColoredButton[background="' + name + '"]:disabled,ColoredToolButton[background="' + name + '"]:disabled{background-color:' + colors["dark"] + '}'
         style += 'ColoredButton[background="' + name + '"]:disabled,ColoredToolButton[background="' + name + '"]:disabled{border-color:' + colors["normal"] + '}'
+    if "grey" in Config.instance()["Colors"]["presets"]:
+        style += 'QTabBar::tab:!selected{background-color:' + Config.instance()["Colors"]["presets"]["grey"]["normal"] + '}'
+    if "blue" in Config.instance()["Colors"]["presets"]:
+        style += 'QTabBar::tab:top:selected{background-color:' + Config.instance()["Colors"]["presets"]["blue"]["light"] + '}'
     # Generating colors for heatmap
     minimum = Color( Config.instance()["Colors"]["heatmap"]["min"] )
     maximum = Color( Config.instance()["Colors"]["heatmap"]["max"] )

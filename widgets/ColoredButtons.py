@@ -188,5 +188,5 @@ class TabButton(ColoredButton):
         Args:
             parent (QtWidgets.QWidget): Parent element
         """
-        ColoredButton.__init__(self, parent, "ei.plus", "grey")
+        ColoredButton.__init__(self, parent, "ei.plus", "green")
         self.setToolTip("Add new tab")
