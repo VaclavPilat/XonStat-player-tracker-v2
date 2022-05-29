@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 from windows.Window import *
 from widgets.ColoredWidgets import *
+from widgets.ColoredButtons import *
 from tabs.NewTab import *
 
 
@@ -26,11 +27,24 @@ class MainWindow(Window):
     def createLayout(self):
         """Creates window layout with widgets
         """
+        # Creating tab widget
         self.tabWidget = QtWidgets.QTabWidget()
         self.setCentralWidget(self.tabWidget)
         self.tabWidget.setTabsClosable(True)
         self.tabWidget.tabCloseRequested.connect(self.removeTab)
+        # Adding new tab
         self.addNewTab()
+        # Adding corner buttons
+        actions = ColoredWidget()
+        buttonGroup = QtWidgets.QHBoxLayout()
+        actions.setLayout(buttonGroup)
+        buttonGroup.setContentsMargins(5, 2, 5, 3)
+        # Tab button
+        tabButton = TabButton(self)
+        tabButton.clicked.connect(self.addNewTab)
+        buttonGroup.addWidget(tabButton)
+        # Adding widget with corner buttons
+        self.tabWidget.setCornerWidget(actions)
     
 
     def addTab(self, page: QtWidgets.QWidget, title: str):
