@@ -183,3 +183,19 @@ class ColoredTextarea(QtWidgets.QTextEdit, ColoredWidget):
         """Initializes a text edit widgets
         """
         QtWidgets.QTextEdit.__init__(self, parent)
+
+
+
+class ColoredToolButton(QtWidgets.QToolButton, ColoredWidget):
+    """Creates a class for a colored ToolButton
+    """
+
+
+    def __init__(self, parent, color: str = None):
+        """Initializes a text edit widgets
+        """
+        QtWidgets.QToolButton.__init__(self, parent)
+        self.setIconSize(QtCore.QSize(50, 50))
+        self.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
+        self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.setBackground(color)

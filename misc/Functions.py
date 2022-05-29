@@ -24,9 +24,9 @@ def getColorStyles():
     # Generating button and label background and border colors
     for name, colors in Config.instance()["Colors"]["presets"].items():
         style += '[background="' + name + '"]{background-color:' + colors["normal"] + ';border-color:' + colors["light"] + '}'
-        style += '[background="light-' + name + '"],ColoredButton[background="' + name + '"]:hover{background-color:' + colors["light"] + '}'
-        style += '[background="dark-' + name + '"],ColoredButton[background="' + name + '"]:disabled{background-color:' + colors["dark"] + '}'
-        style += 'ColoredButton[background="' + name + '"]:disabled{border-color:' + colors["normal"] + '}'
+        style += '[background="light-' + name + '"],ColoredButton[background="' + name + '"]:hover,ColoredToolButton[background="' + name + '"]:hover{background-color:' + colors["light"] + '}'
+        style += '[background="dark-' + name + '"],ColoredButton[background="' + name + '"]:disabled,ColoredToolButton[background="' + name + '"]:disabled{background-color:' + colors["dark"] + '}'
+        style += 'ColoredButton[background="' + name + '"]:disabled,ColoredToolButton[background="' + name + '"]:disabled{border-color:' + colors["normal"] + '}'
     # Generating colors for heatmap
     minimum = Color( Config.instance()["Colors"]["heatmap"]["min"] )
     maximum = Color( Config.instance()["Colors"]["heatmap"]["max"] )

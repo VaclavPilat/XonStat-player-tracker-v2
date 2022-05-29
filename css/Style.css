@@ -61,3 +61,12 @@ QTabBar::tab {
     width: 180px;
     height: 25px;
 }
+
+Tab QToolButton {
+    width: 150px;
+    height: 100px;
+    padding-top: 30px;
+    border-width: 2px;
+    border-style: solid;
+    margin: 3px;
+}
