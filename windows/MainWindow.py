@@ -21,6 +21,7 @@ class MainWindow(Window):
         """Setting window properties
         """
         self.setWindowTitle()
+        self.setMinimumSize(900, 600)
         self.resize(1300, 800)
     
 
