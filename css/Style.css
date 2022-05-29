@@ -71,3 +71,8 @@ Tab QToolButton {
     border-style: solid;
     margin: 3px;
 }
+
+
+QTabBar QToolButton {
+    margin: 3px 0;
+}
