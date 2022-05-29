@@ -71,6 +71,8 @@ class MainWindow(Window):
             index (int): Tab index
             recursive (bool): Is the removal recursive?
         """
+        if self.tabWidget.count() == 1 and isinstance(self.tabWidget.widget(0), NewTab):
+            return
         if self.tabWidget.currentIndex() >= 0:
             widget = self.tabWidget.widget(index)
             widget.deleteLater()
@@ -82,9 +84,10 @@ class MainWindow(Window):
     def removeTabs(self):
         """Removes all tabs
         """
-        while self.tabWidget.currentIndex() >= 0:
+        while not (self.tabWidget.count() == 1 and isinstance(self.tabWidget.widget(0), NewTab)):
             self.removeTab(self.tabWidget.currentIndex(), True)
-        self.addNewTab()
+        if self.tabWidget.count == 0:
+            self.addNewTab()
     
 
     def keyPressEvent(self, event):
