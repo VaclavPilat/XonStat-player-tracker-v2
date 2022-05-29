@@ -1,0 +1,31 @@
+#status {
+    border-radius: 5px;
+    padding: 0 !important;
+}
+
+#status-inner {
+    font-weight: bold;
+}
+
+#status-rate {
+    font-size: 10px;
+    padding-left: 0 !important;
+}
+
+#status-icon {
+    padding-right: 0 !important;
+}
+
+#status-rate, #status-icon {
+    min-width: 45px;
+    max-width: 45px;
+}
+
+#status-inner, #status-rate, #status-icon, [background="transparent"] {
+    background-color: transparent !important;
+}
+
+#status[background], ColoredButton[background] {
+    border-style: solid;
+    border-width: 1px;
+}

@@ -41,6 +41,7 @@ class Status(ColoredWidget):
         self.rate.setObjectName("status-rate")
         self.rate.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         layout.addWidget(self.rate)
+        self.setMaximumHeight(30)
     
 
     def showRate(self, remaining: str, limit: str):

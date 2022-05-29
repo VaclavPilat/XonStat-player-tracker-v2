@@ -33,10 +33,11 @@ class Window(QtWidgets.QMainWindow):
         # Adding CSS stylesheet from QDarkStyle
         stylesheet = qdarkstyle.load_stylesheet()
         # Adding my own stylesheet
-        with open(os.path.join(os.path.dirname(__file__), "Style.css"), "r") as myCSSFile:
-            myCSS = myCSSFile.read()
-            if myCSS is not None and myCSS != "":
-                stylesheet += myCSS
+        folder = os.path.join(os.path.dirname(__file__), "css/")
+        for filename in os.listdir(folder):
+            filepath = folder + filename
+            f = open(filepath, "r", encoding="utf8")
+            stylesheet += f.read()
         # Adding generated color styles
         stylesheet += getColorStyles()
         # Applying stylesheet
@@ -63,7 +64,10 @@ class Window(QtWidgets.QMainWindow):
         Args:
             title (str, optional): Window title. Defaults to "".
         """
-        super().setWindowTitle(str(QtWidgets.QApplication.instance().applicationName()) + " - " + title)
+        if title != "":
+            super().setWindowTitle(str(QtWidgets.QApplication.instance().applicationName()) + " - " + title)
+        else:
+            super().setWindowTitle(str(QtWidgets.QApplication.instance().applicationName()))
 
 
     def closeEvent(self, event, isChildWindow = True):
