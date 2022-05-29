@@ -46,7 +46,7 @@ class MainWindow(Window):
     def addNewTab(self):
         """Adding a new tab
         """
-        self.addTab(NewTab(), "New Tab")
+        self.addTab(NewTab(self), "New Tab")
         self.tabWidget.setCurrentIndex(self.tabWidget.count() -1)
 
 
