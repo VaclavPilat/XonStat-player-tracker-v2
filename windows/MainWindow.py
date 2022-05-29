@@ -31,6 +31,7 @@ class MainWindow(Window):
         self.tabWidget = QtWidgets.QTabWidget()
         self.setCentralWidget(self.tabWidget)
         self.tabWidget.setTabsClosable(True)
+        self.tabWidget.setMovable(True)
         self.tabWidget.tabCloseRequested.connect(self.removeTab)
         # Adding new tab
         self.addNewTab()
