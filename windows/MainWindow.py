@@ -55,13 +55,13 @@ class MainWindow(Window):
             title (str): Tab title
         """
         self.tabWidget.addTab(page, title)
+        self.tabWidget.setCurrentIndex(self.tabWidget.count() -1)
 
 
     def addNewTab(self):
         """Adding a new tab
         """
         self.addTab(NewTab(self), "New Tab")
-        self.tabWidget.setCurrentIndex(self.tabWidget.count() -1)
 
 
     def removeTab(self, index: int, recursive: bool = False):
@@ -103,8 +103,8 @@ class MainWindow(Window):
             if key == QtCore.Qt.Key_W:
                 self.removeTab(self.tabWidget.currentIndex())
             # Closing all tabs
-            if key == QtCore.Qt.Key_Q:
+            elif key == QtCore.Qt.Key_Q:
                 self.removeTabs()
             # Adding a new tab
-            if key == QtCore.Qt.Key_T or key == QtCore.Qt.Key_N:
+            elif key == QtCore.Qt.Key_T or key == QtCore.Qt.Key_N:
                 self.addNewTab()

@@ -21,3 +21,10 @@ class NewTab(Tab):
         label = QtWidgets.QLabel(self)
         label.setText("aaaaa")
         self.layout.addWidget(label)
+        # Player list
+        # Search
+        # Player info
+        # Game info
+        # Map info
+        # Server info
+        # XonStat home page

@@ -12,14 +12,14 @@ class Tab(QtWidgets.QWidget):
         """Init
 
         Args:
-            parent (MainWindow): Parent window
+            parent (Tab): Parent tab
         """
         self.parent = parent
         super().__init__()
         self.layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.layout)
         self.createLayout()
-        self.status = Status(self.parent)
+        self.status = Status(self)
         self.layout.addWidget(self.status)
     
 

@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 import math
+import qtawesome as qta
 
 from windows.Window import *
 from widgets.ColoredWidgets import *
@@ -17,6 +18,7 @@ class Status(ColoredWidget):
         Args:
             parent (Window): Parent of this widget
         """
+        self.parent = parent
         super().__init__()
         self.__locked = False # Boolean for locking changes
         # Creating layout
@@ -42,6 +44,16 @@ class Status(ColoredWidget):
         self.rate.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         layout.addWidget(self.rate)
         self.setMaximumHeight(30)
+    
+
+    def setIcon(self, icon: str):
+        """Set status and tab icon
+
+        Args:
+            icon (str): QTAwesome icon name
+        """
+        self.icon.setIcon(icon)
+        self.parent.parent.tabWidget.setTabIcon( self.parent.parent.tabWidget.indexOf(self.parent), qta.icon(icon, color="#FFFFFF") )
     
 
     def showRate(self, remaining: str, limit: str):
@@ -70,7 +82,7 @@ class Status(ColoredWidget):
             self.inner.setText(message)
             self.setBackground("yellow")
             if changeIcon:
-                self.icon.setIcon("mdi6.dots-horizontal-circle-outline")
+                self.setIcon("mdi6.dots-horizontal-circle-outline")
     
 
     def progress(self, current: int, maximum: int, finished: bool = False, changeIcon: bool = True):
@@ -92,11 +104,11 @@ class Status(ColoredWidget):
                 output += str(math.ceil(division * 100))
                 number = max(1, math.floor(division * 8))
                 if changeIcon:
-                    self.icon.setIcon("mdi6.circle-slice-" + str(number))
+                    self.setIcon("mdi6.circle-slice-" + str(number))
             else:
                 output += "0"
                 if changeIcon:
-                    self.icon.setIcon("mdi6.circle-outline")
+                    self.setIcon("mdi6.circle-outline")
             output += "% "
             # Varying status message based on if the task is finished
             if finished:
@@ -120,10 +132,10 @@ class Status(ColoredWidget):
             # Changing the background color based on if the task is completed successfully
             if correct:
                 self.setBackground("green")
-                self.icon.setIcon("mdi6.check-circle-outline")
+                self.setIcon("mdi6.check-circle-outline")
             else:
                 self.setBackground("red")
-                self.icon.setIcon("mdi6.alert-circle-outline")
+                self.setIcon("mdi6.alert-circle-outline")
     
 
     def resultProgress(self, message: str, correct: int, max: int):
