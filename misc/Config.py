@@ -31,10 +31,9 @@ class Config(dict):
         try:
             # Loading json from config files into self
             folder = os.path.join(os.path.dirname(__file__), "../config/")
-            for filename in os.listdir(folder):
-                filepath = folder + filename
-                f = open(filepath, "r", encoding="utf8")
-                self[filename.split(".")[0]] = json.loads(f.read())
+            for string in os.listdir(folder):
+                filename = string.split(".")[0]
+                Config.instance().load(filename)
             # Loading fonts
             folder = os.path.join(os.path.dirname(__file__), "../fonts/")
             for filename in os.listdir(folder):
@@ -45,7 +44,23 @@ class Config(dict):
             return False
     
 
-    def save(filename: str):
+    def load(self, filename: str):
+        """Loads a selected config file
+
+        Args:
+            filename (str): Name of a config file
+        """
+        try:
+            filepath = os.path.join(os.path.dirname(__file__), "../config/" + filename + ".json")
+            f = open(filepath, "r", encoding="utf8")
+            Config.instance()[filename] = json.loads(f.read())
+            f.close()
+            return True
+        except:
+            return False
+    
+
+    def save(self, filename: str):
         """Saves a selected config file
 
         Args:
