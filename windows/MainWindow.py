@@ -5,6 +5,12 @@ from widgets.ColoredWidgets import *
 from widgets.ColoredButtons import *
 from tabs.NewTab import *
 from tabs.PlayerList import *
+from tabs.XonStatHome import *
+from tabs.Search import *
+from tabs.PlayerInfo import *
+from tabs.GameInfo import *
+from tabs.ServerInfo import *
+from tabs.MapInfo import *
 
 
 class MainWindow(Window):
@@ -50,7 +56,7 @@ class MainWindow(Window):
         self.tabWidget.setCornerWidget(actions)
     
 
-    def addTab(self, page: Tab):
+    def __addTab(self, page: Tab):
         """Adds a new tab
 
         Args:
@@ -62,7 +68,7 @@ class MainWindow(Window):
         print("Added " + type(page).__name__ + " at index " + str(index))
     
 
-    def insertTab(self, page: Tab, index: int):
+    def __insertTab(self, page: Tab, index: int):
         """Inserts a new tab at a selected position
 
         Args:
@@ -81,7 +87,7 @@ class MainWindow(Window):
             if isinstance(self.tabWidget.widget(i), NewTab):
                 self.tabWidget.setCurrentIndex(i)
                 return
-        self.addTab(NewTab(self))
+        self.__addTab(NewTab(self))
     
 
     def openPlayerList(self):
@@ -94,9 +100,83 @@ class MainWindow(Window):
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
-            self.insertTab(PlayerList(self), index)
+            self.__insertTab(PlayerList(self), index)
         else:
-            self.addTab(PlayerList(self))
+            self.__addTab(PlayerList(self))
+    
+
+    def openXonStatHome(self):
+        """Attempts to add a new XonStatHome tab
+        """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), XonStatHome):
+                self.tabWidget.setCurrentIndex(i)
+                return
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.__insertTab(XonStatHome(self), index)
+        else:
+            self.__addTab(XonStatHome(self))
+    
+
+    def openSearch(self):
+        """Attempts to add a new Search tab
+        """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), Search):
+                self.tabWidget.setCurrentIndex(i)
+                return
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.__insertTab(Search(self), index)
+        else:
+            self.__addTab(Search(self))
+    
+
+    def openPlayerInfo(self):
+        """Attempts to add a new PlayerInfo tab
+        """
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.__insertTab(PlayerInfo(self), index)
+        else:
+            self.__addTab(PlayerInfo(self))
+    
+
+    def openGameInfo(self):
+        """Attempts to add a new GameInfo tab
+        """
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.__insertTab(GameInfo(self), index)
+        else:
+            self.__addTab(GameInfo(self))
+    
+
+    def openServerInfo(self):
+        """Attempts to add a new ServerInfo tab
+        """
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.__insertTab(ServerInfo(self), index)
+        else:
+            self.__addTab(ServerInfo(self))
+    
+
+    def openMapInfo(self):
+        """Attempts to add a new MapInfo tab
+        """
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.__insertTab(MapInfo(self), index)
+        else:
+            self.__addTab(MapInfo(self))
 
 
     def removeTab(self, index: int, preventAdding: bool = False, preventClosing: bool = True):
