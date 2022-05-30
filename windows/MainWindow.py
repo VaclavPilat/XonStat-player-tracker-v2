@@ -4,6 +4,7 @@ from windows.Window import *
 from widgets.ColoredWidgets import *
 from widgets.ColoredButtons import *
 from tabs.NewTab import *
+from tabs.PlayerList import *
 
 
 class MainWindow(Window):
@@ -35,7 +36,7 @@ class MainWindow(Window):
         self.tabWidget.setMovable(True)
         self.tabWidget.tabCloseRequested.connect(self.removeTab)
         # Adding new tab
-        self.addNewTab()
+        self.openNewTab()
         # Adding corner buttons
         actions = ColoredWidget()
         buttonGroup = QtWidgets.QHBoxLayout()
@@ -43,7 +44,7 @@ class MainWindow(Window):
         buttonGroup.setContentsMargins(5, 2, 5, 3)
         # Tab button
         tabButton = TabButton(self)
-        tabButton.clicked.connect(self.addNewTab)
+        tabButton.clicked.connect(self.openNewTab)
         buttonGroup.addWidget(tabButton)
         # Adding widget with corner buttons
         self.tabWidget.setCornerWidget(actions)
@@ -54,46 +55,72 @@ class MainWindow(Window):
 
         Args:
             page (QtWidgets.QWidget): Tab content
-            title (str): Tab title
         """
         self.tabWidget.addTab(page, page.name)
         self.tabWidget.setCurrentIndex(self.tabWidget.count() -1)
+    
+
+    def insertTab(self, page: Tab, index):
+        """Inserts a new tab at a selected position
+
+        Args:
+            page (QtWidgets.QWidget): Tab content
+            index (int): Tab index
+        """
+        self.tabWidget.insertTab(index, page, page.name)
+        self.tabWidget.setCurrentIndex(index)
 
 
-    def addNewTab(self):
-        """Adding a new tab
+    def openNewTab(self):
+        """Attempts to add a New Tab
         """
         for i in range(self.tabWidget.count()):
             if isinstance(self.tabWidget.widget(i), NewTab):
                 self.tabWidget.setCurrentIndex(i)
                 return
         self.addTab(NewTab(self))
+    
+
+    def openPlayerList(self):
+        """Attempts to add a new PlayerList tab
+        """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), PlayerList):
+                self.tabWidget.setCurrentIndex(i)
+                return
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.insertTab(PlayerList(self), index)
+        else:
+            self.addTab(PlayerList(self))
 
 
-    def removeTab(self, index: int, recursive: bool = False):
+    def removeTab(self, index: int, preventAdding: bool = False, preventClosing: bool = True):
         """Removing tab and the page under the selected index
 
         Args:
             index (int): Tab index
-            recursive (bool): Is the removal recursive?
+            preventAdding (bool): Should it prevent adding new tab?
+            preventClosing (bool): Should it prevent closing the last tab?
         """
-        if self.tabWidget.count() == 1 and isinstance(self.tabWidget.widget(0), NewTab):
+        if preventClosing and self.tabWidget.count() == 1 and isinstance(self.tabWidget.widget(0), NewTab):
             return
-        if self.tabWidget.currentIndex() >= 0:
+        if self.tabWidget.count() > 0:
             widget = self.tabWidget.widget(index)
             widget.deleteLater()
             self.tabWidget.removeTab(index)
-        if not recursive and self.tabWidget.currentIndex() < 0:
-            self.addNewTab()
+        if not preventAdding and self.tabWidget.currentIndex() < 0:
+            self.openNewTab()
     
 
     def removeTabs(self):
         """Removes all tabs
         """
-        while not (self.tabWidget.count() == 1 and isinstance(self.tabWidget.widget(0), NewTab)):
+        while not (self.tabWidget.count() == 1 and isinstance(self.tabWidget.widget(0), NewTab)) and self.tabWidget.count() > 0:
             self.removeTab(self.tabWidget.currentIndex(), True)
-        if self.tabWidget.count == 0:
-            self.addNewTab()
+        if self.tabWidget.count() == 0:
+            self.openNewTab()
     
 
     def keyPressEvent(self, event):
@@ -103,7 +130,6 @@ class MainWindow(Window):
             event: Event
         """
         key = event.key()
-        # Accessing search bar
         if event.modifiers() == QtCore.Qt.ControlModifier:
             # Closing current tab
             if key == QtCore.Qt.Key_W:
@@ -113,4 +139,4 @@ class MainWindow(Window):
                 self.removeTabs()
             # Adding a new tab
             elif key == QtCore.Qt.Key_T or key == QtCore.Qt.Key_N:
-                self.addNewTab()
+                self.openNewTab()
