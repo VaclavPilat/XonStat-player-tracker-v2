@@ -157,7 +157,7 @@ class LoadButton(ColoredButton):
             parent (QtWidgets.QWidget): Parent element
         """
         ColoredButton.__init__(self, parent, "mdi6.reload", "yellow")
-        self.setToolTip("Load information")
+        self.setToolTip("Refresh page")
 
 
 

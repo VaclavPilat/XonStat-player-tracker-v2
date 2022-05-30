@@ -28,3 +28,15 @@ class Tab(QtWidgets.QWidget):
         """Method for creating layout
         """
         pass
+    
+
+    def startLoading(self):
+        """Starting page (re)loading
+        """
+        pass
+    
+
+    def stopLoading(self):
+        """Stopping page (re)loading
+        """
+        pass

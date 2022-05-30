@@ -52,6 +52,16 @@ class MainWindow(Window):
         tabButton = TabButton(self)
         tabButton.clicked.connect(self.openNewTab)
         buttonGroup.addWidget(tabButton)
+        # Stacked widget with load and stop button
+        self.refreshButtons = QtWidgets.QStackedWidget(self)
+        self.refreshButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        loadButton = LoadButton(self)
+        loadButton.clicked.connect(self.tabWidget.currentWidget().startLoading)
+        self.refreshButtons.addWidget(loadButton)
+        stopButton = StopButton(self)
+        loadButton.clicked.connect(self.tabWidget.currentWidget().stopLoading)
+        self.refreshButtons.addWidget(stopButton)
+        buttonGroup.addWidget(self.refreshButtons)
         # Adding widget with corner buttons
         self.tabWidget.setCornerWidget(actions)
     
