@@ -59,8 +59,11 @@ class Worker(QtCore.QThread):
     def sleep(self, amount: float):
         """Sleep for a specified amount of time while checking if canceling is requested
         """
-        division = 10
-        for i in range(division):
-            time.sleep(amount / division)
-            if self.cancel:
-                return
+        if amount > 0.5:
+            division = 10
+            for i in range(division):
+                time.sleep(amount / division)
+                if self.cancel:
+                    return
+        else:
+            time.sleep(amount)

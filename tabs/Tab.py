@@ -41,4 +41,5 @@ class Tab(QtWidgets.QWidget):
     def stopLoading(self):
         """Stopping page (re)loading
         """
-        pass
+        if self.worker is not None:
+            self.worker.cancel = True

@@ -58,7 +58,7 @@ class MainWindow(Window):
         loadButton.clicked.connect(self.__startLoading)
         self.refreshButtons.addWidget(loadButton)
         stopButton = StopButton(self)
-        loadButton.clicked.connect(self.__stopLoading)
+        stopButton.clicked.connect(self.__stopLoading)
         self.refreshButtons.addWidget(stopButton)
         buttonGroup.addWidget(self.refreshButtons)
         # Adding widget with corner buttons

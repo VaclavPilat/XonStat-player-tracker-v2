@@ -46,6 +46,46 @@ class PlayerList(Tab):
         for i in range(4, len(headers)):
             self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
         self.layout.addWidget(self.table)
+
+    
+    def showPlayer(self, player: dict):
+        """Adds a single row with player data to table
+
+        Args:
+            player (dics): Player info
+        """
+        # Creating a new row inside the table
+        row = self.table.rowCount()
+        self.table.insertRow(row)
+        # Adding labels
+        for i in range(5):
+            self.table.setCellWidget(row, i, ColoredLabel(self.table, "", "dark-grey"))
+        # Adding label text
+        self.table.cellWidget(row, 0).setText(str(player["id"]))
+        self.table.cellWidget(row, 1).setText(player["nick"])
+        self.table.cellWidget(row, 2).setText(player["description"])
+        # Adding buttons
+        actions = ColoredWidget()
+        actions.setBackground("dark-grey")
+        buttonGroup = QtWidgets.QHBoxLayout()
+        actions.setLayout(buttonGroup)
+        buttonGroup.setContentsMargins(0, 0, 0, 0)
+        buttonGroup.setSpacing(0)
+        buttonGroup.addStretch()
+        # Profile button
+        profileButton = BrowserButton(self.table)
+        buttonGroup.addWidget(profileButton)
+        # PlayerInfo button
+        infoButton = WindowButton(self.table)
+        buttonGroup.addWidget(infoButton)
+        # Stacked widget with edit and save button
+        editButton = EditButton(self.table)
+        buttonGroup.addWidget(editButton)
+        # Delete button
+        deleteButton = DeleteButton(self.table)
+        buttonGroup.addWidget(deleteButton)
+        buttonGroup.addStretch()
+        self.table.setCellWidget(row, 5, actions)
     
 
     def __search(self, text: str):
