@@ -2,6 +2,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import qtawesome as qta
 
 from tabs.Tab import *
+from widgets.ColoredWidgets import *
+from widgets.ColoredButtons import *
 
 
 class PlayerList(Tab):
@@ -20,5 +22,45 @@ class PlayerList(Tab):
     
 
     def createLayout(self):
-        self.layout.addStretch()
-        pass
+        """Creating tab layout
+        """
+        # Creating search bar
+        self.searchBar = QtWidgets.QLineEdit(self)
+        self.searchBar.setPlaceholderText("Search by player ID, nickname, description or current player name")
+        self.searchBar.textChanged.connect(self.__search)
+        self.layout.addWidget(self.searchBar)
+        # Creating table for tracked players
+        self.table = ColoredTable(self)
+        # Setting columns
+        headers = ["ID", "Player nickname", "Player description", "Current player name", "Last played", 
+                        "Actions"]
+        self.table.setColumnCount( len(headers) )
+        self.table.setHorizontalHeaderLabels(headers)
+        # Setting column stretching
+        self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+        self.table.verticalHeader().setMinimumSectionSize(30)
+        self.table.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        for i in range(1, 4):
+            self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
+        for i in range(4, len(headers)):
+            self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
+        self.layout.addWidget(self.table)
+    
+
+    def __search(self, text: str):
+        """Hiding and showing rows in the table based on input
+
+        Args:
+            text (str): Serched text
+        """
+        for row in range(self.table.rowCount()):
+            containsText = False
+            for column in range(0, 4):
+                widget = self.table.cellWidget(row, column)
+                if not widget == None and type(widget) == ColoredLabel:
+                    # Checking if this label contins HTML
+                    labelText = self.__parseTextFromLabel(widget)
+                    if text.lower() in labelText:
+                        containsText = True
+                        break
+            self.table.setRowHidden(row, not containsText)
