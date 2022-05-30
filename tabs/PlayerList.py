@@ -150,3 +150,17 @@ class PlayerList(Tab):
         if self.worker is None or (self.worker.isFinished() and not self.worker.isRunning()):
             self.worker = PlayerListWorker(self)
             self.worker.start()
+    
+
+    def keyPressEvent(self, event):
+        """Handling key press events
+
+        Args:
+            event: Event
+        """
+        key = event.key()
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            # Setting focus to search bar
+            if key == QtCore.Qt.Key_F:
+                self.searchBar.setFocus()
+                self.searchBar.selectAll()

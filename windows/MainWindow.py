@@ -270,3 +270,7 @@ class MainWindow(Window):
             # Reloading page content
             elif key == QtCore.Qt.Key_R:
                 self.__startLoading()
+        # Handling local tab events
+        widget = self.tabWidget.currentWidget()
+        if widget is not None:
+            widget.keyPressEvent(event)

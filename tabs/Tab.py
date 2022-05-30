@@ -43,3 +43,12 @@ class Tab(QtWidgets.QWidget):
         """
         if self.worker is not None:
             self.worker.cancel = True
+    
+
+    def keyPressEvent(self, event):
+        """Handling key press events
+
+        Args:
+            event: Event
+        """
+        pass
