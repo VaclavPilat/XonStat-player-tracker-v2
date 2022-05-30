@@ -23,6 +23,7 @@ class Tab(QtWidgets.QWidget):
         self.createLayout()
         self.status = Status(self)
         self.layout.addWidget(self.status)
+        self.startLoading()
     
 
     def createLayout(self):

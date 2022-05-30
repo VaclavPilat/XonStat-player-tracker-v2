@@ -4,6 +4,7 @@ import qtawesome as qta
 from tabs.Tab import *
 from widgets.ColoredWidgets import *
 from widgets.ColoredButtons import *
+from workers.PlayerListWorker import *
 
 
 class PlayerList(Tab):
@@ -64,3 +65,10 @@ class PlayerList(Tab):
                         containsText = True
                         break
             self.table.setRowHidden(row, not containsText)
+    
+
+    def startLoading(self):
+        """Starting page (re)loading
+        """
+        self.worker = PlayerListWorker(self)
+        self.worker.start()

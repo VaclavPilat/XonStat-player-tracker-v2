@@ -1,8 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 import time
 
-from Window import *
-
+from tabs.Tab import *
 
 
 class Worker(QtCore.QThread):
@@ -15,25 +14,27 @@ class Worker(QtCore.QThread):
     resultMessage = QtCore.pyqtSignal(str, bool)
     resultProgress = QtCore.pyqtSignal(str, int, int)
     showRate = QtCore.pyqtSignal(str, str)
+    updateRefreshButtons = QtCore.pyqtSignal()
 
 
-    def __init__(self, window: Window):
+    def __init__(self, tab: Tab):
         """Initialising QtCore.QThread, connecting slots
 
         Args:
-            window (Window): Window object that this class ws instantiated in
+            tab (Tab): Tab object that this class was instantiated in
         """
         super().__init__()
-        self.window = window
+        self.tab = tab
         self.cancel = False
         # Connecting slots and signals
         self.started.connect(self.before)
         self.finished.connect(self.after)
-        self.message.connect(self.window.status.message)
-        self.progress.connect(self.window.status.progress)
-        self.resultMessage.connect(self.window.status.resultMessage)
-        self.resultProgress.connect(self.window.status.resultProgress)
-        self.showRate.connect(self.window.status.showRate)
+        self.message.connect(self.tab.status.message)
+        self.progress.connect(self.tab.status.progress)
+        self.resultMessage.connect(self.tab.status.resultMessage)
+        self.resultProgress.connect(self.tab.status.resultProgress)
+        self.showRate.connect(self.tab.status.showRate)
+        self.updateRefreshButtons.connect(self.tab.parent.updateRefreshButtons)
         self.connectSlots()
     
 
@@ -46,13 +47,13 @@ class Worker(QtCore.QThread):
     def before(self):
         """This method is called before this worker is run
         """
-        pass
+        self.updateRefreshButtons.emit()
 
 
     def after(self):
         """This method is called after this worker is finished
         """
-        pass
+        self.updateRefreshButtons.emit()
     
 
     def sleep(self, amount: float):
