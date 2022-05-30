@@ -57,10 +57,12 @@ class MainWindow(Window):
             page (QtWidgets.QWidget): Tab content
         """
         self.tabWidget.addTab(page, page.name)
-        self.tabWidget.setCurrentIndex(self.tabWidget.count() -1)
+        index = self.tabWidget.count() -1
+        self.tabWidget.setCurrentIndex(index)
+        print("Added " + type(page).__name__ + " at index " + str(index))
     
 
-    def insertTab(self, page: Tab, index):
+    def insertTab(self, page: Tab, index: int):
         """Inserts a new tab at a selected position
 
         Args:
@@ -69,6 +71,7 @@ class MainWindow(Window):
         """
         self.tabWidget.insertTab(index, page, page.name)
         self.tabWidget.setCurrentIndex(index)
+        print("Inserted " + type(page).__name__ + " at index " + str(index))
 
 
     def openNewTab(self):
@@ -108,6 +111,7 @@ class MainWindow(Window):
             return
         if self.tabWidget.count() > 0:
             widget = self.tabWidget.widget(index)
+            print("Removed " + type(widget).__name__ + " at index " + str(index))
             widget.deleteLater()
             self.tabWidget.removeTab(index)
         if not preventAdding and self.tabWidget.currentIndex() < 0:
