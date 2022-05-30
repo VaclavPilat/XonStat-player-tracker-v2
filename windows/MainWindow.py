@@ -49,14 +49,14 @@ class MainWindow(Window):
         self.tabWidget.setCornerWidget(actions)
     
 
-    def addTab(self, page: QtWidgets.QWidget, title: str):
+    def addTab(self, page: Tab):
         """Adds a new tab
 
         Args:
             page (QtWidgets.QWidget): Tab content
             title (str): Tab title
         """
-        self.tabWidget.addTab(page, title)
+        self.tabWidget.addTab(page, page.name)
         self.tabWidget.setCurrentIndex(self.tabWidget.count() -1)
 
 
@@ -67,7 +67,7 @@ class MainWindow(Window):
             if isinstance(self.tabWidget.widget(i), NewTab):
                 self.tabWidget.setCurrentIndex(i)
                 return
-        self.addTab(NewTab(self), "New Tab")
+        self.addTab(NewTab(self))
 
 
     def removeTab(self, index: int, recursive: bool = False):
