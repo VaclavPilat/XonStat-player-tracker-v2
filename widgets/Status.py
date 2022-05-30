@@ -105,6 +105,10 @@ class Status(ColoredWidget):
                 number = max(1, math.floor(division * 8))
                 if changeIcon:
                     self.setIcon("mdi6.circle-slice-" + str(number))
+            elif maximum == 0:
+                output += "100"
+                if changeIcon:
+                    self.setIcon("mdi6.circle-slice-8")
             else:
                 output += "0"
                 if changeIcon:
@@ -147,8 +151,8 @@ class Status(ColoredWidget):
             max (int): Maximum amount of parts that can be completed
         """
         if not self.__locked:
-            self.inner.setText(message)
-            self.progress(correct, max, True, False)
+            self.__message = message + " ..."
+            self.progress(correct, max, True)
             # Changing the background color based on if the task is completed successfully
             if correct == max:
                 self.setBackground("green")

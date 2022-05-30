@@ -48,14 +48,15 @@ class PlayerList(Tab):
         self.layout.addWidget(self.table)
 
     
-    def showPlayer(self, player: dict):
+    def addPlayer(self, player: dict, row: int = -1):
         """Adds a single row with player data to table
 
         Args:
             player (dics): Player info
         """
+        if row < 0:
+            row = self.table.rowCount()
         # Creating a new row inside the table
-        row = self.table.rowCount()
         self.table.insertRow(row)
         # Adding labels
         for i in range(5):
@@ -86,6 +87,15 @@ class PlayerList(Tab):
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
         self.table.setCellWidget(row, 5, actions)
+
+
+    def removePlayer(self, row: int):
+        """Removes a row by index
+
+        Args:
+            row (int): Row index
+        """
+        self.table.removeRow(row)
     
 
     def __search(self, text: str):
@@ -110,5 +120,6 @@ class PlayerList(Tab):
     def startLoading(self):
         """Starting page (re)loading
         """
-        self.worker = PlayerListWorker(self)
-        self.worker.start()
+        if self.worker is None or (self.worker.isFinished() and not self.worker.isRunning()):
+            self.worker = PlayerListWorker(self)
+            self.worker.start()
