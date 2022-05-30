@@ -76,3 +76,7 @@ Tab QToolButton {
 QTabBar QToolButton {
     margin: 3px 0;
 }
+
+.appName {
+    font-size: 40px;
+}

@@ -19,7 +19,13 @@ class NewTab(Tab):
     
 
     def createLayout(self):
-        self.layout.addStretch()
+        self.layout.addStretch(2)
+        # Adding label
+        appName = ColoredLabel(self, QtWidgets.QApplication.instance().applicationName())
+        appName.setAlignment(QtCore.Qt.AlignCenter)
+        appName.setProperty("class", "appName")
+        self.layout.addWidget(appName)
+        self.layout.addStretch(1)
         # Top row of buttons
         top = QtWidgets.QHBoxLayout()
         self.layout.addLayout(top)
@@ -72,4 +78,4 @@ class NewTab(Tab):
         mapInfoButton.setToolTip("Map information")
         bottom.addWidget(mapInfoButton)
         bottom.addStretch()
-        self.layout.addStretch()
+        self.layout.addStretch(3)
