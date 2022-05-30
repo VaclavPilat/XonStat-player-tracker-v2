@@ -16,6 +16,7 @@ class XonStatHome(Tab):
             parent (MainWindow): Parent window
         """
         super().__init__(parent)
+        self.name = "XonStat home"
     
 
     def createLayout(self):

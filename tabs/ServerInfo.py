@@ -16,6 +16,7 @@ class ServerInfo(Tab):
             parent (MainWindow): Parent window
         """
         super().__init__(parent)
+        self.name = "Server Info"
     
 
     def createLayout(self):

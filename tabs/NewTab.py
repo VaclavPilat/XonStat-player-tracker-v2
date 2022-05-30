@@ -16,6 +16,7 @@ class NewTab(Tab):
             parent (MainWindow): Parent window
         """
         super().__init__(parent)
+        self.name = "New Tab"
     
 
     def createLayout(self):

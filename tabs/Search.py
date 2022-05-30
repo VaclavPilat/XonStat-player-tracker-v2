@@ -16,6 +16,7 @@ class Search(Tab):
             parent (MainWindow): Parent window
         """
         super().__init__(parent)
+        self.name = "Search"
     
 
     def createLayout(self):

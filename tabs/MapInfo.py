@@ -16,6 +16,7 @@ class MapInfo(Tab):
             parent (MainWindow): Parent window
         """
         super().__init__(parent)
+        self.name = "Map Info"
     
 
     def createLayout(self):

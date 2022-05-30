@@ -16,6 +16,7 @@ class GameInfo(Tab):
             parent (MainWindow): Parent window
         """
         super().__init__(parent)
+        self.name = "Game Info"
     
 
     def createLayout(self):
