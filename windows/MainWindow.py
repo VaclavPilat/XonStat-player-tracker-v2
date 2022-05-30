@@ -41,8 +41,7 @@ class MainWindow(Window):
         self.tabWidget.setTabsClosable(True)
         self.tabWidget.setMovable(True)
         self.tabWidget.tabCloseRequested.connect(self.removeTab)
-        # Adding new tab
-        self.openNewTab()
+        self.tabWidget.currentChanged.connect(self.updateRefreshButtons)
         # Adding corner buttons
         actions = ColoredWidget()
         buttonGroup = QtWidgets.QHBoxLayout()
@@ -56,14 +55,48 @@ class MainWindow(Window):
         self.refreshButtons = QtWidgets.QStackedWidget(self)
         self.refreshButtons.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         loadButton = LoadButton(self)
-        loadButton.clicked.connect(self.tabWidget.currentWidget().startLoading)
+        loadButton.clicked.connect(self.__startLoading)
         self.refreshButtons.addWidget(loadButton)
         stopButton = StopButton(self)
-        loadButton.clicked.connect(self.tabWidget.currentWidget().stopLoading)
+        loadButton.clicked.connect(self.__stopLoading)
         self.refreshButtons.addWidget(stopButton)
         buttonGroup.addWidget(self.refreshButtons)
         # Adding widget with corner buttons
         self.tabWidget.setCornerWidget(actions)
+        # Adding new tab
+        self.openNewTab()
+    
+
+    def __startLoading(self):
+        """Starts loading page content
+        """
+        widget = self.tabWidget.currentWidget()
+        if widget is not None:
+            self.tabWidget.currentWidget().startLoading()
+        self.updateRefreshButtons()
+    
+
+    def __stopLoading(self):
+        """Stops loading page content
+        """
+        widget = self.tabWidget.currentWidget()
+        if widget is not None:
+            self.tabWidget.currentWidget().stopLoading()
+        self.updateRefreshButtons()
+    
+
+    def updateRefreshButtons(self):
+        """Updates refresh buttons when needed
+        """
+        widget = self.tabWidget.currentWidget()
+        if widget is not None:
+            if widget.worker is not None:
+                if widget.worker.isFinished() and not widget.worker.isRunning():
+                    self.refreshButtons.setCurrentIndex(0)
+                else:
+                    self.refreshButtons.setCurrentIndex(1)
+            else:
+                self.refreshButtons.setCurrentIndex(0)
     
 
     def __addTab(self, page: Tab):
@@ -234,3 +267,6 @@ class MainWindow(Window):
             # Adding a new tab
             elif key == QtCore.Qt.Key_T or key == QtCore.Qt.Key_N:
                 self.openNewTab()
+            # Reloading page content
+            elif key == QtCore.Qt.Key_R:
+                self.__startLoading()

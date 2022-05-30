@@ -15,6 +15,7 @@ class Tab(QtWidgets.QWidget):
             parent (Tab): Parent tab
         """
         self.name = ""
+        self.worker = None
         self.parent = parent
         super().__init__()
         self.layout = QtWidgets.QVBoxLayout()
