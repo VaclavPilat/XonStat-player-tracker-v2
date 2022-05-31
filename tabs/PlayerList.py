@@ -152,8 +152,9 @@ class PlayerList(Tab):
     def startLoading(self):
         """Starting page (re)loading
         """
-        if self.worker is None or (self.worker.isFinished() and not self.worker.isRunning()):
+        if self.worker is None:
             self.worker = PlayerListWorker(self)
+        if self.worker.isFinished() or not self.worker.isRunning():
             self.worker.start()
     
 

@@ -8,7 +8,7 @@ class TabInfo(Tab):
     """
 
 
-    def __init__(self, parent, identifier: int = -1):
+    def __init__(self, parent, identifier: int = None):
         """Init
 
         Args:
@@ -24,8 +24,10 @@ class TabInfo(Tab):
         """
         # Creating input field for player ID
         self.identifierInput = QtWidgets.QLineEdit(self)
-        if self.id > 0:
+        if self.id is not None:
             self.identifierInput.setText(str(self.id))
+        else:
+            self.identifierInput.setFocus()
         self.identifierInput.textChanged.connect(self.startLoading)
         self.layout.addWidget(self.identifierInput)
     
@@ -41,3 +43,17 @@ class TabInfo(Tab):
             self.status.resultMessage("Entered ID is not a number", False)
             return False
         return True
+    
+
+    def localKeyPressEvent(self, event):
+        """Handling key press events
+
+        Args:
+            event: Event
+        """
+        key = event.key()
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            # Setting focus to ID input field
+            if key == QtCore.Qt.Key_F:
+                self.identifierInput.setFocus()
+                self.identifierInput.selectAll()

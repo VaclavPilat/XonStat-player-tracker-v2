@@ -178,7 +178,7 @@ class MainWindow(Window):
             self.__addTab(Search(self))
     
 
-    def openPlayerInfo(self, identifier: int = -1):
+    def openPlayerInfo(self, identifier: int = None):
         """Attempts to add a new PlayerInfo tab
 
         Args:
@@ -197,7 +197,7 @@ class MainWindow(Window):
             self.__addTab(PlayerInfo(self, identifier))
     
 
-    def openGameInfo(self, identifier: int = -1):
+    def openGameInfo(self, identifier: int = None):
         """Attempts to add a new GameInfo tab
 
         Args:
@@ -216,7 +216,7 @@ class MainWindow(Window):
             self.__addTab(GameInfo(self))
     
 
-    def openServerInfo(self, identifier: int = -1):
+    def openServerInfo(self, identifier: int = None):
         """Attempts to add a new ServerInfo tab
 
         Args:
@@ -235,7 +235,7 @@ class MainWindow(Window):
             self.__addTab(ServerInfo(self))
     
 
-    def openMapInfo(self, identifier: int = -1):
+    def openMapInfo(self, identifier: int = None):
         """Attempts to add a new MapInfo tab
 
         Args:
