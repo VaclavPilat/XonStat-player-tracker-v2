@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-import qtawesome as qta
 
 from tabs.Tab import *
 from widgets.ColoredWidgets import *

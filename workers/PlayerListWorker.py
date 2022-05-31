@@ -1,5 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtGui, QtNetwork
-import time
+from PyQt5 import QtCore
 
 from workers.Worker import *
 from misc.Config import *

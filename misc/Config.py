@@ -1,8 +1,5 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtGui
 import os, json
-
-from misc.Functions import *
-
 
 
 class Config(dict):
