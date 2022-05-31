@@ -1,6 +1,6 @@
 {
-    "singleRequestInterval": 0.35,
-    "groupRequestInterval": 2,
+    "singleRequestInterval": 0.2,
+    "groupRequestInterval": 1,
     "heatmapHourSpan": 3,
     "gameListCount": 5,
     "recentGamesCount": 10

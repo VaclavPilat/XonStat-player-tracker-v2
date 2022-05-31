@@ -63,9 +63,8 @@ class Status(ColoredWidget):
             remaining (str): Remaining number of requests
             limit (str): Request limit
         """
-        for widget in QtWidgets.QApplication.topLevelWidgets():
-            if issubclass(type(widget), Window) and widget.status:
-                widget.status.rate.setText(remaining + " / " + limit)
+        for i in range(self.parent.parent.tabWidget.count()):
+            self.parent.parent.tabWidget.widget(i).status.rate.setText(remaining + " / " + limit)
     
 
     def message(self, message: str, changeIcon: bool = True):

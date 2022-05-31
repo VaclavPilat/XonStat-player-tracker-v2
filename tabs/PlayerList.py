@@ -4,6 +4,7 @@ from tabs.Tab import *
 from widgets.ColoredWidgets import *
 from widgets.ColoredButtons import *
 from workers.PlayerListWorker import *
+from misc.Functions import *
 
 
 class PlayerList(Tab):
@@ -97,6 +98,16 @@ class PlayerList(Tab):
             row (int): Row index
         """
         self.table.removeRow(row)
+
+    
+    def updatePlayer(self, row: int, data: dict):
+        """Fills in loaded player data
+
+        Args:
+            row (int): Row index
+            data (dict): Player data in JSON
+        """
+        self.table.cellWidget(row, 3).setText( processNick( data["player"]["nick"] ) )
     
 
     def __search(self, text: str):

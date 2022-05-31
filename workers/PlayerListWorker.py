@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+import requests
 
 from workers.Worker import *
 from misc.Config import *
@@ -13,6 +14,8 @@ class PlayerListWorker(Worker):
     addPlayer = QtCore.pyqtSignal(dict)
     insertPlayer = QtCore.pyqtSignal(dict, int)
     removePlayer = QtCore.pyqtSignal(int)
+    setRowColor = QtCore.pyqtSignal(int, str)
+    updatePlayer = QtCore.pyqtSignal(int, dict)
 
 
     def __init__(self, tab: Tab):
@@ -30,6 +33,8 @@ class PlayerListWorker(Worker):
         self.addPlayer.connect(self.tab.addPlayer)
         self.insertPlayer.connect(self.tab.addPlayer)
         self.removePlayer.connect(self.tab.removePlayer)
+        self.setRowColor.connect(self.tab.table.setRowColor)
+        self.updatePlayer.connect(self.tab.updatePlayer)
     
 
     def run(self):
@@ -54,6 +59,7 @@ class PlayerListWorker(Worker):
         # Loading player differences
         self.__loadDifferences(old, new, add, remove)
         # Cancelling
+        self.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
         if self.cancel:
             return
         # Loading player information
@@ -94,6 +100,25 @@ class PlayerListWorker(Worker):
         Args:
             new (list): New player index list
         """
-        for playerID in new:
-            url = "https://stats.xonotic.org/player/" + str(playerID)
-            print(url)
+        self.message.emit("Loading player information")
+        i = 0
+        for index in range(len(new)):
+            if self.cancel:
+                break
+            playerID = new[index]
+            self.setRowColor.emit(index, "dark-yellow")
+            self.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
+            response = requests.get(
+                "https://stats.xonotic.org/player/" + str(playerID),
+                headers={'Accept': 'application/json'},
+                timeout=2
+            )
+            if response:
+                i += 1
+                self.setRowColor.emit(index, "dark-blue")
+                self.updatePlayer.emit(index, response.json())
+                self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
+            else:
+                self.setRowColor.emit(index, "dark-red")
+            self.progress.emit(i, len(new))
+        self.resultProgress.emit("Finished loading player information", i, len(new))

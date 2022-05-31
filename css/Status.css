@@ -17,8 +17,8 @@
 }
 
 #status-rate, #status-icon {
-    min-width: 45px;
-    max-width: 45px;
+    min-width: 55px;
+    max-width: 55px;
 }
 
 #status-inner, #status-rate, #status-icon, [background="transparent"] {
