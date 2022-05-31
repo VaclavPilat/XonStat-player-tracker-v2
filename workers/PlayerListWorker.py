@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui, QtNetwork
 import time
 
 from workers.Worker import *
@@ -45,42 +45,40 @@ class PlayerListWorker(Worker):
         if len(Config.instance()["Players"]) == 0:
             self.resultMessage.emit("No players were found", True)
             return
-        # First loading
-        if self.tab.table.rowCount() == 0:
-            self.message.emit("Loading players from file")
-            # Loading players
-            i = 0
-            for player in Config.instance()["Players"]:
-                if self.cancel:
-                    break
-                i += 1
-                self.progress.emit(i, len(Config.instance()["Players"]))
-                self.addPlayer.emit(player)
-            self.resultProgress.emit("Finished loading players from file", i, len(Config.instance()["Players"]))
-        else:
-            self.message.emit("Loading differences from player lists")
-            # Getting list of player ID's
-            old = [int(self.tab.table.cellWidget(i, 0).text()) for i in range(self.tab.table.rowCount())]
-            new = [Config.instance()["Players"][i]["id"] for i in range(len(Config.instance()["Players"]))]
-            add = [item for item in new if item not in old]
-            remove = [item for item in old if item not in new]
-            i = 0
-            # Removing unused rows
-            remove.reverse()
-            for id in remove:
-                if self.cancel:
-                    break
-                i += 1
-                self.removePlayer.emit(old.index(id))
-                self.progress.emit(i, len(add) + len(remove))
-            # Adding new rows
-            for id in add:
-                if self.cancel:
-                    break
-                i += 1
-                self.insertPlayer.emit(Config.instance()["Players"][new.index(id)], new.index(id))
-                self.progress.emit(i, len(add) + len(remove))
-            self.resultProgress.emit("Finished loading differences from player lists", i, len(add) + len(remove))
-        # Cancelling
-        if self.cancel:
-            return
+        # Loading differences from player lists
+        self.message.emit("Loading differences from player lists")
+        # Getting list of player ID's
+        old = [int(self.tab.table.cellWidget(i, 0).text()) for i in range(self.tab.table.rowCount())]
+        new = [Config.instance()["Players"][i]["id"] for i in range(len(Config.instance()["Players"]))]
+        add = [item for item in new if item not in old]
+        remove = [item for item in old if item not in new]
+        # Loading player differences
+        self.__loadDifferences(old, new, add, remove)
+    
+
+    def __loadDifferences(self, old: list, new: list, add: list, remove: list):
+        """Loading differences between player lists
+
+        Args:
+            old (list): Old player index list
+            new (list): New player index list
+            add (list): Player index list to be added
+            remove (list): Player index list to be removed
+        """
+        i = 0
+        # Removing unused rows
+        remove.reverse()
+        for id in remove:
+            if self.cancel:
+                break
+            i += 1
+            self.removePlayer.emit(old.index(id))
+            self.progress.emit(i, len(add) + len(remove))
+        # Adding new rows
+        for id in add:
+            if self.cancel:
+                break
+            i += 1
+            self.insertPlayer.emit(Config.instance()["Players"][new.index(id)], new.index(id))
+            self.progress.emit(i, len(add) + len(remove))
+        self.resultProgress.emit("Finished loading differences from player lists", i, len(add) + len(remove))

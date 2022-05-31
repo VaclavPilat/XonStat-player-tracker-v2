@@ -130,6 +130,7 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
         self.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
         self.horizontalHeader().setMinimumSectionSize(140)
         self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
+        self.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
 
     
     def setRowColor(self, row: int, background: str = None):
