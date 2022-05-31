@@ -141,7 +141,7 @@ class PlayerList(Tab):
                 widget = self.table.cellWidget(row, column)
                 if not widget == None and type(widget) == ColoredLabel:
                     # Checking if this label contins HTML
-                    labelText = self.__parseTextFromLabel(widget)
+                    labelText = parseTextFromHTML(widget.text())
                     if text.lower() in labelText:
                         containsText = True
                         break
