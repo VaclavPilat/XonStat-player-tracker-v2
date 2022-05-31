@@ -110,6 +110,9 @@ class PlayerList(Tab):
         # Showing nick
         nick = processNick( data["player"]["nick"] )
         self.table.cellWidget(row, 3).setText(nick)
+        # Showing the last time the player was active
+        active = data["overall_stats"]["overall"]["last_played_fuzzy"]
+        self.table.cellWidget(row, 4).setText(active)
         # Setting row color
         nick = parseTextFromHTML(nick)
         name = parseTextFromHTML( self.table.cellWidget(row, 1).text() )
