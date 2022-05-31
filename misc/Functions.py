@@ -89,3 +89,35 @@ def getActiveColor(text: str) -> str:
             else:
                 color = "active-1"
     return color
+
+
+def getAgeColor(text: str) -> str:
+    """Gets a color for the "since" field content
+
+    Args:
+        text (str): When the player started playing the game
+
+    Returns:
+        str: Color name
+    """
+    # Extracting number from string
+    number = 0
+    for substring in text.split():
+        if substring.isdigit():
+            number = int(substring)
+    # Comparing string
+    if "years" in text and number >= 3:
+        color = "age-1"
+    elif "year" in text:
+        color = "age-2"
+    elif "months" in text and number >= 4:
+        color = "age-3"
+    elif "month" in text:
+        color = "age-4"
+    elif "days" in text and number >= 20:
+        color = "age-5"
+    elif "days" in text:
+        color = "age-6"
+    else:
+        color = "age-7"
+    return color

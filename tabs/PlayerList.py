@@ -114,6 +114,7 @@ class PlayerList(Tab):
         # Showing when the player started playing
         since = data["player"]["joined_fuzzy"]
         self.table.cellWidget(row, 4).setText(since)
+        self.table.cellWidget(row, 4).setColor(getAgeColor(since))
         # Showing the last time the player was active
         active = data["overall_stats"]["overall"]["last_played_fuzzy"]
         self.table.cellWidget(row, 5).setText(active)

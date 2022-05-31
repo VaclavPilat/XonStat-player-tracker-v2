@@ -49,5 +49,14 @@
         "#ffffff",
         "#acacac",
         "#595959"
+    ],
+    "age": [
+        "#00aaff",
+        "#89c5ff",
+        "#c8e2ff",
+        "#ffffff",
+        "#d5ffbd",
+        "#a2ff77",
+        "#55ff00"
     ]
 }

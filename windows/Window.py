@@ -63,6 +63,11 @@ class Window(QtWidgets.QMainWindow):
         for color in Config.instance()["Colors"]["activity"]:
             style += '[color="active-' + str(i) + '"]{color:' + str(color) + '}'
             i += 1
+        # Generating colors for age labels
+        i = 1
+        for color in Config.instance()["Colors"]["age"]:
+            style += '[color="age-' + str(i) + '"]{color:' + str(color) + '}'
+            i += 1
         return style
     
 
