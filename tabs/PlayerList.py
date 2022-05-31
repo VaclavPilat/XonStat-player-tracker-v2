@@ -36,8 +36,7 @@ class PlayerList(Tab):
         # Creating table for tracked players
         self.table = ColoredTable(self)
         # Setting columns
-        headers = ["ID", "Player nickname", "Player description", "Current player name", "Last played", 
-                        "Actions"]
+        headers = ["ID", "Player nickname", "Player description", "Current player name", "Playing since", "Last played", "Actions"]
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
@@ -62,7 +61,7 @@ class PlayerList(Tab):
         # Creating a new row inside the table
         self.table.insertRow(row)
         # Adding labels
-        for i in range(5):
+        for i in range(6):
             self.table.setCellWidget(row, i, ColoredLabel(self.table, "", "dark-grey"))
         # Adding label text
         self.table.cellWidget(row, 0).setText(str(player["id"]))
@@ -90,7 +89,7 @@ class PlayerList(Tab):
         deleteButton = DeleteButton(self.table)
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
-        self.table.setCellWidget(row, 5, actions)
+        self.table.setCellWidget(row, 6, actions)
 
 
     def removePlayer(self, row: int):
@@ -112,10 +111,13 @@ class PlayerList(Tab):
         # Showing nick
         nick = processNick( data["player"]["nick"] )
         self.table.cellWidget(row, 3).setText(nick)
+        # Showing when the player started playing
+        since = data["player"]["joined_fuzzy"]
+        self.table.cellWidget(row, 4).setText(since)
         # Showing the last time the player was active
         active = data["overall_stats"]["overall"]["last_played_fuzzy"]
-        self.table.cellWidget(row, 4).setText(active)
-        self.table.cellWidget(row, 4).setColor(getActiveColor(active))
+        self.table.cellWidget(row, 5).setText(active)
+        self.table.cellWidget(row, 5).setColor(getActiveColor(active))
         # Setting row color
         nick = parseTextFromHTML(nick)
         name = parseTextFromHTML( self.table.cellWidget(row, 1).text() )
