@@ -51,3 +51,41 @@ def parseTextFromHTML(text: str) -> str:
     """
     htmlParser.setHtml(text)
     return htmlParser.toPlainText().lower()
+
+
+def getActiveColor(text: str) -> str:
+    """Gets a color for the "active" field content
+
+    Args:
+        text (str): The last time the player was active
+
+    Returns:
+        str: Color name
+    """
+    # Extracting number from string
+    number = 0
+    for substring in text.split():
+        if substring.isdigit():
+            number = int(substring)
+    # Comparing string
+    if "year" in text or "month" in text:
+        color = "active-7"
+    else:
+        if "day" in text:
+            if number > 7:
+                color = "active-6"
+            elif number > 1:
+                color = "active-5"
+            else:
+                color = "active-4"
+        else:
+            if "hour" in text:
+                if number >= 20:
+                    color = "active-4"
+                elif number >=2:
+                    color = "active-3"
+                else:
+                    color = "active-2"
+            else:
+                color = "active-1"
+    return color

@@ -113,6 +113,7 @@ class PlayerList(Tab):
         # Showing the last time the player was active
         active = data["overall_stats"]["overall"]["last_played_fuzzy"]
         self.table.cellWidget(row, 4).setText(active)
+        self.table.cellWidget(row, 4).setColor(getActiveColor(active))
         # Setting row color
         nick = parseTextFromHTML(nick)
         name = parseTextFromHTML( self.table.cellWidget(row, 1).text() )
