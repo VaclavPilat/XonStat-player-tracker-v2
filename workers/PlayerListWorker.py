@@ -108,17 +108,20 @@ class PlayerListWorker(Worker):
             playerID = new[index]
             self.setRowColor.emit(index, "dark-yellow")
             self.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
-            response = requests.get(
-                "https://stats.xonotic.org/player/" + str(playerID),
-                headers={'Accept': 'application/json'},
-                timeout=2
-            )
-            if response:
-                i += 1
-                self.setRowColor.emit(index, "dark-blue")
+            response = None
+            try:
+                response = requests.get(
+                    "https://stats.xonotic.org/player/" + str(playerID),
+                    headers={'Accept': 'application/json'},
+                    timeout=2
+                )
+            except:
+                pass
+            if response is not None and response:
                 self.updatePlayer.emit(index, response.json())
                 self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
             else:
                 self.setRowColor.emit(index, "dark-red")
+            i += 1
             self.progress.emit(i, len(new))
         self.resultProgress.emit("Finished loading player information", i, len(new))

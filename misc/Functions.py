@@ -1,3 +1,4 @@
+from PyQt5 import QtGui
 import re, colorsys
 from xml.sax.saxutils import escape
 
@@ -36,3 +37,17 @@ def processNick(name: str):
     for character, replacement in Config.instance()["Characters"].items():
         name = name.replace(character, replacement)
     return name
+
+
+htmlParser = QtGui.QTextDocument() # TextDocument class for parsing text from HTML
+def parseTextFromHTML(text: str) -> str:
+    """Returns lowercase text without HTML tags
+
+    Args:
+        text (str): Text with HTML tags
+
+    Returns:
+        str: Lowercase text without HTML tags
+    """
+    htmlParser.setHtml(text)
+    return htmlParser.toPlainText().lower()
