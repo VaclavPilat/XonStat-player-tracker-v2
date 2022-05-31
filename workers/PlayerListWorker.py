@@ -54,6 +54,11 @@ class PlayerListWorker(Worker):
         remove = [item for item in old if item not in new]
         # Loading player differences
         self.__loadDifferences(old, new, add, remove)
+        # Cancelling
+        if self.cancel:
+            return
+        # Loading player information
+        self.__loadInformation(new)
     
 
     def __loadDifferences(self, old: list, new: list, add: list, remove: list):
@@ -68,17 +73,28 @@ class PlayerListWorker(Worker):
         i = 0
         # Removing unused rows
         remove.reverse()
-        for id in remove:
+        for playerID in remove:
             if self.cancel:
                 break
             i += 1
-            self.removePlayer.emit(old.index(id))
+            self.removePlayer.emit(old.index(playerID))
             self.progress.emit(i, len(add) + len(remove))
         # Adding new rows
-        for id in add:
+        for playerID in add:
             if self.cancel:
                 break
             i += 1
-            self.insertPlayer.emit(Config.instance()["Players"][new.index(id)], new.index(id))
+            self.insertPlayer.emit(Config.instance()["Players"][new.index(playerID)], new.index(playerID))
             self.progress.emit(i, len(add) + len(remove))
         self.resultProgress.emit("Finished loading differences from player lists", i, len(add) + len(remove))
+    
+
+    def __loadInformation(self, new: list):
+        """Loads information about players from XonStat
+
+        Args:
+            new (list): New player index list
+        """
+        for playerID in new:
+            url = "https://stats.xonotic.org/player/" + str(playerID)
+            print(url)
