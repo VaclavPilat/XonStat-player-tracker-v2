@@ -81,6 +81,7 @@ class PlayerList(Tab):
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
         infoButton = WindowButton(self.table)
+        infoButton.clicked.connect(lambda: self.parent.openPlayerInfo(int(self.table.cellWidget(row, 0).text())))
         buttonGroup.addWidget(infoButton)
         # Stacked widget with edit and save button
         editButton = EditButton(self.table)

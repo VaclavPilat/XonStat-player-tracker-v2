@@ -178,15 +178,23 @@ class MainWindow(Window):
             self.__addTab(Search(self))
     
 
-    def openPlayerInfo(self):
+    def openPlayerInfo(self, id: int = -1):
         """Attempts to add a new PlayerInfo tab
+
+        Args:
+            id (int, optional): Player ID. Defaults to None.
         """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), PlayerInfo):
+                if (id <= 0 and self.tabWidget.widget(i).id <= 0) or (id > 0 and id == self.tabWidget.widget(i).id):
+                    self.tabWidget.setCurrentIndex(i)
+                    return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
-            self.__insertTab(PlayerInfo(self), index)
+            self.__insertTab(PlayerInfo(self, id), index)
         else:
-            self.__addTab(PlayerInfo(self))
+            self.__addTab(PlayerInfo(self, id))
     
 
     def openGameInfo(self):
