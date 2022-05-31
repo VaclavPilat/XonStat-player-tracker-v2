@@ -147,31 +147,6 @@ class PlayerList(Tab):
             self.table.setRowHidden(row, not containsText)
     
 
-    def __parseTextFromLabel(self, widget: ColoredLabel) -> str:
-        """Returns string with widget text contents without HTML tags
-
-        Args:
-            widget (ColoredLabel): Rich text label
-
-        Returns:
-            str: Parsed label contents
-        """
-        return self.__parseTextFromHTML(widget.text())
-    
-
-    def __parseTextFromHTML(self, text: str) -> str:
-        """Returns parsed text from a string with HTML
-
-        Args:
-            text (str): Rich text (HTML)
-
-        Returns:
-            str: Parsed text without HTML
-        """
-        self.__doc.setHtml(text)
-        return self.__doc.toPlainText().lower()
-    
-
     def startLoading(self):
         """Starting page (re)loading
         """
