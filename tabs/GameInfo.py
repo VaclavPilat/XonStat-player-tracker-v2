@@ -1,24 +1,31 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
-import qtawesome as qta
-
-from tabs.Tab import *
+from tabs.TabInfo import *
 
 
-class GameInfo(Tab):
+class GameInfo(TabInfo):
     """Class for showing game information
     """
 
 
-    def __init__(self, parent):
+    def __init__(self, parent, identifier: int = -1):
         """Init
 
         Args:
             parent (MainWindow): Parent window
+            identifier (int): Game ID
         """
-        super().__init__(parent)
+        super().__init__(parent, identifier)
         self.name = "Game Info"
     
 
     def createLayout(self):
-        self.layout.addStretch()
-        pass
+        """Creating tab layout
+        """
+        super().createLayout()
+        self.identifierInput.setPlaceholderText("Enter game ID")
+    
+
+    def startLoading(self):
+        """Starting page (re)loading
+        """
+        if super().startLoading():
+            self.status.message("Loading game information")

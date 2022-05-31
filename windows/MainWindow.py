@@ -178,28 +178,36 @@ class MainWindow(Window):
             self.__addTab(Search(self))
     
 
-    def openPlayerInfo(self, id: int = -1):
+    def openPlayerInfo(self, identifier: int = -1):
         """Attempts to add a new PlayerInfo tab
 
         Args:
-            id (int, optional): Player ID. Defaults to None.
+            identifier (int, optional): Player ID. Defaults to None.
         """
         for i in range(self.tabWidget.count()):
             if isinstance(self.tabWidget.widget(i), PlayerInfo):
-                if (id <= 0 and self.tabWidget.widget(i).id <= 0) or (id > 0 and id == self.tabWidget.widget(i).id):
+                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
                     self.tabWidget.setCurrentIndex(i)
                     return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
-            self.__insertTab(PlayerInfo(self, id), index)
+            self.__insertTab(PlayerInfo(self, identifier), index)
         else:
-            self.__addTab(PlayerInfo(self, id))
+            self.__addTab(PlayerInfo(self, identifier))
     
 
-    def openGameInfo(self):
+    def openGameInfo(self, identifier: int = -1):
         """Attempts to add a new GameInfo tab
+
+        Args:
+            identifier (int, optional): Game ID. Defaults to None.
         """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), GameInfo):
+                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
+                    self.tabWidget.setCurrentIndex(i)
+                    return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
@@ -208,9 +216,17 @@ class MainWindow(Window):
             self.__addTab(GameInfo(self))
     
 
-    def openServerInfo(self):
+    def openServerInfo(self, identifier: int = -1):
         """Attempts to add a new ServerInfo tab
+
+        Args:
+            identifier (int, optional): Server ID. Defaults to None.
         """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), ServerInfo):
+                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
+                    self.tabWidget.setCurrentIndex(i)
+                    return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
@@ -219,9 +235,17 @@ class MainWindow(Window):
             self.__addTab(ServerInfo(self))
     
 
-    def openMapInfo(self):
+    def openMapInfo(self, identifier: int = -1):
         """Attempts to add a new MapInfo tab
+
+        Args:
+            identifier (int, optional): Map ID. Defaults to None.
         """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), MapInfo):
+                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
+                    self.tabWidget.setCurrentIndex(i)
+                    return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
