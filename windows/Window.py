@@ -44,6 +44,8 @@ class Window(QtWidgets.QMainWindow):
             style += 'QTabBar::tab:!selected{background-color:' + Config.instance()["Colors"]["presets"]["grey"]["normal"] + '}'
         if "blue" in Config.instance()["Colors"]["presets"]:
             style += 'QTabBar::tab:top:selected{background-color:' + Config.instance()["Colors"]["presets"]["blue"]["light"] + '}'
+            style += 'QLineEdit:!disabled{background-color:' + Config.instance()["Colors"]["presets"]["blue"]["dark"] + ';border-color:' + Config.instance()["Colors"]["presets"]["blue"]["normal"] + '}'
+            style += 'QLineEdit:!disabled:focus{background-color:' + Config.instance()["Colors"]["presets"]["blue"]["normal"] + ';border-color:' + Config.instance()["Colors"]["presets"]["blue"]["light"] + '}'
         if "yellow" in Config.instance()["Colors"]["presets"]:
             style += 'QTabBar QToolButton:disabled,QTabBar QToolButton:disabled:hover{background-color:' + Config.instance()["Colors"]["presets"]["yellow"]["dark"] + ';border:1px solid ' + Config.instance()["Colors"]["presets"]["yellow"]["normal"] + '}'
             style += 'QTabBar QToolButton{background-color:' + Config.instance()["Colors"]["presets"]["yellow"]["normal"] + ';border:1px solid ' + Config.instance()["Colors"]["presets"]["yellow"]["light"] + '}'
