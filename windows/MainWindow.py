@@ -273,4 +273,4 @@ class MainWindow(Window):
         # Handling local tab events
         widget = self.tabWidget.currentWidget()
         if widget is not None:
-            widget.keyPressEvent(event)
+            widget.localKeyPressEvent(event)

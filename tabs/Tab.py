@@ -45,7 +45,7 @@ class Tab(QtWidgets.QWidget):
             self.worker.cancel = True
     
 
-    def keyPressEvent(self, event):
+    def localKeyPressEvent(self, event):
         """Handling key press events
 
         Args:

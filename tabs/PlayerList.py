@@ -176,7 +176,7 @@ class PlayerList(Tab):
             self.worker.start()
     
 
-    def keyPressEvent(self, event):
+    def localKeyPressEvent(self, event):
         """Handling key press events
 
         Args:
