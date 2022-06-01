@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets
+import re
 
 from tabs.Tab import *
 
@@ -40,7 +41,7 @@ class TabInfo(Tab):
             self.id = None
         else:
             try:
-                self.id = int(self.identifierInput.text())
+                self.id = int(re.findall('\d+|$', self.identifierInput.text())[0])
             except:
                 self.id = None
             self.status.resultMessage("Entered ID is not a number", False)

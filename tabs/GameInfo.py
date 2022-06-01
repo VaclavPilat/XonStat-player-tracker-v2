@@ -1,3 +1,4 @@
+from pydoc import describe
 import webbrowser
 
 from tabs.TabInfo import *
@@ -39,7 +40,7 @@ class GameInfo(TabInfo):
         """
         self.players = ColoredTable(self)
         # Setting columns
-        headers = ["Player ID", "Player name", "Nickname", "Score", "Actions"]
+        headers = ["Player ID", "Player name", "Nickname", "Description", "Score", "Actions"]
         self.players.setColumnCount( len(headers) )
         self.players.setHorizontalHeaderLabels(headers)
         # Setting column stretching
@@ -47,9 +48,9 @@ class GameInfo(TabInfo):
         self.players.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.players.verticalHeader().setMinimumSectionSize(30)
         self.players.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        for i in range(1, 3):
+        for i in range(1, 4):
             self.players.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
-        for i in range(3, len(headers)):
+        for i in range(4, len(headers)):
             self.players.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
         return self.players
     
@@ -76,8 +77,10 @@ class GameInfo(TabInfo):
         player = self.__checkPlayerExistence(identifier)
         if player is not None:
             nickname = player["nick"]
+            description = player["description"]
         else:
             nickname = ""
+            description = ""
             if not color == None:
                 color = "dark-" + color
         # Creating a new row inside the table
@@ -90,7 +93,8 @@ class GameInfo(TabInfo):
         self.players.cellWidget(row, 0).setText(str(identifier))
         self.players.cellWidget(row, 1).setText(name)
         self.players.cellWidget(row, 2).setText(nickname)
-        self.players.cellWidget(row, 3).setText(str(score))
+        self.players.cellWidget(row, 3).setText(description)
+        self.players.cellWidget(row, 4).setText(str(score))
         # Adding buttons
         actions = ColoredWidget()
         buttonGroup = QtWidgets.QHBoxLayout()
@@ -99,16 +103,17 @@ class GameInfo(TabInfo):
         buttonGroup.setContentsMargins(0, 0, 0, 0)
         buttonGroup.setSpacing(0)
         buttonGroup.addStretch()
-        # Profile button
-        profileButton = BrowserButton(self.players)
-        profileButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/player/" + str(identifier), new=2))
-        buttonGroup.addWidget(profileButton)
-        # Load button
-        infoButton = WindowButton(self.players)
-        #infoButton.clicked.connect(lambda: self.overview.openPlayerInfo(player))
-        buttonGroup.addWidget(infoButton)
+        if identifier >= 6:
+            # Profile button
+            profileButton = BrowserButton(self.players)
+            profileButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/player/" + str(identifier), new=2))
+            buttonGroup.addWidget(profileButton)
+            # Load button
+            infoButton = WindowButton(self.players)
+            infoButton.clicked.connect(lambda: self.parent.openPlayerInfo(identifier))
+            buttonGroup.addWidget(infoButton)
         buttonGroup.addStretch()
-        self.players.setCellWidget(row, 4, actions)
+        self.players.setCellWidget(row, 5, actions)
     
 
     def showGroupName(self, name: str):
