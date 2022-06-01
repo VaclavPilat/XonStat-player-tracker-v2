@@ -35,21 +35,21 @@ class TabInfo(Tab):
     def startLoading(self) -> bool:
         """Starting page (re)loading
         """
+        # Setting ID
         if self.identifierInput.text() is None or self.identifierInput.text() == "":
-            return False
+            self.id = None
         try:
             self.id = int(self.identifierInput.text())
         except:
             self.id = None
             self.status.resultMessage("Entered ID is not a number", False)
-            return False
-        else:
-            for i in range(self.parent.tabWidget.count()):
-                if self != self.parent.tabWidget.widget(i) and isinstance(self.parent.tabWidget.widget(i), type(self)):
-                    if self.id == self.parent.tabWidget.widget(i).id:
-                        self.parent.removeTab(self.parent.tabWidget.currentIndex())
-                        self.parent.tabWidget.setCurrentIndex(i)
-                        return False
+        # Looking for possible tab duplicates
+        for i in range(self.parent.tabWidget.count()):
+            if self != self.parent.tabWidget.widget(i) and isinstance(self.parent.tabWidget.widget(i), type(self)):
+                if self.id == self.parent.tabWidget.widget(i).id:
+                    self.parent.removeTab(self.parent.tabWidget.indexOf(self))
+                    self.parent.tabWidget.setCurrentIndex(i)
+                    return False
         return True
     
 
