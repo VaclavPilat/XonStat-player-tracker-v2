@@ -38,10 +38,11 @@ class TabInfo(Tab):
         # Setting ID
         if self.identifierInput.text() is None or self.identifierInput.text() == "":
             self.id = None
-        try:
-            self.id = int(self.identifierInput.text())
-        except:
-            self.id = None
+        else:
+            try:
+                self.id = int(self.identifierInput.text())
+            except:
+                self.id = None
             self.status.resultMessage("Entered ID is not a number", False)
         # Looking for possible tab duplicates
         for i in range(self.parent.tabWidget.count()):
@@ -50,6 +51,8 @@ class TabInfo(Tab):
                     self.parent.tabWidget.setCurrentIndex(i)
                     self.parent.removeTab(self.parent.tabWidget.indexOf(self))
                     return False
+        if self.id == None:
+            return False
         return True
     
 

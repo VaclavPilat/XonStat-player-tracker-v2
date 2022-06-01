@@ -1,4 +1,9 @@
+import webbrowser
+
 from tabs.TabInfo import *
+from workers.GameInfoWorker import *
+from widgets.ColoredButtons import *
+from misc.Config import *
 
 
 class GameInfo(TabInfo):
@@ -22,10 +27,114 @@ class GameInfo(TabInfo):
         """
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter game ID")
+        # Adding widgets to layout
+        self.layout.addWidget(self.__createTable())
+
+    
+    def __createTable(self) -> ColoredTable:
+        """Creates a table for list of players
+
+        Returns:
+            ColoredTable: Table widget
+        """
+        self.players = ColoredTable(self)
+        # Setting columns
+        headers = ["Player ID", "Player name", "Nickname", "Score", "Actions"]
+        self.players.setColumnCount( len(headers) )
+        self.players.setHorizontalHeaderLabels(headers)
+        # Setting column stretching
+        self.players.verticalHeader().hide()
+        self.players.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+        self.players.verticalHeader().setMinimumSectionSize(30)
+        self.players.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        for i in range(1, 3):
+            self.players.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
+        for i in range(3, len(headers)):
+            self.players.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
+        return self.players
     
 
     def startLoading(self):
         """Starting page (re)loading
         """
-        if super().startLoading():
-            self.status.message("Loading game information")
+        if self.worker is None:
+            self.worker = GameInfoWorker(self)
+        if super().startLoading() and (self.worker.isFinished() or not self.worker.isRunning()):
+            self.worker.start()
+    
+
+    def showPlayer(self, identifier: int, name: str, score: int, color: str):
+        """Adds a row with player information into table
+
+        Args:
+            identifier (int): Player ID
+            name (str): Player name (at the time this game happened)
+            score (int): Player score
+            color (str): Row background color
+        """
+        # Checking if player exists
+        player = self.__checkPlayerExistence(identifier)
+        if player is not None:
+            nickname = player["nick"]
+        else:
+            nickname = ""
+            if not color == None:
+                color = "dark-" + color
+        # Creating a new row inside the table
+        row = self.players.rowCount()
+        self.players.insertRow(row)
+        # Adding labels
+        for i in range(5):
+            self.players.setCellWidget(row, i, ColoredLabel(self.players, None, color))
+        # Adding label text
+        self.players.cellWidget(row, 0).setText(str(identifier))
+        self.players.cellWidget(row, 1).setText(name)
+        self.players.cellWidget(row, 2).setText(nickname)
+        self.players.cellWidget(row, 3).setText(str(score))
+        # Adding buttons
+        actions = ColoredWidget()
+        buttonGroup = QtWidgets.QHBoxLayout()
+        actions.setLayout(buttonGroup)
+        actions.setBackground(color)
+        buttonGroup.setContentsMargins(0, 0, 0, 0)
+        buttonGroup.setSpacing(0)
+        buttonGroup.addStretch()
+        # Profile button
+        profileButton = BrowserButton(self.players)
+        profileButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/player/" + str(identifier), new=2))
+        buttonGroup.addWidget(profileButton)
+        # Load button
+        infoButton = WindowButton(self.players)
+        #infoButton.clicked.connect(lambda: self.overview.openPlayerInfo(player))
+        buttonGroup.addWidget(infoButton)
+        buttonGroup.addStretch()
+        self.players.setCellWidget(row, 4, actions)
+    
+
+    def showGroupName(self, name: str):
+        """Shows group name
+
+        Args:
+            name (str): Player group name
+        """
+        row = self.players.rowCount()
+        self.players.insertRow(row)
+        label = ColoredLabel(self.players, name)
+        label.setProperty("class", "center")
+        self.players.setCellWidget(row, 0, label, 1, self.players.columnCount())
+    
+
+    def __checkPlayerExistence(self, identifier: int) -> dict:
+        """Attempts to find the player in a config file
+
+        Args:
+            identifier (int): Player ID
+
+        Returns:
+            dict: JSON of player
+        """
+        if Config.instance().load("Players"):
+            for player in Config.instance()["Players"]:
+                if identifier == player["id"]:
+                    return player
+        return None
