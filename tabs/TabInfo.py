@@ -40,8 +40,16 @@ class TabInfo(Tab):
         try:
             self.id = int(self.identifierInput.text())
         except:
+            self.id = None
             self.status.resultMessage("Entered ID is not a number", False)
             return False
+        else:
+            for i in range(self.parent.tabWidget.count()):
+                if self != self.parent.tabWidget.widget(i) and isinstance(self.parent.tabWidget.widget(i), type(self)):
+                    if self.id == self.parent.tabWidget.widget(i).id:
+                        self.parent.removeTab(self.parent.tabWidget.currentIndex())
+                        self.parent.tabWidget.setCurrentIndex(i)
+                        return False
         return True
     
 

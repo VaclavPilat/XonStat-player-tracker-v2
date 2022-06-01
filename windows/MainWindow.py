@@ -186,7 +186,7 @@ class MainWindow(Window):
         """
         for i in range(self.tabWidget.count()):
             if isinstance(self.tabWidget.widget(i), PlayerInfo):
-                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
+                if identifier == self.tabWidget.widget(i).id:
                     self.tabWidget.setCurrentIndex(i)
                     return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
@@ -205,7 +205,7 @@ class MainWindow(Window):
         """
         for i in range(self.tabWidget.count()):
             if isinstance(self.tabWidget.widget(i), GameInfo):
-                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
+                if identifier == self.tabWidget.widget(i).id:
                     self.tabWidget.setCurrentIndex(i)
                     return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
@@ -224,7 +224,7 @@ class MainWindow(Window):
         """
         for i in range(self.tabWidget.count()):
             if isinstance(self.tabWidget.widget(i), ServerInfo):
-                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
+                if identifier == self.tabWidget.widget(i).id:
                     self.tabWidget.setCurrentIndex(i)
                     return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
@@ -243,7 +243,7 @@ class MainWindow(Window):
         """
         for i in range(self.tabWidget.count()):
             if isinstance(self.tabWidget.widget(i), MapInfo):
-                if (identifier <= 0 and self.tabWidget.widget(i).id <= 0) or (identifier > 0 and identifier == self.tabWidget.widget(i).id):
+                if identifier == self.tabWidget.widget(i).id:
                     self.tabWidget.setCurrentIndex(i)
                     return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
