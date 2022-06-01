@@ -6,7 +6,7 @@ class PlayerInfo(TabInfo):
     """
 
 
-    def __init__(self, parent, identifier: int = -1):
+    def __init__(self, parent, identifier: int = None):
         """Init
 
         Args:

@@ -47,8 +47,8 @@ class TabInfo(Tab):
         for i in range(self.parent.tabWidget.count()):
             if self != self.parent.tabWidget.widget(i) and isinstance(self.parent.tabWidget.widget(i), type(self)):
                 if self.id == self.parent.tabWidget.widget(i).id:
-                    self.parent.removeTab(self.parent.tabWidget.indexOf(self))
                     self.parent.tabWidget.setCurrentIndex(i)
+                    self.parent.removeTab(self.parent.tabWidget.indexOf(self))
                     return False
         return True
     
