@@ -112,12 +112,12 @@ class PlayerListWorker(Worker):
             response = None
             try:
                 response = createRequest("https://stats.xonotic.org/player/" + str(playerID))
+                self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
             except:
                 pass
             if response is not None and response:
                 correct += 1
                 self.updatePlayer.emit(index, response.json())
-                self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
             else:
                 self.setRowColor.emit(index, "dark-red")
             i += 1

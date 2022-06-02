@@ -1,5 +1,6 @@
 from tabs.TabInfo import *
 from widgets.ColoredButtons import *
+from workers.PlayerInfoWorker import *
 
 
 class PlayerInfo(TabInfo):
@@ -31,5 +32,7 @@ class PlayerInfo(TabInfo):
     def startLoading(self):
         """Starting page (re)loading
         """
-        if super().startLoading():
-            self.status.message("Loading player information")
+        if self.worker is None:
+            self.worker = GameInfoWorker(self)
+        if super().startLoading() and (self.worker.isFinished() or not self.worker.isRunning()):
+            self.worker.start()

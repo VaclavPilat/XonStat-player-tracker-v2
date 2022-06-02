@@ -54,6 +54,7 @@ class Worker(QtCore.QThread):
         """This method is called after this worker is finished
         """
         self.updateRefreshButtons.emit()
+        self.cancel = False
     
 
     def sleep(self, amount: float):

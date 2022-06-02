@@ -49,11 +49,11 @@ class GameInfoWorker(TabInfoWorker):
         response = None
         try:
             response = createRequest("https://stats.xonotic.org/game/" + str(self.tab.id))
+            self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
         except:
             pass
         # Checking response
         if response is not None and response:
-            self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
             data = response.json()
             # Showing game information
             gameDatetime = datetime.datetime.strptime(data["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
@@ -129,6 +129,7 @@ class GameInfoWorker(TabInfoWorker):
         try:
             current += 1
             response = createRequest("https://stats.xonotic.org/server/" + str(data["server_id"]))
+            self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
         except:
             pass
         if response:
@@ -144,6 +145,7 @@ class GameInfoWorker(TabInfoWorker):
         try:
             current += 1
             response = createRequest("https://stats.xonotic.org/map/" + str(data["map_id"]))
+            self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
         except:
             pass
         if response:

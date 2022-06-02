@@ -33,3 +33,5 @@ class GameInfoWorker(TabInfoWorker):
         """
         # Removing old content from tables
         self.clearInfoTable.emit()
+        # Loading player information
+        self.message.emit("Loading player information")
