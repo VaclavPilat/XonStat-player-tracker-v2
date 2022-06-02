@@ -105,3 +105,31 @@ class TabInfo(Tab):
         # Setting fixed table height
         self.info.setMaximumHeight(self.info.rowCount() * 30)
         return self.info
+    
+
+    def setInfoContent(self, row: int, text: str):
+        """Sets content of a label in info table
+
+        Args:
+            row (int): Row index
+            text (str): New label content
+        """
+        self.info.cellWidget(row, 1).layout().itemAt(0).widget().setText(text)
+    
+
+    def addInfoContent(self, row: int, text: str):
+        """Adds text to a content of a label in info table
+
+        Args:
+            row (int): Row index
+            text (str): Additional label content
+        """
+        widget = self.info.cellWidget(row, 1).layout().itemAt(0).widget()
+        widget.setText(widget.text() + " " + text)
+    
+
+    def clearInfoTable(self):
+        """Removes text from content labels in info table
+        """
+        for i in range(self.info.rowCount()):
+            self.setInfoContent(i, "")

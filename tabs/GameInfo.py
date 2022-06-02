@@ -157,24 +157,3 @@ class GameInfo(TabInfo):
                 if identifier == player["id"]:
                     return player
         return None
-    
-
-    def setInfoContent(self, row: int, text: str):
-        """Sets content of a label in info table
-
-        Args:
-            row (int): Row index
-            text (str): New label content
-        """
-        self.info.cellWidget(row, 1).layout().itemAt(0).widget().setText(text)
-    
-
-    def addInfoContent(self, row: int, text: str):
-        """Adds text to a content of a label in info table
-
-        Args:
-            row (int): Row index
-            text (str): Additional label content
-        """
-        widget = self.info.cellWidget(row, 1).layout().itemAt(0).widget()
-        widget.setText(widget.text() + " " + text)

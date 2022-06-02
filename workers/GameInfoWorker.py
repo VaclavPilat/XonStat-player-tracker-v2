@@ -5,19 +5,17 @@ from workers.Worker import *
 from misc.Config import *
 from tabs.Tab import *
 from misc.Functions import *
+from workers.TabInfoWorker import *
 
 
-class GameInfoWorker(Worker):
+class GameInfoWorker(TabInfoWorker):
     """Worker class is for executing background tasks
     """
 
 
-    clearTable = QtCore.pyqtSignal()
     showPlayer = QtCore.pyqtSignal(int, str, int, str)
     showGroupName = QtCore.pyqtSignal(str)
     setRowColor = QtCore.pyqtSignal(int, str)
-    setInfoContent = QtCore.pyqtSignal(int, str)
-    addInfoContent = QtCore.pyqtSignal(int, str)
 
 
     def __init__(self, tab: Tab):
@@ -32,20 +30,17 @@ class GameInfoWorker(Worker):
     def connectSlots(self):
         """Connecting signals to slots. This method is called in init.
         """
-        self.clearTable.connect(lambda: self.tab.players.setRowCount(0))
+        super().connectSlots()
         self.showPlayer.connect(self.tab.showPlayer)
         self.showGroupName.connect(self.tab.showGroupName)
         self.setRowColor.connect(self.tab.info.setRowColor)
-        self.setInfoContent.connect(self.tab.setInfoContent)
-        self.addInfoContent.connect(self.tab.addInfoContent)
     
 
     def run(self):
         """Running the Worker task
         """
-        # Clearing player table
-        for i in range(self.tab.info.rowCount()):
-            self.setInfoContent.emit(i, "")
+        # Removing old content from tables
+        self.clearInfoTable.emit()
         self.clearTable.emit()
         # Loading game information
         self.message.emit("Loading game information")
