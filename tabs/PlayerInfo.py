@@ -36,3 +36,13 @@ class PlayerInfo(TabInfo):
             self.worker = GameInfoWorker(self)
         if super().startLoading() and (self.worker.isFinished() or not self.worker.isRunning()):
             self.worker.start()
+    
+
+    def setInfoTextColor(self, row: int, color: str):
+        """Setting text color of a content label in an info table
+
+        Args:
+            row (int): Row index
+            color (str): Color class
+        """
+        self.info.cellWidget(row, 1).layout().itemAt(0).widget().setColor(color)
