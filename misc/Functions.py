@@ -121,3 +121,18 @@ def getAgeColor(text: str) -> str:
     else:
         color = "age-7"
     return color
+
+
+def getNumberFromString(text: str) -> int:
+    """Returns the first occurence of a number in a text
+
+    Args:
+        text (str): Text
+
+    Returns:
+        int: Number
+    """
+    try:
+        return int(re.findall('\d+|$', text)[0])
+    except:
+        return None

@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
-import re
 
 from tabs.Tab import *
+from misc.Functions import *
 
 
 class TabInfo(Tab):
@@ -40,11 +40,9 @@ class TabInfo(Tab):
         if self.identifierInput.text() is None or self.identifierInput.text() == "":
             self.id = None
         else:
-            try:
-                self.id = int(re.findall('\d+|$', self.identifierInput.text())[0])
-            except:
-                self.id = None
-            self.status.resultMessage("Entered ID is not a number", False)
+            self.id = getNumberFromString(self.identifierInput.text())
+            if self.id is None:
+                self.status.resultMessage("Entered ID is not a number", False)
         # Looking for possible tab duplicates
         for i in range(self.parent.tabWidget.count()):
             if self != self.parent.tabWidget.widget(i) and isinstance(self.parent.tabWidget.widget(i), type(self)):
