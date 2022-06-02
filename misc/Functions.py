@@ -159,3 +159,19 @@ def createRequest(address: str):
         headers={'Accept': 'application/json'},
         timeout=2
     )
+    
+
+def checkPlayerExistence(identifier: int) -> dict:
+    """Attempts to find the player in a config file
+
+    Args:
+        identifier (int): Player ID
+
+    Returns:
+        dict: JSON of player
+    """
+    if Config.instance().load("Players"):
+        for player in Config.instance()["Players"]:
+            if identifier == player["id"]:
+                return player
+    return None

@@ -13,6 +13,7 @@ class TabInfoWorker(Worker):
     setInfoContent = QtCore.pyqtSignal(int, str)
     addInfoContent = QtCore.pyqtSignal(int, str)
     clearInfoTable = QtCore.pyqtSignal()
+    setInfoRowColor = QtCore.pyqtSignal(int, str)
 
 
     def __init__(self, tab: Tab):
@@ -31,3 +32,4 @@ class TabInfoWorker(Worker):
         self.setInfoContent.connect(self.tab.setInfoContent)
         self.addInfoContent.connect(self.tab.addInfoContent)
         self.clearInfoTable.connect(self.tab.clearInfoTable)
+        self.setInfoRowColor.connect(self.tab.info.setRowColor)

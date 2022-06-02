@@ -15,7 +15,6 @@ class GameInfoWorker(TabInfoWorker):
 
     showPlayer = QtCore.pyqtSignal(int, str, int, str)
     showGroupName = QtCore.pyqtSignal(str)
-    setRowColor = QtCore.pyqtSignal(int, str)
 
 
     def __init__(self, tab: Tab):
@@ -33,7 +32,6 @@ class GameInfoWorker(TabInfoWorker):
         super().connectSlots()
         self.showPlayer.connect(self.tab.showPlayer)
         self.showGroupName.connect(self.tab.showGroupName)
-        self.setRowColor.connect(self.tab.info.setRowColor)
     
 
     def run(self):
@@ -45,7 +43,7 @@ class GameInfoWorker(TabInfoWorker):
         # Loading game information
         self.message.emit("Loading game information")
         for i in range(self.tab.info.rowCount()):
-            self.setRowColor.emit(i, "dark-yellow")
+            self.setInfoRowColor.emit(i, "dark-yellow")
         response = None
         try:
             response = createRequest("https://stats.xonotic.org/game/" + str(self.tab.id))
@@ -66,7 +64,7 @@ class GameInfoWorker(TabInfoWorker):
             self.addPlayers(data)
             self.resultMessage.emit("Successfully loaded game information", True)
             for i in range(self.tab.info.rowCount()):
-                self.setRowColor.emit(i, None)
+                self.setInfoRowColor.emit(i, None)
             self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
             if self.cancel:
                 return
@@ -75,7 +73,7 @@ class GameInfoWorker(TabInfoWorker):
         else:
             self.resultMessage.emit("Unable to load game information", False)
             for i in range(self.tab.info.rowCount()):
-                self.setRowColor.emit(i, "dark-red")
+                self.setInfoRowColor.emit(i, "dark-red")
     
 
     def addPlayers(self, data: dict):
@@ -124,7 +122,7 @@ class GameInfoWorker(TabInfoWorker):
         successful = 0
         current = 0
         # Loading server name
-        self.setRowColor.emit(1, "dark-yellow")
+        self.setInfoRowColor.emit(1, "dark-yellow")
         response = None
         try:
             current += 1
@@ -135,12 +133,12 @@ class GameInfoWorker(TabInfoWorker):
         if response:
             successful += 1
             self.addInfoContent.emit(1, response.json()["name"])
-            self.setRowColor.emit(1, None)
+            self.setInfoRowColor.emit(1, None)
         else:
-            self.setRowColor.emit(1, "dark-red")
+            self.setInfoRowColor.emit(1, "dark-red")
         self.progress.emit(current, 2)
         # Loading map name
-        self.setRowColor.emit(2, "dark-yellow")
+        self.setInfoRowColor.emit(2, "dark-yellow")
         response = None
         try:
             current += 1
@@ -151,9 +149,9 @@ class GameInfoWorker(TabInfoWorker):
         if response:
             successful += 1
             self.addInfoContent.emit(2, response.json()["name"])
-            self.setRowColor.emit(2, None)
+            self.setInfoRowColor.emit(2, None)
         else:
-            self.setRowColor.emit(2, "dark-red")
+            self.setInfoRowColor.emit(2, "dark-red")
         self.progress.emit(current, 2)
         # Showing status
         self.resultProgress.emit("Finished loading additional information", successful, 2)

@@ -88,7 +88,7 @@ class GameInfo(TabInfo):
             color (str): Row background color
         """
         # Checking if player exists
-        player = self.__checkPlayerExistence(identifier)
+        player = checkPlayerExistence(identifier)
         if player is not None:
             nickname = player["nick"]
             description = player["description"]
@@ -141,19 +141,3 @@ class GameInfo(TabInfo):
         label = ColoredLabel(self.players, name)
         label.setProperty("class", "center")
         self.players.setCellWidget(row, 0, label, 1, self.players.columnCount())
-    
-
-    def __checkPlayerExistence(self, identifier: int) -> dict:
-        """Attempts to find the player in a config file
-
-        Args:
-            identifier (int): Player ID
-
-        Returns:
-            dict: JSON of player
-        """
-        if Config.instance().load("Players"):
-            for player in Config.instance()["Players"]:
-                if identifier == player["id"]:
-                    return player
-        return None
