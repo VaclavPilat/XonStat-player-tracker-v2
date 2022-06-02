@@ -59,6 +59,7 @@ class GameInfo(TabInfo):
             layout = QtWidgets.QHBoxLayout()
             widget.setLayout(layout)
             layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(0)
             label = ColoredLabel(self, None, "transparent")
             layout.addWidget(label)
             self.info.setCellWidget(row, 1, widget)
