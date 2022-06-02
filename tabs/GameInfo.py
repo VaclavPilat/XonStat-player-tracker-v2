@@ -49,7 +49,7 @@ class GameInfo(TabInfo):
         self.info.verticalHeader().hide()
         self.info.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         # Adding rows
-        headings = ["Date and time [UTC]", "Server name", "Map mame", "Game mode", "Duration"]
+        headings = ["Date and time", "Server name", "Map mame", "Game mode", "Duration"]
         for heading in headings:
             row = self.info.rowCount()
             self.info.insertRow(row)
@@ -59,6 +59,7 @@ class GameInfo(TabInfo):
             widget = ColoredWidget()
             widget.setBackground("dark-grey")
             layout = QtWidgets.QHBoxLayout()
+            widget.setLayout(layout)
             layout.setContentsMargins(0, 0, 0, 0)
             label = ColoredLabel(self, None, "transparent")
             layout.addWidget(label)
@@ -179,3 +180,13 @@ class GameInfo(TabInfo):
                 if identifier == player["id"]:
                     return player
         return None
+    
+
+    def setInfoContent(self, row: int, text: str):
+        """Sets content of a label in info table
+
+        Args:
+            row (int): Row index
+            text (str): New label content
+        """
+        self.info.cellWidget(row, 1).layout().itemAt(0).widget().setText(text)
