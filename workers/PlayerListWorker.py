@@ -102,6 +102,7 @@ class PlayerListWorker(Worker):
         """
         self.message.emit("Loading player information")
         i = 0
+        correct = 0
         for index in range(len(new)):
             if self.cancel:
                 break
@@ -114,10 +115,11 @@ class PlayerListWorker(Worker):
             except:
                 pass
             if response is not None and response:
+                correct += 1
                 self.updatePlayer.emit(index, response.json())
                 self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
             else:
                 self.setRowColor.emit(index, "dark-red")
             i += 1
             self.progress.emit(i, len(new))
-        self.resultProgress.emit("Finished loading player information", i, len(new))
+        self.resultProgress.emit("Finished loading player information", correct, len(new))

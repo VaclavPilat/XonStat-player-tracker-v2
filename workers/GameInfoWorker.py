@@ -1,4 +1,3 @@
-from multiprocessing.dummy import current_process
 from PyQt5 import QtCore
 import datetime
 
@@ -73,6 +72,7 @@ class GameInfoWorker(Worker):
             self.resultMessage.emit("Successfully loaded game information", True)
             for i in range(self.tab.info.rowCount()):
                 self.setRowColor.emit(i, None)
+            self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
             if self.cancel:
                 return
             # Loading additional information

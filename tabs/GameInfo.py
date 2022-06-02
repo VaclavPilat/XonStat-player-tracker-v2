@@ -51,11 +51,10 @@ class GameInfo(TabInfo):
         for heading in headings:
             row = self.info.rowCount()
             self.info.insertRow(row)
-            self.info.setCellWidget(row, 0, ColoredLabel(self, heading + ":", "dark-grey"))
+            self.info.setCellWidget(row, 0, ColoredLabel(self, heading + ":"))
             self.info.cellWidget(row, 0).setAlignment(QtCore.Qt.AlignRight)
             # Adding content widgets
             widget = ColoredWidget()
-            widget.setBackground("dark-grey")
             layout = QtWidgets.QHBoxLayout()
             widget.setLayout(layout)
             layout.setContentsMargins(0, 0, 0, 0)
