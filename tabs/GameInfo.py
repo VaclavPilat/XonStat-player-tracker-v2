@@ -1,10 +1,8 @@
-from pydoc import describe
-import webbrowser
-
 from tabs.TabInfo import *
 from workers.GameInfoWorker import *
 from widgets.ColoredButtons import *
 from misc.Config import *
+from misc.Functions import *
 
 
 class GameInfo(TabInfo):
@@ -64,6 +62,20 @@ class GameInfo(TabInfo):
             label = ColoredLabel(self, None, "transparent")
             layout.addWidget(label)
             self.info.setCellWidget(row, 1, widget)
+        # Adding server info buttons
+        serverBrowser = BrowserButton(self)
+        serverBrowser.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/server/" + str(getNumberFromString(self.info.cellWidget(1, 1).layout().itemAt(0).widget().text()))))
+        self.info.cellWidget(1, 1).layout().addWidget(serverBrowser)
+        serverInfo = WindowButton(self)
+        serverInfo.clicked.connect(lambda: self.parent.openServerInfo(getNumberFromString(self.info.cellWidget(1, 1).layout().itemAt(0).widget().text())))
+        self.info.cellWidget(1, 1).layout().addWidget(serverInfo)
+        # Adding map info buttons
+        mapBrowser = BrowserButton(self)
+        mapBrowser.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/map/" + str(getNumberFromString(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text()))))
+        self.info.cellWidget(2, 1).layout().addWidget(mapBrowser)
+        mapInfo = WindowButton(self)
+        mapInfo.clicked.connect(lambda: self.parent.openMapInfo(getNumberFromString(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text())))
+        self.info.cellWidget(2, 1).layout().addWidget(mapInfo)
         # Setting fixed table height
         self.info.setMaximumHeight(self.info.rowCount() * 30)
         return self.info

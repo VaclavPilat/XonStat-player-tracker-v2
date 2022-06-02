@@ -108,7 +108,10 @@ class MainWindow(Window):
         self.tabWidget.addTab(page, page.name)
         index = self.tabWidget.count() -1
         self.tabWidget.setCurrentIndex(index)
-        print("Added " + type(page).__name__ + " at index " + str(index))
+        output = "Added " + type(page).__name__ + " at index " + str(index)
+        if hasattr(page, "id"):
+            output += " with ID " + str(page.id)
+        print(output)
     
 
     def __insertTab(self, page: Tab, index: int):
@@ -120,7 +123,10 @@ class MainWindow(Window):
         """
         self.tabWidget.insertTab(index, page, page.name)
         self.tabWidget.setCurrentIndex(index)
-        print("Inserted " + type(page).__name__ + " at index " + str(index))
+        output = "Inserted " + type(page).__name__ + " at index " + str(index)
+        if hasattr(page, "id"):
+            output += " with ID " + str(page.id)
+        print(output)
 
 
     def openNewTab(self):
@@ -211,9 +217,9 @@ class MainWindow(Window):
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
-            self.__insertTab(GameInfo(self), index)
+            self.__insertTab(GameInfo(self, identifier), index)
         else:
-            self.__addTab(GameInfo(self))
+            self.__addTab(GameInfo(self, identifier))
     
 
     def openServerInfo(self, identifier: int = None):
@@ -230,9 +236,9 @@ class MainWindow(Window):
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
-            self.__insertTab(ServerInfo(self), index)
+            self.__insertTab(ServerInfo(self, identifier), index)
         else:
-            self.__addTab(ServerInfo(self))
+            self.__addTab(ServerInfo(self, identifier))
     
 
     def openMapInfo(self, identifier: int = None):
@@ -249,9 +255,9 @@ class MainWindow(Window):
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
-            self.__insertTab(MapInfo(self), index)
+            self.__insertTab(MapInfo(self, identifier), index)
         else:
-            self.__addTab(MapInfo(self))
+            self.__addTab(MapInfo(self, identifier))
 
 
     def removeTab(self, index: int, preventAdding: bool = False, preventClosing: bool = True):

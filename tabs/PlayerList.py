@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtGui
-import webbrowser
 
 from tabs.Tab import *
 from widgets.ColoredWidgets import *
@@ -77,7 +76,7 @@ class PlayerList(Tab):
         buttonGroup.addStretch()
         # Profile button
         profileButton = BrowserButton(self.table)
-        profileButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/player/" + self.table.cellWidget(row, 0).text(), new=2))
+        profileButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/player/" + self.table.cellWidget(row, 0).text()))
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
         infoButton = WindowButton(self.table)

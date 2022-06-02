@@ -1,5 +1,5 @@
 from PyQt5 import QtGui
-import re, colorsys
+import re, colorsys, webbrowser
 from xml.sax.saxutils import escape
 
 from misc.Config import *
@@ -136,3 +136,13 @@ def getNumberFromString(text: str) -> int:
         return int(re.findall('\d+|$', text)[0])
     except:
         return None
+
+
+def openInBrowser(address: str):
+    """Opens a webpage in a browser
+
+    Args:
+        address (str): Web address
+    """
+    print("Showing webpage " + address)
+    webbrowser.open(address, new=2)
