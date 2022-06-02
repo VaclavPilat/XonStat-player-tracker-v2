@@ -26,42 +26,8 @@ class GameInfo(TabInfo):
         """
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter game ID")
-        # Adding widgets to layout
-        self.layout.addWidget(self.__createInfo())
-        self.layout.addWidget(self.__createTable())
-    
-
-    def __createInfo(self) -> ColoredTable:
-        """Creates a table with game information
-
-        Returns:
-            ColoredTable: ColoredTable instance
-        """
-        self.info = ColoredTable(self)
-        # Setting table headers settings
-        self.info.setColumnCount(2)
-        self.info.setShowGrid(False)
-        self.info.horizontalHeader().hide()
-        for i in range(self.info.columnCount()):
-            self.info.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        self.info.verticalHeader().hide()
-        self.info.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        # Adding rows
-        headings = ["Date and time", "Server name", "Map mame", "Game mode", "Duration"]
-        for heading in headings:
-            row = self.info.rowCount()
-            self.info.insertRow(row)
-            self.info.setCellWidget(row, 0, ColoredLabel(self, heading + ":"))
-            self.info.cellWidget(row, 0).setAlignment(QtCore.Qt.AlignRight)
-            # Adding content widgets
-            widget = ColoredWidget()
-            layout = QtWidgets.QHBoxLayout()
-            widget.setLayout(layout)
-            layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(0)
-            label = ColoredLabel(self, None, "transparent")
-            layout.addWidget(label)
-            self.info.setCellWidget(row, 1, widget)
+        # Creating an info table
+        self.layout.addWidget(self.createInfoTable(["Date and time", "Server name", "Map mame", "Game mode", "Duration"]))
         # Adding server info buttons
         serverBrowser = BrowserButton(self)
         serverBrowser.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/server/" + str(getNumberFromString(self.info.cellWidget(1, 1).layout().itemAt(0).widget().text()))))
@@ -76,9 +42,8 @@ class GameInfo(TabInfo):
         mapInfo = WindowButton(self)
         mapInfo.clicked.connect(lambda: self.parent.openMapInfo(getNumberFromString(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text())))
         self.info.cellWidget(2, 1).layout().addWidget(mapInfo)
-        # Setting fixed table height
-        self.info.setMaximumHeight(self.info.rowCount() * 30)
-        return self.info
+        # Adding widgets to layout
+        self.layout.addWidget(self.__createTable())
 
     
     def __createTable(self) -> ColoredTable:

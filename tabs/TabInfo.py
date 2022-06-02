@@ -67,3 +67,41 @@ class TabInfo(Tab):
             if key == QtCore.Qt.Key_F:
                 self.identifierInput.setFocus()
                 self.identifierInput.selectAll()
+    
+
+    def createInfoTable(self, headings: list) -> ColoredTable:
+        """Creates an info table
+
+        Args:
+            headings (list): List of headers
+
+        Returns:
+            ColoredTable: Created info table
+        """
+        self.info = ColoredTable(self)
+        # Setting table headers settings
+        self.info.setColumnCount(2)
+        self.info.setShowGrid(False)
+        self.info.horizontalHeader().hide()
+        for i in range(self.info.columnCount()):
+            self.info.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.info.verticalHeader().hide()
+        self.info.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        # Adding rows
+        for heading in headings:
+            row = self.info.rowCount()
+            self.info.insertRow(row)
+            self.info.setCellWidget(row, 0, ColoredLabel(self, heading + ":"))
+            self.info.cellWidget(row, 0).setAlignment(QtCore.Qt.AlignRight)
+            # Adding content widgets
+            widget = ColoredWidget()
+            layout = QtWidgets.QHBoxLayout()
+            widget.setLayout(layout)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(0)
+            label = ColoredLabel(self, None, "transparent")
+            layout.addWidget(label)
+            self.info.setCellWidget(row, 1, widget)
+        # Setting fixed table height
+        self.info.setMaximumHeight(self.info.rowCount() * 30)
+        return self.info

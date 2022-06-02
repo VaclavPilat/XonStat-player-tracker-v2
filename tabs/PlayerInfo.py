@@ -1,4 +1,5 @@
 from tabs.TabInfo import *
+from widgets.ColoredButtons import *
 
 
 class PlayerInfo(TabInfo):
@@ -22,6 +23,9 @@ class PlayerInfo(TabInfo):
         """
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter player ID")
+        # Creating an info table
+        self.layout.addWidget(self.createInfoTable(["Player nickname", "Player description", "Current player name", "Playing since", "Last active", "Total time spent playing", "Games played this week"]))
+        # Adding server info buttons
     
 
     def startLoading(self):
