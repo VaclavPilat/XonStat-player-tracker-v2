@@ -1,5 +1,5 @@
 from PyQt5 import QtGui
-import re, colorsys, webbrowser
+import re, colorsys, webbrowser, requests
 from xml.sax.saxutils import escape
 
 from misc.Config import *
@@ -146,3 +146,16 @@ def openInBrowser(address: str):
     """
     print("Showing webpage " + address)
     webbrowser.open(address, new=2)
+
+
+def createRequest(address: str):
+    """Creates a HTTP GET request on a specified address
+
+    Args:
+        address (str): Web address
+    """
+    return requests.get(
+        address,
+        headers={'Accept': 'application/json'},
+        timeout=2
+    )

@@ -1,9 +1,9 @@
 from PyQt5 import QtCore
-import requests
 
 from workers.Worker import *
 from misc.Config import *
 from tabs.Tab import *
+from misc.Functions import *
 
 
 class PlayerListWorker(Worker):
@@ -110,11 +110,7 @@ class PlayerListWorker(Worker):
             self.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
             response = None
             try:
-                response = requests.get(
-                    "https://stats.xonotic.org/player/" + str(playerID),
-                    headers={'Accept': 'application/json'},
-                    timeout=2
-                )
+                response = createRequest("https://stats.xonotic.org/player/" + str(playerID))
             except:
                 pass
             if response is not None and response:

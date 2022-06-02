@@ -1,10 +1,11 @@
 from multiprocessing.dummy import current_process
 from PyQt5 import QtCore
-import requests, datetime
+import datetime
 
 from workers.Worker import *
 from misc.Config import *
 from tabs.Tab import *
+from misc.Functions import *
 
 
 class GameInfoWorker(Worker):
@@ -53,11 +54,7 @@ class GameInfoWorker(Worker):
             self.setRowColor.emit(i, "dark-yellow")
         response = None
         try:
-            response = requests.get(
-                "https://stats.xonotic.org/game/" + str(self.tab.id),
-                headers={'Accept': 'application/json'},
-                timeout=2
-            )
+            response = createRequest("https://stats.xonotic.org/game/" + str(self.tab.id))
         except:
             pass
         # Checking response
@@ -136,11 +133,7 @@ class GameInfoWorker(Worker):
         response = None
         try:
             current += 1
-            response = requests.get(
-                "https://stats.xonotic.org/server/" + str(data["server_id"]),
-                headers={'Accept': 'application/json'},
-                timeout=2
-            )
+            response = createRequest("https://stats.xonotic.org/server/" + str(data["server_id"]))
         except:
             pass
         if response:
@@ -155,11 +148,7 @@ class GameInfoWorker(Worker):
         response = None
         try:
             current += 1
-            response = requests.get(
-                "https://stats.xonotic.org/map/" + str(data["map_id"]),
-                headers={'Accept': 'application/json'},
-                timeout=2
-            )
+            response = createRequest("https://stats.xonotic.org/map/" + str(data["map_id"]))
         except:
             pass
         if response:
