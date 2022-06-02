@@ -1,3 +1,4 @@
+from multiprocessing.dummy import current_process
 from PyQt5 import QtCore
 import requests, datetime
 
@@ -16,6 +17,7 @@ class GameInfoWorker(Worker):
     showGroupName = QtCore.pyqtSignal(str)
     setRowColor = QtCore.pyqtSignal(int, str)
     setInfoContent = QtCore.pyqtSignal(int, str)
+    addInfoContent = QtCore.pyqtSignal(int, str)
 
 
     def __init__(self, tab: Tab):
@@ -35,6 +37,7 @@ class GameInfoWorker(Worker):
         self.showGroupName.connect(self.tab.showGroupName)
         self.setRowColor.connect(self.tab.info.setRowColor)
         self.setInfoContent.connect(self.tab.setInfoContent)
+        self.addInfoContent.connect(self.tab.addInfoContent)
     
 
     def run(self):
@@ -72,6 +75,10 @@ class GameInfoWorker(Worker):
             self.resultMessage.emit("Successfully loaded game information", True)
             for i in range(self.tab.info.rowCount()):
                 self.setRowColor.emit(i, None)
+            if self.cancel:
+                return
+            # Loading additional information
+            self.loadAdditionalInformation(data)
         else:
             self.resultMessage.emit("Unable to load game information", False)
             for i in range(self.tab.info.rowCount()):
@@ -112,3 +119,44 @@ class GameInfoWorker(Worker):
                 else:
                     color = settings["color"]
                 self.showPlayer.emit(player["player_id"], player["nick"], player["score"], color)
+
+
+    def loadAdditionalInformation(self, data: dict):
+        """Loads additional information for info table
+
+        Args:
+            data (dict): Game data
+        """
+        self.message.emit("Loading additional information")
+        successful = 0
+        current = 0
+        # Loading server name
+        try:
+            current += 1
+            response1 = requests.get(
+                "https://stats.xonotic.org/server/" + str(data["server_id"]),
+                headers={'Accept': 'application/json'},
+                timeout=2
+            )
+        except:
+            pass
+        if response1:
+            successful += 1
+            self.addInfoContent.emit(1, response1.json()["name"])
+        self.progress.emit(current, 2)
+        # Loading map name
+        try:
+            current += 1
+            response2 = requests.get(
+                "https://stats.xonotic.org/map/" + str(data["map_id"]),
+                headers={'Accept': 'application/json'},
+                timeout=2
+            )
+        except:
+            pass
+        if response2:
+            successful += 1
+            self.addInfoContent.emit(2, response2.json()["name"])
+        self.progress.emit(current, 2)
+        # Showing status
+        self.resultProgress.emit("Finished loading additional information", successful, 2)
