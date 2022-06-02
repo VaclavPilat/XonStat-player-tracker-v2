@@ -48,9 +48,10 @@ class GameInfoWorker(Worker):
             self.setInfoContent.emit(i, "")
         self.clearTable.emit()
         # Loading game information
-        self.message.emit("Loading player information")
+        self.message.emit("Loading game information")
         for i in range(self.tab.info.rowCount()):
             self.setRowColor.emit(i, "dark-yellow")
+        response = None
         try:
             response = requests.get(
                 "https://stats.xonotic.org/game/" + str(self.tab.id),
@@ -131,32 +132,42 @@ class GameInfoWorker(Worker):
         successful = 0
         current = 0
         # Loading server name
+        self.setRowColor.emit(1, "dark-yellow")
+        response = None
         try:
             current += 1
-            response1 = requests.get(
+            response = requests.get(
                 "https://stats.xonotic.org/server/" + str(data["server_id"]),
                 headers={'Accept': 'application/json'},
                 timeout=2
             )
         except:
             pass
-        if response1:
+        if response:
             successful += 1
-            self.addInfoContent.emit(1, response1.json()["name"])
+            self.addInfoContent.emit(1, response.json()["name"])
+            self.setRowColor.emit(1, None)
+        else:
+            self.setRowColor.emit(1, "dark-red")
         self.progress.emit(current, 2)
         # Loading map name
+        self.setRowColor.emit(2, "dark-yellow")
+        response = None
         try:
             current += 1
-            response2 = requests.get(
+            response = requests.get(
                 "https://stats.xonotic.org/map/" + str(data["map_id"]),
                 headers={'Accept': 'application/json'},
                 timeout=2
             )
         except:
             pass
-        if response2:
+        if response:
             successful += 1
-            self.addInfoContent.emit(2, response2.json()["name"])
+            self.addInfoContent.emit(2, response.json()["name"])
+            self.setRowColor.emit(2, None)
+        else:
+            self.setRowColor.emit(2, "dark-red")
         self.progress.emit(current, 2)
         # Showing status
         self.resultProgress.emit("Finished loading additional information", successful, 2)
