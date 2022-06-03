@@ -34,8 +34,12 @@ class PlayerInfo(TabInfo):
         """
         if self.worker is None:
             self.worker = GameInfoWorker(self)
-        if super().startLoading() and (self.worker.isFinished() or not self.worker.isRunning()):
-            self.worker.start()
+        if super().startLoading():
+            self.info.setEnabled(True)
+            if (self.worker.isFinished() or not self.worker.isRunning()):
+                self.worker.start()
+        else:
+            self.info.setEnabled(False)
     
 
     def setInfoTextColor(self, row: int, color: str):

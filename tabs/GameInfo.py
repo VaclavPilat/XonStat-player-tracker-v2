@@ -74,8 +74,14 @@ class GameInfo(TabInfo):
         """
         if self.worker is None:
             self.worker = GameInfoWorker(self)
-        if super().startLoading() and (self.worker.isFinished() or not self.worker.isRunning()):
-            self.worker.start()
+        if super().startLoading():
+            self.info.setEnabled(True)
+            self.players.setEnabled(True)
+            if (self.worker.isFinished() or not self.worker.isRunning()):
+                self.worker.start()
+        else:
+            self.info.setEnabled(False)
+            self.players.setEnabled(False)
     
 
     def showPlayer(self, identifier: int, name: str, score: int, color: str):
