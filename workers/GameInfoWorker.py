@@ -41,6 +41,22 @@ class GameInfoWorker(TabInfoWorker):
         self.clearInfoTable.emit()
         self.clearTable.emit()
         # Loading game information
+        data = self.loadGameInformation()
+        if data is not None:
+            # Canceling
+            self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
+            if self.cancel:
+                return
+            # Loading additional information
+            self.loadAdditionalInformation(data)
+    
+
+    def loadGameInformation(self) -> dict:
+        """Loading game information
+
+        Returns:
+            dict: Loaded game data
+        """
         self.message.emit("Loading game information")
         for i in range(self.tab.info.rowCount()):
             self.setInfoRowColor.emit(i, "dark-yellow")
@@ -65,15 +81,12 @@ class GameInfoWorker(TabInfoWorker):
             self.resultMessage.emit("Successfully loaded game information", True)
             for i in range(self.tab.info.rowCount()):
                 self.setInfoRowColor.emit(i, None)
-            self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
-            if self.cancel:
-                return
-            # Loading additional information
-            self.loadAdditionalInformation(data)
+            return data
         else:
             self.resultMessage.emit("Unable to load game information", False)
             for i in range(self.tab.info.rowCount()):
                 self.setInfoRowColor.emit(i, "dark-red")
+            return None
     
 
     def addPlayers(self, data: dict):

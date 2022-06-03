@@ -38,6 +38,18 @@ class GameInfoWorker(TabInfoWorker):
         # Removing old content from tables
         self.clearInfoTable.emit()
         # Checking if this player is being tracked
+        self.checkConfigFile()
+        # Sleeping
+        self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
+        if self.cancel:
+            return
+        # Loading player information
+        self.loadPlayerInformation()
+    
+
+    def checkConfigFile(self):
+        """Checking if this player is already being tracked
+        """
         self.message.emit("Checking if player is tracked")
         for i in range(2):
             self.setInfoRowColor.emit(i, "dark-yellow")
@@ -55,10 +67,14 @@ class GameInfoWorker(TabInfoWorker):
             self.resultMessage.emit("Cannot access file with tracked players")
             for i in range(2):
                 self.setInfoRowColor.emit(i, "dark-red")
-        self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
-        if self.cancel:
-            return
-        # Loading player information
+    
+
+    def loadPlayerInformation(self) -> bool:
+        """Loading simple player information
+
+        Returns:
+            bool: Did it load successfully?
+        """
         self.message.emit("Loading player information")
         for i in range(2, 6):
             self.setInfoRowColor.emit(i, "dark-yellow")
@@ -87,3 +103,4 @@ class GameInfoWorker(TabInfoWorker):
             self.resultMessage.emit("Unable to load player information", False)
             for i in range(2, 6):
                 self.setInfoRowColor.emit(i, "dark-red")
+        return bool(response)

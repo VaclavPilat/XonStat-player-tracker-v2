@@ -40,7 +40,22 @@ class PlayerListWorker(Worker):
     def run(self):
         """Running the Worker task
         """
-        self.sleep(0.1)
+        # Loading plaeyrs from config file
+        new = self.loadPlayers()
+        # Cancelling
+        self.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
+        if self.cancel:
+            return
+        # Loading player information
+        self.loadInformation(new)
+    
+
+    def loadPlayers(self) -> list:
+        """Loading players from a config file
+
+        Returns:
+            list: New list of players
+        """
         # Checking config file existence
         if not Config.instance().load("Players"):
             self.resultMessage.emit("Cannot find a config file with players", False)
@@ -57,16 +72,11 @@ class PlayerListWorker(Worker):
         add = [item for item in new if item not in old]
         remove = [item for item in old if item not in new]
         # Loading player differences
-        self.__loadDifferences(old, new, add, remove)
-        # Cancelling
-        self.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
-        if self.cancel:
-            return
-        # Loading player information
-        self.__loadInformation(new)
+        self.loadDifferences(old, new, add, remove)
+        return new
     
 
-    def __loadDifferences(self, old: list, new: list, add: list, remove: list):
+    def loadDifferences(self, old: list, new: list, add: list, remove: list):
         """Loading differences between player lists
 
         Args:
@@ -94,7 +104,7 @@ class PlayerListWorker(Worker):
         self.resultProgress.emit("Finished loading differences from player lists", i, len(add) + len(remove))
     
 
-    def __loadInformation(self, new: list):
+    def loadInformation(self, new: list):
         """Loads information about players from XonStat
 
         Args:
