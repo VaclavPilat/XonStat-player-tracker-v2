@@ -91,7 +91,7 @@ class MainWindow(Window):
         widget = self.tabWidget.currentWidget()
         if widget is not None:
             if widget.worker is not None:
-                if widget.worker.isFinished() and not widget.worker.isRunning():
+                if widget.worker.isFinished() or not widget.worker.isRunning():
                     self.refreshButtons.setCurrentIndex(0)
                 else:
                     self.refreshButtons.setCurrentIndex(1)
