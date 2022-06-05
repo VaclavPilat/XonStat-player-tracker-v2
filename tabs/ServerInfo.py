@@ -28,5 +28,11 @@ class ServerInfo(TabInfo):
     def startLoading(self):
         """Starting page (re)loading
         """
+        if self.worker is None:
+            return
         if super().startLoading():
-            self.status.message("Loading server information")
+            self.scrollArea.setEnabled(True)
+            if (self.worker.isFinished() or not self.worker.isRunning()):
+                self.worker.start()
+        else:
+            self.scrollArea.setEnabled(False)
