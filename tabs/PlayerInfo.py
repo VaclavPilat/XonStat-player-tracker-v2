@@ -42,7 +42,6 @@ class PlayerInfo(TabInfo):
         """Creates a heatmap table
         """
         self.heatmap = ColoredTable(self)
-        self.heatmap.setBackground("dark-grey")
         self.heatmap.setProperty("class", "heatmap")
         # Generating column headers
         columns = []
@@ -68,7 +67,6 @@ class PlayerInfo(TabInfo):
         """Creates a table with list of recent games
         """
         self.gameList = ColoredTable(self)
-        self.gameList.setBackground("dark-grey")
         # Generating column headers
         columns = ["Date and time [UTC]", "Mode", "Map", "Actions"]
         # Setting columns
