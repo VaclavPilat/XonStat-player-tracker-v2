@@ -27,7 +27,7 @@ class GameInfo(TabInfo):
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter game ID")
         # Creating an info table
-        self.layout.addWidget(self.createInfoTable(["Date and time", "Server name", "Map mame", "Game mode", "Duration"]))
+        self.scrollLayout.addWidget(self.createInfoTable(["Date and time", "Server name", "Map mame", "Game mode", "Duration"]))
         # Adding server info buttons
         serverBrowser = BrowserButton(self)
         serverBrowser.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/server/" + str(getNumberFromString(self.info.cellWidget(1, 1).layout().itemAt(0).widget().text()))))
@@ -43,7 +43,7 @@ class GameInfo(TabInfo):
         mapInfo.clicked.connect(lambda: self.parent.openMapInfo(getNumberFromString(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text())))
         self.info.cellWidget(2, 1).layout().addWidget(mapInfo)
         # Adding widgets to layout
-        self.layout.addWidget(self.__createTable())
+        self.scrollLayout.addWidget(self.__createTable())
 
     
     def __createTable(self) -> ColoredTable:

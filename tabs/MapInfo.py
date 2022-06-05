@@ -22,6 +22,7 @@ class MapInfo(TabInfo):
         """
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter map ID")
+        self.scrollLayout.addStretch()
     
 
     def startLoading(self):

@@ -31,6 +31,15 @@ class TabInfo(Tab):
             self.identifierInput.setFocus()
         self.identifierInput.textChanged.connect(self.startLoading)
         self.layout.addWidget(self.identifierInput)
+        # Creating scroll area
+        self.scrollArea = QtWidgets.QScrollArea(self)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollWidget = QtWidgets.QWidget(self.scrollArea)
+        self.scrollLayout = QtWidgets.QVBoxLayout(self.scrollWidget)
+        self.scrollLayout.setContentsMargins(0, 0, 0, 0)
+        self.scrollWidget.setLayout(self.scrollLayout)
+        self.scrollArea.setWidget(self.scrollWidget)
+        self.layout.addWidget(self.scrollArea)
     
 
     def startLoading(self) -> bool:

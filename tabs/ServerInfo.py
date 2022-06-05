@@ -22,6 +22,7 @@ class ServerInfo(TabInfo):
         """
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter server ID")
+        self.scrollLayout.addStretch()
     
 
     def startLoading(self):

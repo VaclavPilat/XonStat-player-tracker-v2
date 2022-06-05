@@ -26,26 +26,16 @@ class PlayerInfo(TabInfo):
         """
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter player ID")
-        # Creating scroll area
-        scrollArea = QtWidgets.QScrollArea(self)
-        scrollArea.setWidgetResizable(True)
-        scrollWidget = QtWidgets.QWidget(scrollArea)
-        scrollLayout = QtWidgets.QVBoxLayout(scrollWidget)
-        scrollLayout.setContentsMargins(0, 0, 0, 0)
-        scrollWidget.setLayout(scrollLayout)
-        scrollArea.setWidget(scrollWidget)
-        # Creating an info table
-        scrollLayout.addWidget(self.createInfoTable(["Player nickname", "Player description", "Current player name", "Playing since", "Last active", "Total time spent playing", "Games played this week"]))
+        self.scrollLayout.addWidget(self.createInfoTable(["Player nickname", "Player description", "Current player name", "Playing since", "Last active", "Total time spent playing", "Games played this week"]))
         # Adding server info buttons
         copyButton = CopyButton(self.info)
         copyButton.clicked.connect(lambda: QtWidgets.QApplication.instance().clipboard().setText(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text()))
         self.info.cellWidget(2, 1).layout().addWidget(copyButton)
         # Adding heatmap
-        scrollLayout.addWidget(self.__createHeatmap())
+        self.scrollLayout.addWidget(self.__createHeatmap())
         # Adding list of recent games
-        scrollLayout.addWidget(self.__createGameList())
-        scrollLayout.addStretch()
-        self.layout.addWidget(scrollArea)
+        self.scrollLayout.addWidget(self.__createGameList())
+        self.scrollLayout.addStretch()
     
 
     def __createHeatmap(self):
