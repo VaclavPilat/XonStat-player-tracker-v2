@@ -103,7 +103,7 @@ class TabInfo(Tab):
             layout.addWidget(label)
             self.info.setCellWidget(row, 1, widget)
         # Setting fixed table height
-        self.info.setMaximumHeight(self.info.rowCount() * 30)
+        self.info.setFixedHeight(self.info.rowCount() * 30)
         return self.info
     
 
