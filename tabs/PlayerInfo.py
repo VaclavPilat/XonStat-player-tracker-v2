@@ -31,6 +31,7 @@ class PlayerInfo(TabInfo):
         scrollArea.setWidgetResizable(True)
         scrollWidget = QtWidgets.QWidget(scrollArea)
         scrollLayout = QtWidgets.QVBoxLayout(scrollWidget)
+        scrollLayout.setContentsMargins(0, 0, 0, 0)
         scrollWidget.setLayout(scrollLayout)
         scrollArea.setWidget(scrollWidget)
         # Creating an info table

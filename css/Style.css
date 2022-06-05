@@ -84,3 +84,7 @@ QTabBar QToolButton {
 .appName {
     font-size: 40px;
 }
+
+QScrollArea {
+    border: 0 !important;
+}
