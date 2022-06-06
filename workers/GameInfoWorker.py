@@ -37,9 +37,6 @@ class GameInfoWorker(TabInfoWorker):
     def run(self):
         """Running the Worker task
         """
-        # Removing old content from tables
-        self.clearInfoTable.emit()
-        self.clearTable.emit()
         # Loading game information
         data = self.loadGameInformation()
         if data is not None:

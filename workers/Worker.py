@@ -15,6 +15,7 @@ class Worker(QtCore.QThread):
     resultProgress = QtCore.pyqtSignal(str, int, int)
     showRate = QtCore.pyqtSignal(str, str)
     updateRefreshButtons = QtCore.pyqtSignal()
+    clearOldInformation = QtCore.pyqtSignal()
 
 
     def __init__(self, tab: Tab):
@@ -35,6 +36,7 @@ class Worker(QtCore.QThread):
         self.resultProgress.connect(self.tab.status.resultProgress)
         self.showRate.connect(self.tab.status.showRate)
         self.updateRefreshButtons.connect(self.tab.parent.updateRefreshButtons)
+        self.clearOldInformation.connect(self.tab.clearOldInformation)
         self.connectSlots()
     
 
@@ -48,6 +50,7 @@ class Worker(QtCore.QThread):
         """This method is called before this worker is run
         """
         self.updateRefreshButtons.emit()
+        self.clearOldInformation.emit()
 
 
     def after(self):

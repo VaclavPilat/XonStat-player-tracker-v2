@@ -37,8 +37,6 @@ class PlayerInfoWorker(TabInfoWorker):
     def run(self):
         """Running the Worker task
         """
-        # Removing old content from tables
-        self.clearInfoTable.emit()
         # Checking if this player is being tracked
         self.checkConfigFile()
         # Sleeping

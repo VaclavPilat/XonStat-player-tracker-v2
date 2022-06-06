@@ -80,6 +80,13 @@ class GameInfo(TabInfo):
                 self.worker.start()
         else:
             self.scrollArea.setEnabled(False)
+
+
+    def clearOldInformation(self):
+        """Removes old information to make space for new ones
+        """
+        super().clearOldInformation()
+        self.players.setRowCount(0)
     
 
     def showPlayer(self, identifier: int, name: str, score: int, color: str):

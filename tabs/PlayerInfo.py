@@ -94,6 +94,13 @@ class PlayerInfo(TabInfo):
                 self.worker.start()
         else:
             self.scrollArea.setEnabled(False)
+
+
+    def clearOldInformation(self):
+        """Removes old information to make space for new ones
+        """
+        super().clearOldInformation()
+        self.gameList.setRowCount(0)
     
 
     def setInfoTextColor(self, row: int, color: str):

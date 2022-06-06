@@ -52,3 +52,9 @@ class Tab(QtWidgets.QWidget):
             event: Event
         """
         pass
+
+
+    def clearOldInformation(self):
+        """Removes old information to make space for new ones
+        """
+        pass

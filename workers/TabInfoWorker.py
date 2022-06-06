@@ -9,10 +9,8 @@ class TabInfoWorker(Worker):
     """
 
 
-    clearTable = QtCore.pyqtSignal()
     setInfoContent = QtCore.pyqtSignal(int, str)
     addInfoContent = QtCore.pyqtSignal(int, str)
-    clearInfoTable = QtCore.pyqtSignal()
     setInfoRowColor = QtCore.pyqtSignal(int, str)
 
 
@@ -28,8 +26,6 @@ class TabInfoWorker(Worker):
     def connectSlots(self):
         """Connecting signals to slots. This method is called in init.
         """
-        self.clearTable.connect(lambda: self.tab.players.setRowCount(0))
         self.setInfoContent.connect(self.tab.setInfoContent)
         self.addInfoContent.connect(self.tab.addInfoContent)
-        self.clearInfoTable.connect(self.tab.clearInfoTable)
         self.setInfoRowColor.connect(self.tab.info.setRowColor)

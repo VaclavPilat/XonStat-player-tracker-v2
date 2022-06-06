@@ -62,6 +62,12 @@ class TabInfo(Tab):
         if self.id == None:
             return False
         return True
+
+
+    def clearOldInformation(self):
+        """Removes old information to make space for new ones
+        """
+        self.clearInfoTable()
     
 
     def localKeyPressEvent(self, event):
