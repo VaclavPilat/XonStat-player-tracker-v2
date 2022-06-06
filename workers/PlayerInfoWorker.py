@@ -14,6 +14,7 @@ class PlayerInfoWorker(TabInfoWorker):
 
 
     setInfoTextColor = QtCore.pyqtSignal(int, str)
+    showRecentGame = QtCore.pyqtSignal(dict)
 
 
     def __init__(self, tab: Tab):
@@ -30,6 +31,7 @@ class PlayerInfoWorker(TabInfoWorker):
         """
         super().connectSlots()
         self.setInfoTextColor.connect(self.tab.setInfoTextColor)
+        self.showRecentGame.connect(self.tab.showRecentGame)
     
 
     def run(self):
@@ -151,4 +153,4 @@ class PlayerInfoWorker(TabInfoWorker):
             data (dict): Loaded game information
         """
         for game in data:
-            print(game["game_id"])
+            self.showRecentGame.emit(game)

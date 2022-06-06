@@ -74,9 +74,10 @@ class PlayerInfo(TabInfo):
         self.gameList.setHorizontalHeaderLabels(columns)
         self.gameList.horizontalHeader().setMinimumSectionSize(100)
         self.gameList.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        for i in range(1, 3):
-            self.gameList.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
-        self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        self.gameList.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        self.gameList.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        self.gameList.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
         self.gameList.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.gameList.setFixedHeight((Config.instance()["Settings"]["recentGamesCount"] +1) * 30)
         return self.gameList
@@ -103,3 +104,42 @@ class PlayerInfo(TabInfo):
             color (str): Color class
         """
         self.info.cellWidget(row, 1).layout().itemAt(0).widget().setColor(color)
+    
+
+    def showRecentGame(self, game: dict):
+        """Showing recent game by creating a new row in gameList table
+
+        Args:
+            game (dict): Game info
+        """
+        row = self.gameList.rowCount()
+        if row >= Config.instance()["Settings"]["recentGamesCount"]:
+            return
+        self.gameList.insertRow(row)
+        # Adding cells
+        for i in range(4):
+            self.gameList.setCellWidget(row, i, ColoredLabel(self.gameList))
+        # Setting cell content
+        date = datetime.datetime.strptime(game["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
+        date_str = date.strftime("%d.%m.%Y %H:%M:%S")
+        self.gameList.cellWidget(row, 0).setText(date_str)
+        self.gameList.cellWidget(row, 1).setText(game["server_name"])
+        self.gameList.cellWidget(row, 2).setText(game["game_type_cd"].upper())
+        self.gameList.cellWidget(row, 3).setText(game["map_name"])
+        # Adding buttons
+        actions = ColoredWidget()
+        buttonGroup = QtWidgets.QHBoxLayout()
+        actions.setLayout(buttonGroup)
+        buttonGroup.setContentsMargins(0, 0, 0, 0)
+        buttonGroup.setSpacing(0)
+        buttonGroup.addStretch()
+        # Button for showing the selected game in browser
+        browserButton = BrowserButton(self.gameList)
+        browserButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/game/" + str(game["game_id"])))
+        buttonGroup.addWidget(browserButton)
+        # Adding button for showing game in gameInfo window
+        gameInfoButton = WindowButton(self.gameList)
+        gameInfoButton.clicked.connect(lambda: self.parent.openGameInfo(game["game_id"]))
+        buttonGroup.addWidget(gameInfoButton)
+        self.gameList.setCellWidget(row, 4, actions)
+        buttonGroup.addStretch()
