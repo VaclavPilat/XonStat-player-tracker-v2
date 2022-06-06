@@ -101,6 +101,11 @@ class PlayerInfo(TabInfo):
         """
         super().clearOldInformation()
         self.gameList.setRowCount(0)
+        for i in range(self.heatmap.rowCount()):
+            for j in range(self.heatmap.columnCount()):
+                self.heatmap.cellWidget(i, j).setText("")
+                self.heatmap.cellWidget(i, j).setBackground("heatmap-0")
+        self.setInfoContent(6, "")
     
 
     def setInfoTextColor(self, row: int, color: str):
@@ -150,3 +155,25 @@ class PlayerInfo(TabInfo):
         buttonGroup.addWidget(gameInfoButton)
         self.gameList.setCellWidget(row, 4, actions)
         buttonGroup.addStretch()
+
+
+    def updateHeatmap(self, row: int, column: int):
+        """Updates data in a heatmap table
+
+        Args:
+            row (int): Row index
+            column (int): Column index
+        """
+        widget = self.heatmap.cellWidget(row, column)
+        # Getting current game count
+        currentText = widget.text()
+        if currentText is not None and len(currentText) > 0:
+            currentCount = int(currentText)
+        else:
+            currentCount = 0
+        # Updating current count
+        currentCount += 1
+        currentText = str(currentCount)
+        widget.setText(currentText)
+        if currentCount <= 10:
+            widget.setBackground("heatmap-" + currentText)

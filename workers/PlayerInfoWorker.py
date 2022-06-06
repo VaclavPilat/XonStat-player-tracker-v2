@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-import datetime
+import datetime, math
 
 from workers.Worker import *
 from misc.Config import *
@@ -15,6 +15,7 @@ class PlayerInfoWorker(TabInfoWorker):
 
     setInfoTextColor = QtCore.pyqtSignal(int, str)
     showRecentGame = QtCore.pyqtSignal(dict)
+    updateHeatmap = QtCore.pyqtSignal(int, int)
 
 
     def __init__(self, tab: Tab):
@@ -32,11 +33,13 @@ class PlayerInfoWorker(TabInfoWorker):
         super().connectSlots()
         self.setInfoTextColor.connect(self.tab.setInfoTextColor)
         self.showRecentGame.connect(self.tab.showRecentGame)
+        self.updateHeatmap.connect(self.tab.updateHeatmap)
     
 
     def run(self):
         """Running the Worker task
         """
+        self.thisWeek = 0
         # Checking if this player is being tracked
         self.checkConfigFile()
         # Sleeping
@@ -116,6 +119,7 @@ class PlayerInfoWorker(TabInfoWorker):
         current = 0
         correct = 0
         self.message.emit("Loading recent games")
+        self.setInfoRowColor.emit(6, "dark-yellow")
         # Loading list of games
         url = "https://stats.xonotic.org/games?player_id=" + str(self.tab.id)
         for i in range( Config.instance()["Settings"]["gameListCount"] ):
@@ -141,6 +145,11 @@ class PlayerInfoWorker(TabInfoWorker):
                         break
             except BufferError:
                 pass
+        # Showing results
+        if current == correct:
+            self.setInfoRowColor.emit(6, None)
+        else:
+            self.setInfoRowColor.emit(6, "dark-red")
         self.resultProgress.emit("Finished loading recent games", correct, Config.instance()["Settings"]["gameListCount"])
     
 
@@ -151,4 +160,22 @@ class PlayerInfoWorker(TabInfoWorker):
             data (dict): Loaded game information
         """
         for game in data:
+            # Checking if this game happened within the last 7 days
+            gameDatetime = datetime.datetime.strptime(game["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
+            gameTime = gameDatetime.timestamp()
+            currentTime = int(time.time())
+            week = 60 * 60 * 24 * 7
+            if (currentTime - gameTime) <= week:
+                # Getting information from datetime
+                row = gameDatetime.date().weekday()
+                column = gameDatetime.hour // Config.instance()["Settings"]["heatmapHourSpan"]
+                # Updating heatmap
+                self.updateHeatmap.emit(row, column)
+                # Updating info label
+                self.thisWeek += 1
+                if self.thisWeek == Config.instance()["Settings"]["gameListCount"] * 20:
+                    self.setInfoContent.emit(6, ">" + str(self.thisWeek) + " (>" + str(math.floor(self.thisWeek / 7)) + " games per day)")
+                else:
+                    self.setInfoContent.emit(6, str(self.thisWeek) + " (~" + str(math.floor(self.thisWeek / 7)) + " games per day)")
+            # Showing game in a gameList table
             self.showRecentGame.emit(game)
