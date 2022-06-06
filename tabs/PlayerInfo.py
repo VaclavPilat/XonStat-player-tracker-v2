@@ -68,7 +68,7 @@ class PlayerInfo(TabInfo):
         """
         self.gameList = ColoredTable(self)
         # Generating column headers
-        columns = ["Date and time [UTC]", "Mode", "Map", "Actions"]
+        columns = ["Date and time [UTC]", "Server", "Mode", "Map", "Actions"]
         # Setting columns
         self.gameList.setColumnCount(len(columns))
         self.gameList.setHorizontalHeaderLabels(columns)
@@ -86,7 +86,7 @@ class PlayerInfo(TabInfo):
         """Starting page (re)loading
         """
         if self.worker is None:
-            self.worker = GameInfoWorker(self)
+            self.worker = PlayerInfoWorker(self)
         if super().startLoading():
             self.scrollArea.setEnabled(True)
             if (self.worker.isFinished() or not self.worker.isRunning()):

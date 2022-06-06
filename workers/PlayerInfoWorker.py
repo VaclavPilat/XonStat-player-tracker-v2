@@ -8,7 +8,7 @@ from misc.Functions import *
 from workers.TabInfoWorker import *
 
 
-class GameInfoWorker(TabInfoWorker):
+class PlayerInfoWorker(TabInfoWorker):
     """Worker class is for executing background tasks
     """
 
@@ -45,6 +45,12 @@ class GameInfoWorker(TabInfoWorker):
             return
         # Loading player information
         self.loadPlayerInformation()
+        # Sleeping
+        self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
+        if self.cancel:
+            return
+        # Loading recent games
+        self.loadGames()
     
 
     def checkConfigFile(self):
@@ -104,3 +110,45 @@ class GameInfoWorker(TabInfoWorker):
             for i in range(2, 6):
                 self.setInfoRowColor.emit(i, "dark-red")
         return bool(response)
+    
+
+    def loadGames(self):
+        current = 0
+        correct = 0
+        self.message.emit("Loading recent games")
+        # Loading list of games
+        url = "https://stats.xonotic.org/games?player_id=" + str(self.tab.id)
+        for i in range( Config.instance()["Settings"]["gameListCount"] ):
+            # Sleeping
+            time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
+            # Canceling
+            if self.cancel:
+                break
+            # Getting list of games
+            current += 1
+            self.progress.emit(current, Config.instance()["Settings"]["gameListCount"])
+            try:
+                response = createRequest(url)
+                self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
+                if response:
+                    correct += 1
+                    data = response.json()
+                    if data is not None and len(data) > 0:
+                        self.processGames(data)
+                        # Getting new URL
+                        url = "https://stats.xonotic.org/games?player_id=" + str(self.tab.id) + "&start_game_id=" + str(data[-1]["game_id"] -1)
+                    else:
+                        break
+            except BufferError:
+                pass
+        self.resultProgress.emit("Finished loading recent games", correct, Config.instance()["Settings"]["gameListCount"])
+    
+
+    def processGames(self, data: dict):
+        """Processes data about a certain game
+
+        Args:
+            data (dict): Loaded game information
+        """
+        for game in data:
+            print(game["game_id"])
