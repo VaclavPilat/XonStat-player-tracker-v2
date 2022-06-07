@@ -48,7 +48,7 @@ class GameInfoWorker(TabInfoWorker):
             self.loadAdditionalInformation(data)
     
 
-    def loadGameInformation(self) -> dict:
+    def loadGameInformation(self):
         """Loading game information
 
         Returns:

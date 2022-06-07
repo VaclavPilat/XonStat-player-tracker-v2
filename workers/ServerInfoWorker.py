@@ -33,8 +33,43 @@ class ServerInfoWorker(TabInfoWorker):
     def run(self):
         """Running the Worker task
         """
+        # Loading player information
+        self.loadServerInformation()
+        # Sleeping
+        self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
+        if self.cancel:
+            return
         # Loading recent games
         self.loadGames()
+    
+
+    def loadServerInformation(self):
+        """Loads information about the server
+        """
+        self.message.emit("Loading player information")
+        for i in range(4):
+            self.setInfoRowColor.emit(i, "dark-yellow")
+        response = None
+        try:
+            response = createRequest("https://stats.xonotic.org/server/" + str(self.tab.id))
+            self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
+        except:
+            pass
+        # Checking response
+        if response is not None and response:
+            data = response.json()
+            # Showing player information
+            self.setInfoContent.emit(0, data["name"])
+            self.setInfoContent.emit(1, data["ip_addr"])
+            self.setInfoContent.emit(2, str(data["port"]))
+            self.setInfoContent.emit(3, data["create_dt"])
+            self.resultMessage.emit("Successfully loaded server information", True)
+            for i in range(4):
+                self.setInfoRowColor.emit(i, None)
+        else:
+            self.resultMessage.emit("Unable to load server information", False)
+            for i in range(4):
+                self.setInfoRowColor.emit(i, "dark-red")
     
 
     def loadGames(self):

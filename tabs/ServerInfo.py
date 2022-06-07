@@ -27,7 +27,7 @@ class ServerInfo(TabInfo):
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter server ID")
         # Creating an info table
-        self.scrollLayout.addWidget(self.createInfoTable(["Server name", "IP address", "Port", "Created on"]))
+        self.scrollLayout.addWidget(self.createInfoTable(["Server name", "IP address", "Port", "Added"]))
         # Adding widgets to layout
         self.scrollLayout.addWidget(self.__createGameList())
         self.scrollLayout.addStretch()
