@@ -132,6 +132,7 @@ class PlayerInfo(TabInfo):
                 self.heatmap.cellWidget(i, j).setText("")
                 self.heatmap.cellWidget(i, j).setBackground("heatmap-0")
         self.setInfoContent(6, "")
+        self.gameStats.setRowCount(0)
     
 
     def setInfoTextColor(self, row: int, color: str):
@@ -203,3 +204,24 @@ class PlayerInfo(TabInfo):
         widget.setText(currentText)
         if currentCount <= 10:
             widget.setBackground("heatmap-" + currentText)
+    
+
+    def showGameStats(self, dataList: list, dataDict: dict):
+        """Shows information about game modes
+
+        Args:
+            dataList (list): List of game mode stats
+            dataDict (dict): Dict with game mode stats
+        """
+        for gameMode in dataList:
+            name = gameMode["game_type_cd"]
+            row = self.gameStats.rowCount()
+            self.gameStats.insertRow(row)
+            for column in range(self.gameStats.columnCount()):
+                self.gameStats.setCellWidget(row, column, ColoredLabel(self.gameStats))
+            self.gameStats.cellWidget(row, 0).setText(name.upper())
+            self.gameStats.cellWidget(row, 1).setText(str(gameMode["games"]))
+            self.gameStats.cellWidget(row, 2).setText(str(round(gameMode["win_pct"], 2)))
+            self.gameStats.cellWidget(row, 3).setText(str(round(dataDict[name]["k_d_ratio"], 2)))
+            self.gameStats.cellWidget(row, 4).setText(str(round(dataDict[name]["total_playing_time"] / 3600, 1)))
+            self.gameStats.cellWidget(row, 5).setText(dataDict[name]["last_played_fuzzy"])

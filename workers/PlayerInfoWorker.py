@@ -16,6 +16,7 @@ class PlayerInfoWorker(TabInfoWorker):
     setInfoTextColor = QtCore.pyqtSignal(int, str)
     showRecentGame = QtCore.pyqtSignal(dict)
     updateHeatmap = QtCore.pyqtSignal(int, int)
+    showGameStats = QtCore.pyqtSignal(list, dict)
 
 
     def __init__(self, tab: Tab):
@@ -34,6 +35,7 @@ class PlayerInfoWorker(TabInfoWorker):
         self.setInfoTextColor.connect(self.tab.setInfoTextColor)
         self.showRecentGame.connect(self.tab.showRecentGame)
         self.updateHeatmap.connect(self.tab.updateHeatmap)
+        self.showGameStats.connect(self.tab.showGameStats)
     
 
     def run(self):
@@ -108,6 +110,9 @@ class PlayerInfoWorker(TabInfoWorker):
             self.resultMessage.emit("Successfully loaded player information", True)
             for i in range(2, 6):
                 self.setInfoRowColor.emit(i, None)
+            # Processing game stats information
+            dataList = sorted(data["games_played"].values(), key=lambda x: x["games"], reverse=True)
+            self.showGameStats.emit(dataList, data["overall_stats"])
         else:
             self.resultMessage.emit("Unable to load player information", False)
             for i in range(2, 6):
