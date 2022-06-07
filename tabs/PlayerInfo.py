@@ -106,7 +106,7 @@ class PlayerInfo(TabInfo):
         self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
         self.gameList.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
         self.gameList.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        self.gameList.setFixedHeight((Config.instance()["Settings"]["recentGamesCount"] +1) * 30)
+        self.gameList.verticalHeader().hide()
         return self.gameList
     
 
@@ -183,6 +183,7 @@ class PlayerInfo(TabInfo):
         buttonGroup.addWidget(gameInfoButton)
         self.gameList.setCellWidget(row, 4, actions)
         buttonGroup.addStretch()
+        self.gameList.setFixedHeight((self.gameList.rowCount() + 1) * 30)
 
 
     def updateHeatmap(self, row: int, column: int):

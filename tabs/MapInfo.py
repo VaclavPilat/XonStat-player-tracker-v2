@@ -50,6 +50,7 @@ class MapInfo(TabInfo):
         self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
         self.gameList.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
         self.gameList.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.gameList.verticalHeader().hide()
         return self.gameList
     
 
