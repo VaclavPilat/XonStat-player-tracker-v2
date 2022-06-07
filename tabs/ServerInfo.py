@@ -22,7 +22,32 @@ class ServerInfo(TabInfo):
         """
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter server ID")
-        self.scrollLayout.addStretch()
+        # Creating an info table
+        self.scrollLayout.addWidget(self.createInfoTable(["Server name", "IP address", "Port", "Created on"]))
+        # Adding widgets to layout
+        self.scrollLayout.addWidget(self.__createGameList())
+    
+
+    def __createGameList(self) -> ColoredTable:
+        """Creates a table with list of recent games
+
+        Returns:
+            ColoredTable: Colored table instance
+        """
+        self.gameList = ColoredTable(self)
+        # Generating column headers
+        columns = ["Date and time [UTC]", "Server", "Mode", "Map", "Actions"]
+        # Setting columns
+        self.gameList.setColumnCount(len(columns))
+        self.gameList.setHorizontalHeaderLabels(columns)
+        self.gameList.horizontalHeader().setMinimumSectionSize(100)
+        self.gameList.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        self.gameList.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        self.gameList.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
+        self.gameList.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        self.gameList.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        return self.gameList
     
 
     def startLoading(self):
