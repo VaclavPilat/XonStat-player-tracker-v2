@@ -1,5 +1,3 @@
-import datetime
-
 from tabs.TabInfo import *
 from widgets.ColoredButtons import *
 from workers.ServerInfoWorker import *
@@ -27,7 +25,7 @@ class ServerInfo(TabInfo):
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter server ID")
         # Creating an info table
-        self.scrollLayout.addWidget(self.createInfoTable(["Server name", "IP address", "Port", "Added"]))
+        self.scrollLayout.addWidget(self.createInfoTable(["Server name", "IP address", "Port", "Added on"]))
         # Adding widgets to layout
         self.scrollLayout.addWidget(self.__createGameList())
         self.scrollLayout.addStretch()

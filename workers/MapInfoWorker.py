@@ -6,7 +6,7 @@ from misc.Functions import *
 from workers.TabInfoWorker import *
 
 
-class ServerInfoWorker(TabInfoWorker):
+class MapInfoWorker(TabInfoWorker):
     """Worker class is for executing background tasks
     """
 
@@ -46,12 +46,12 @@ class ServerInfoWorker(TabInfoWorker):
     def loadServerInformation(self):
         """Loads information about the server
         """
-        self.message.emit("Loading server information")
-        for i in range(4):
+        self.message.emit("Loading map information")
+        for i in range(2):
             self.setInfoRowColor.emit(i, "dark-yellow")
         response = None
         try:
-            response = createRequest("https://stats.xonotic.org/server/" + str(self.tab.id))
+            response = createRequest("https://stats.xonotic.org/map/" + str(self.tab.id))
             self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
         except:
             pass
@@ -60,15 +60,14 @@ class ServerInfoWorker(TabInfoWorker):
             data = response.json()
             # Showing player information
             self.setInfoContent.emit(0, data["name"])
-            self.setInfoContent.emit(1, data["ip_addr"])
-            self.setInfoContent.emit(2, str(data["port"]))
-            self.setInfoContent.emit(3, data["create_dt"])
-            self.resultMessage.emit("Successfully loaded server information", True)
-            for i in range(4):
+            gameDatetime = datetime.datetime.strptime(data["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
+            self.setInfoContent.emit(1, gameDatetime.strftime("%d.%m.%Y %H:%M:%S UTC"))
+            self.resultMessage.emit("Successfully loaded map information", True)
+            for i in range(2):
                 self.setInfoRowColor.emit(i, None)
         else:
-            self.resultMessage.emit("Unable to load server information", False)
-            for i in range(4):
+            self.resultMessage.emit("Unable to load map information", False)
+            for i in range(2):
                 self.setInfoRowColor.emit(i, "dark-red")
     
 
@@ -78,7 +77,7 @@ class ServerInfoWorker(TabInfoWorker):
         self.message.emit("Loading recent games")
         self.setInfoRowColor.emit(6, "dark-yellow")
         # Loading list of games
-        url = "https://stats.xonotic.org/games?server_id=" + str(self.tab.id)
+        url = "https://stats.xonotic.org/games?map_id=" + str(self.tab.id)
         for i in range( Config.instance()["Settings"]["gameListCount"] ):
             # Sleeping
             time.sleep( Config.instance()["Settings"]["singleRequestInterval"] )
@@ -97,7 +96,7 @@ class ServerInfoWorker(TabInfoWorker):
                     if data is not None and len(data) > 0:
                         self.processGames(data)
                         # Getting new URL
-                        url = "https://stats.xonotic.org/games?server_id=" + str(self.tab.id) + "&start_game_id=" + str(data[-1]["game_id"] -1)
+                        url = "https://stats.xonotic.org/games?map_id=" + str(self.tab.id) + "&start_game_id=" + str(data[-1]["game_id"] -1)
                     else:
                         break
             except BufferError:
