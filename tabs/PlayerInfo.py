@@ -31,15 +31,38 @@ class PlayerInfo(TabInfo):
         copyButton = CopyButton(self.info)
         copyButton.clicked.connect(lambda: QtWidgets.QApplication.instance().clipboard().setText(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text()))
         self.info.cellWidget(2, 1).layout().addWidget(copyButton)
+        # Adding a table for game mode statistics
+        self.scrollLayout.addWidget(self.__createGameStats())
         # Adding heatmap
         self.scrollLayout.addWidget(self.__createHeatmap())
         # Adding list of recent games
         self.scrollLayout.addWidget(self.__createGameList())
         self.scrollLayout.addStretch()
-    
 
-    def __createHeatmap(self):
+
+    def __createGameStats(self) -> ColoredTable:
+        """Creates a table for game mode statistics
+
+        Returns:
+            ColoredTable: Colored table instance
+        """
+        self.gameStats = ColoredTable(self)
+        self.gameStats.setMinimumHeight(10 * 30)
+        self.gameStats.verticalHeader().setMinimumSectionSize(30)
+        self.gameStats.verticalHeader().setMaximumSectionSize(30)
+        # Setting columns
+        columns = ["Game mode", "Games played", "Win rate [%]", "K/D ratio", "Time spent [hours]", "Last played"]
+        self.gameStats.setColumnCount(len(columns))
+        self.gameStats.setHorizontalHeaderLabels(columns)
+        self.gameStats.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        return self.gameStats
+
+    
+    def __createHeatmap(self) -> ColoredTable:
         """Creates a heatmap table
+
+        Returns:
+            ColoredTable: Colored table instance
         """
         self.heatmap = ColoredTable(self)
         self.heatmap.setProperty("class", "heatmap")
@@ -63,8 +86,11 @@ class PlayerInfo(TabInfo):
         return self.heatmap
     
 
-    def __createGameList(self):
+    def __createGameList(self) -> ColoredTable:
         """Creates a table with list of recent games
+
+        Returns:
+            ColoredTable: Colored table instance
         """
         self.gameList = ColoredTable(self)
         # Generating column headers
