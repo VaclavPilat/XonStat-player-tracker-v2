@@ -47,9 +47,10 @@ class PlayerInfo(TabInfo):
             ColoredTable: Colored table instance
         """
         self.gameStats = ColoredTable(self)
-        self.gameStats.setMinimumHeight(10 * 30)
+        self.gameStats.setFixedHeight(10 * 30)
         self.gameStats.verticalHeader().setMinimumSectionSize(30)
         self.gameStats.verticalHeader().setMaximumSectionSize(30)
+        self.gameStats.verticalHeader().hide()
         # Setting columns
         columns = ["Game mode", "Games played", "Win rate [%]", "K/D ratio", "Time spent [hours]", "Last played"]
         self.gameStats.setColumnCount(len(columns))
@@ -215,6 +216,8 @@ class PlayerInfo(TabInfo):
         """
         for gameMode in dataList:
             name = gameMode["game_type_cd"]
+            if name == "overall":
+                continue
             row = self.gameStats.rowCount()
             self.gameStats.insertRow(row)
             for column in range(self.gameStats.columnCount()):
@@ -225,3 +228,4 @@ class PlayerInfo(TabInfo):
             self.gameStats.cellWidget(row, 3).setText(str(round(dataDict[name]["k_d_ratio"], 2)))
             self.gameStats.cellWidget(row, 4).setText(str(round(dataDict[name]["total_playing_time"] / 3600, 1)))
             self.gameStats.cellWidget(row, 5).setText(dataDict[name]["last_played_fuzzy"])
+        self.gameStats.setFixedHeight((self.gameStats.rowCount() + 1) * 30)
