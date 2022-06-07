@@ -228,4 +228,5 @@ class PlayerInfo(TabInfo):
             self.gameStats.cellWidget(row, 3).setText(str(round(dataDict[name]["k_d_ratio"], 2)))
             self.gameStats.cellWidget(row, 4).setText(str(round(dataDict[name]["total_playing_time"] / 3600, 1)))
             self.gameStats.cellWidget(row, 5).setText(dataDict[name]["last_played_fuzzy"])
+            self.gameStats.cellWidget(row, 5).setColor(getActiveColor(dataDict[name]["last_played_fuzzy"]))
         self.gameStats.setFixedHeight((self.gameStats.rowCount() + 1) * 30)
