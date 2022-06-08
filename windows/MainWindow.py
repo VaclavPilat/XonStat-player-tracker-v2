@@ -65,12 +65,17 @@ class MainWindow(Window):
         self.tabWidget.setCornerWidget(actions)
         # Opening tabs
         if Config.instance().load("Tabs") and len(Config.instance()["Tabs"]) > 0:
+            focusIndex = -1
             for tab in Config.instance()["Tabs"]:
+                if "focus" in tab.keys():
+                    focusIndex = Config.instance()["Tabs"].index(tab)
                 cls = globals()[tab["type"]]
                 if "id" in tab.keys():
                     self.__addTab(cls(self, tab["id"]))
                 else:
                     self.__addTab(cls(self))
+            if focusIndex >= 0:
+                self.tabWidget.setCurrentIndex(focusIndex)
         else:
             # Opening new tab instead
             self.openNewTab()
@@ -333,5 +338,7 @@ class MainWindow(Window):
             data["type"] = str(type(widget).__name__)
             if issubclass(type(widget), TabInfo) and widget.id is not None:
                 data["id"] = widget.id
+            if widget == self.tabWidget.currentWidget():
+                data["focus"] = True
             Config.instance()["Tabs"].append(data)
         Config.instance().save("Tabs")
