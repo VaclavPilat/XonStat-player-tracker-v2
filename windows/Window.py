@@ -112,21 +112,3 @@ class Window(QtWidgets.QMainWindow):
             super().setWindowTitle(str(QtWidgets.QApplication.instance().applicationName()) + " - " + title)
         else:
             super().setWindowTitle(str(QtWidgets.QApplication.instance().applicationName()))
-
-
-    def closeEvent(self, event, isChildWindow = True):
-        """Stopping background tasks before closing this window to avoid crashes
-
-        Args:
-            event: Closing event
-            isChildWindow (bool): Has this window a parent window?
-        """
-        if self.worker is not None:
-            if self.worker.isRunning() and not self.closing:
-                self.closing = True
-                event.ignore()
-                self.status.lock()
-                self.worker.cancel = True
-                self.setEnabled(False)
-                if isChildWindow:
-                    self.worker.finished.connect(self.close)

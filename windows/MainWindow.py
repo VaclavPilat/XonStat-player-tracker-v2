@@ -312,3 +312,17 @@ class MainWindow(Window):
         widget = self.tabWidget.currentWidget()
         if widget is not None:
             widget.localKeyPressEvent(event)
+
+
+    def closeEvent(self, event):
+        """Saving currently open tabs
+        """
+        Config.instance()["Tabs"] = []
+        for i in range(self.tabWidget.count()):
+            widget = self.tabWidget.widget(i)
+            data = {}
+            data["type"] = str(type(widget).__name__)
+            if issubclass(type(widget), TabInfo) and widget.id is not None:
+                data["id"] = widget.id
+            Config.instance()["Tabs"].append(data)
+        Config.instance().save("Tabs")
