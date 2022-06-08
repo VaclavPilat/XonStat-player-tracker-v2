@@ -39,8 +39,6 @@ class PlayerList(Tab):
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         # Setting column stretching
-        self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-        self.table.verticalHeader().setMinimumSectionSize(30)
         self.table.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         for i in range(1, 4):
             self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)

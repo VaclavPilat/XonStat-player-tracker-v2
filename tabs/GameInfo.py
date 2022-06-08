@@ -59,8 +59,6 @@ class GameInfo(TabInfo):
         self.players.setHorizontalHeaderLabels(headers)
         # Setting column stretching
         self.players.verticalHeader().hide()
-        self.players.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
-        self.players.verticalHeader().setMinimumSectionSize(30)
         self.players.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
         for i in range(1, 4):
             self.players.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)

@@ -93,15 +93,13 @@ class TabInfo(Tab):
         Returns:
             ColoredTable: Created info table
         """
-        self.info = ColoredTable(self)
+        self.info = ColoredTable(self, False)
         # Setting table headers settings
         self.info.setColumnCount(2)
         self.info.setShowGrid(False)
-        self.info.horizontalHeader().hide()
         for i in range(self.info.columnCount()):
             self.info.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.info.verticalHeader().hide()
-        self.info.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         # Adding rows
         for heading in headings:
             row = self.info.rowCount()
@@ -117,8 +115,6 @@ class TabInfo(Tab):
             label = ColoredLabel(self, None, "transparent")
             layout.addWidget(label)
             self.info.setCellWidget(row, 1, widget)
-        # Setting fixed table height
-        self.info.setFixedHeight(self.info.rowCount() * 30)
         return self.info
     
 

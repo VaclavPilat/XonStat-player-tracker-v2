@@ -47,9 +47,6 @@ class PlayerInfo(TabInfo):
             ColoredTable: Colored table instance
         """
         self.gameStats = ColoredTable(self)
-        self.gameStats.setFixedHeight(10 * 30)
-        self.gameStats.verticalHeader().setMinimumSectionSize(30)
-        self.gameStats.verticalHeader().setMaximumSectionSize(30)
         self.gameStats.verticalHeader().hide()
         # Setting columns
         columns = ["Game mode", "Games played", "Win rate [%]", "K/D ratio", "Time spent [hours]", "Last played"]
@@ -77,13 +74,11 @@ class PlayerInfo(TabInfo):
         self.heatmap.horizontalHeader().setMinimumSectionSize(50)
         self.heatmap.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         # Generating rows
-        self.heatmap.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         for i in range(7):
             self.heatmap.insertRow(i)
             for j in range(self.heatmap.columnCount()):
                 self.heatmap.setCellWidget(i, j, ColoredLabel(self.heatmap, None, "heatmap-0"))
         self.heatmap.setVerticalHeaderLabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
-        self.heatmap.setFixedHeight((self.heatmap.rowCount() + 1) * 30)
         return self.heatmap
     
 
@@ -105,7 +100,6 @@ class PlayerInfo(TabInfo):
         self.gameList.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
         self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
         self.gameList.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        self.gameList.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.gameList.verticalHeader().hide()
         return self.gameList
     
@@ -183,7 +177,6 @@ class PlayerInfo(TabInfo):
         buttonGroup.addWidget(gameInfoButton)
         self.gameList.setCellWidget(row, 4, actions)
         buttonGroup.addStretch()
-        self.gameList.setFixedHeight((self.gameList.rowCount() + 1) * 30)
 
 
     def updateHeatmap(self, row: int, column: int):
@@ -230,4 +223,3 @@ class PlayerInfo(TabInfo):
             self.gameStats.cellWidget(row, 4).setText(str(round(dataDict[name]["total_playing_time"] / 3600, 1)))
             self.gameStats.cellWidget(row, 5).setText(dataDict[name]["last_played_fuzzy"])
             self.gameStats.cellWidget(row, 5).setColor(getActiveColor(dataDict[name]["last_played_fuzzy"]))
-        self.gameStats.setFixedHeight((self.gameStats.rowCount() + 1) * 30)

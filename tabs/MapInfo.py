@@ -49,7 +49,6 @@ class MapInfo(TabInfo):
         self.gameList.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
         self.gameList.horizontalHeader().setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
         self.gameList.horizontalHeader().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
-        self.gameList.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.gameList.verticalHeader().hide()
         return self.gameList
     
@@ -111,4 +110,3 @@ class MapInfo(TabInfo):
         buttonGroup.addWidget(gameInfoButton)
         self.gameList.setCellWidget(row, 4, actions)
         buttonGroup.addStretch()
-        self.gameList.setFixedHeight((self.gameList.rowCount() + 1) * 30)
