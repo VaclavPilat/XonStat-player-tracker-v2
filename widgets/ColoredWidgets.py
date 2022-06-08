@@ -123,7 +123,7 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
     """
 
 
-    def __init__(self, parent, horizontalHeaderVisible: bool = True):
+    def __init__(self, parent):
         """Initializes a table
         """
         QtWidgets.QTableWidget.__init__(self, parent)
@@ -131,24 +131,6 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
         self.horizontalHeader().setMinimumSectionSize(140)
         self.setVerticalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
         self.setHorizontalScrollMode(QtWidgets.QAbstractItemView.ScrollPerPixel)
-        self.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        # Hiding horizontal header if not needed
-        self.horizontalHeaderVisible = horizontalHeaderVisible
-        if not self.horizontalHeaderVisible:
-            self.horizontalHeader().hide()
-    
-
-    def insertRow(self, row: int):
-        """Inserts a new row into the table and resizes it
-
-        Args:
-            row (int): Row index
-        """
-        super().insertRow(row)
-        if self.horizontalHeaderVisible:
-            self.setFixedHeight((self.rowCount() + 1) * 30)
-        else:
-            self.setFixedHeight(self.rowCount() * 30)
 
     
     def setRowColor(self, row: int, background: str = None):
@@ -190,6 +172,36 @@ class ColoredTable(QtWidgets.QTableWidget, ColoredWidget):
         # Sets widget span if arguments are not empty
         if rowSpan is not None and columnSpan is not None:
             super().setSpan(row, column, rowSpan, columnSpan)
+
+
+
+class ColoredFixedTable(ColoredTable):
+    """Creates a table with a fixed height that depends on row count
+    """
+
+
+    def __init__(self, parent, horizontalHeaderVisible: bool = True):
+        """Initializes a table
+        """
+        super().__init__(parent)
+        self.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        # Hiding horizontal header if not needed
+        self.horizontalHeaderVisible = horizontalHeaderVisible
+        if not self.horizontalHeaderVisible:
+            self.horizontalHeader().hide()
+    
+
+    def insertRow(self, row: int):
+        """Inserts a new row into the table and resizes it
+
+        Args:
+            row (int): Row index
+        """
+        super().insertRow(row)
+        if self.horizontalHeaderVisible:
+            self.setFixedHeight((self.rowCount() + 1) * 30)
+        else:
+            self.setFixedHeight(self.rowCount() * 30)
 
 
 

@@ -93,7 +93,7 @@ class TabInfo(Tab):
         Returns:
             ColoredTable: Created info table
         """
-        self.info = ColoredTable(self, False)
+        self.info = ColoredFixedTable(self, False)
         # Setting table headers settings
         self.info.setColumnCount(2)
         self.info.setShowGrid(False)

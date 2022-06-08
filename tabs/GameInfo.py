@@ -46,13 +46,13 @@ class GameInfo(TabInfo):
         self.scrollLayout.addWidget(self.__createTable())
 
     
-    def __createTable(self) -> ColoredTable:
+    def __createTable(self) -> ColoredFixedTable:
         """Creates a table for list of players
 
         Returns:
-            ColoredTable: Table widget
+            ColoredFixedTable: Table widget
         """
-        self.players = ColoredTable(self)
+        self.players = ColoredFixedTable(self)
         # Setting columns
         headers = ["Player ID", "Player name", "Nickname", "Description", "Score", "Actions"]
         self.players.setColumnCount( len(headers) )

@@ -31,13 +31,13 @@ class ServerInfo(TabInfo):
         self.scrollLayout.addStretch()
     
 
-    def __createGameList(self) -> ColoredTable:
+    def __createGameList(self) -> ColoredFixedTable:
         """Creates a table with list of recent games
 
         Returns:
-            ColoredTable: Colored table instance
+            ColoredFixedTable: Colored table instance
         """
-        self.gameList = ColoredTable(self)
+        self.gameList = ColoredFixedTable(self)
         # Generating column headers
         columns = ["Date and time [UTC]", "Server", "Mode", "Map", "Actions"]
         # Setting columns

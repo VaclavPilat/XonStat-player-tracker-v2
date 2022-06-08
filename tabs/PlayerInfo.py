@@ -40,13 +40,13 @@ class PlayerInfo(TabInfo):
         self.scrollLayout.addStretch()
 
 
-    def __createGameStats(self) -> ColoredTable:
+    def __createGameStats(self) -> ColoredFixedTable:
         """Creates a table for game mode statistics
 
         Returns:
-            ColoredTable: Colored table instance
+            ColoredFixedTable: Colored table instance
         """
-        self.gameStats = ColoredTable(self)
+        self.gameStats = ColoredFixedTable(self)
         self.gameStats.verticalHeader().hide()
         # Setting columns
         columns = ["Game mode", "Games played", "Win rate [%]", "K/D ratio", "Time spent [hours]", "Last played"]
@@ -56,13 +56,13 @@ class PlayerInfo(TabInfo):
         return self.gameStats
 
     
-    def __createHeatmap(self) -> ColoredTable:
+    def __createHeatmap(self) -> ColoredFixedTable:
         """Creates a heatmap table
 
         Returns:
-            ColoredTable: Colored table instance
+            ColoredFixedTable: Colored table instance
         """
-        self.heatmap = ColoredTable(self)
+        self.heatmap = ColoredFixedTable(self)
         self.heatmap.setProperty("class", "heatmap")
         # Generating column headers
         columns = []
@@ -82,13 +82,13 @@ class PlayerInfo(TabInfo):
         return self.heatmap
     
 
-    def __createGameList(self) -> ColoredTable:
+    def __createGameList(self) -> ColoredFixedTable:
         """Creates a table with list of recent games
 
         Returns:
-            ColoredTable: Colored table instance
+            ColoredFixedTable: Colored table instance
         """
-        self.gameList = ColoredTable(self)
+        self.gameList = ColoredFixedTable(self)
         # Generating column headers
         columns = ["Date and time [UTC]", "Server", "Mode", "Map", "Actions"]
         # Setting columns
