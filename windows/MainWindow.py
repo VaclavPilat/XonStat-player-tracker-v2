@@ -63,8 +63,17 @@ class MainWindow(Window):
         buttonGroup.addWidget(self.refreshButtons)
         # Adding widget with corner buttons
         self.tabWidget.setCornerWidget(actions)
-        # Adding new tab
-        self.openNewTab()
+        # Opening tabs
+        if Config.instance().load("Tabs") and len(Config.instance()["Tabs"]) > 0:
+            for tab in Config.instance()["Tabs"]:
+                cls = globals()[tab["type"]]
+                if "id" in tab.keys():
+                    self.__addTab(cls(self, tab["id"]))
+                else:
+                    self.__addTab(cls(self))
+        else:
+            # Opening new tab instead
+            self.openNewTab()
     
 
     def __startLoading(self):
