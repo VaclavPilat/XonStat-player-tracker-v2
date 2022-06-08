@@ -91,7 +91,7 @@ class Window(QtWidgets.QMainWindow):
     def __addIcon(self):
         """Adds an icon to this window
         """
-        self.setWindowIcon(QtGui.QIcon( os.path.join(os.path.dirname(__file__), "Icon.png") )) # Adding icon
+        self.setWindowIcon(QtGui.QIcon( os.path.join(os.path.dirname(__file__), "../Icon.png") )) # Adding icon
     
 
     def __centerWindow(self):
