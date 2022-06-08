@@ -37,6 +37,7 @@ class PlayerInfo(TabInfo):
         self.scrollLayout.addWidget(self.__createHeatmap())
         # Adding list of recent games
         self.scrollLayout.addWidget(self.__createGameList())
+        # Adding stretch
         self.scrollLayout.addStretch()
 
 

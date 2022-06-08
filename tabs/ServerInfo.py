@@ -28,6 +28,7 @@ class ServerInfo(TabInfo):
         self.scrollLayout.addWidget(self.createInfoTable(["Server name", "IP address", "Port", "Added on"]))
         # Adding widgets to layout
         self.scrollLayout.addWidget(self.__createGameList())
+        # Adding stretch
         self.scrollLayout.addStretch()
     
 

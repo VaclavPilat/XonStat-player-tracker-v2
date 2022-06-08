@@ -44,6 +44,8 @@ class GameInfo(TabInfo):
         self.info.cellWidget(2, 1).layout().addWidget(mapInfo)
         # Adding widgets to layout
         self.scrollLayout.addWidget(self.__createTable())
+        # Adding stretch
+        self.scrollLayout.addStretch()
 
     
     def __createTable(self) -> ColoredFixedTable:

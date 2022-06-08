@@ -28,6 +28,7 @@ class MapInfo(TabInfo):
         self.scrollLayout.addWidget(self.createInfoTable(["Map name", "Added on"]))
         # Adding widgets to layout
         self.scrollLayout.addWidget(self.__createGameList())
+        # Adding stretch
         self.scrollLayout.addStretch()
     
 
