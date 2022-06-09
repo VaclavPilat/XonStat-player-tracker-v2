@@ -8,10 +8,6 @@ QLineEdit {
     color: #FFFFFF;
 }
 
-QLineEdit:disabled {
-    border-color: transparent;
-}
-
 ColoredLabel { 
     padding: 5px;
 }

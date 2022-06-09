@@ -29,7 +29,7 @@ class TabInfo(Tab):
             self.identifierInput.setText(str(self.id))
         else:
             self.identifierInput.setFocus()
-        self.identifierInput.textChanged.connect(self.startLoading)
+        self.identifierInput.editingFinished.connect(self.startLoading)
         self.layout.addWidget(self.identifierInput)
         # Creating scroll area
         self.scrollArea = QtWidgets.QScrollArea(self)

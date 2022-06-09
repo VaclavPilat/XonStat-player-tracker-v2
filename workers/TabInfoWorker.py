@@ -12,6 +12,7 @@ class TabInfoWorker(Worker):
     setInfoContent = QtCore.pyqtSignal(int, str)
     addInfoContent = QtCore.pyqtSignal(int, str)
     setInfoRowColor = QtCore.pyqtSignal(int, str)
+    setInputEnabled = QtCore.pyqtSignal(bool)
 
 
     def __init__(self, tab: Tab):
@@ -29,11 +30,20 @@ class TabInfoWorker(Worker):
         self.setInfoContent.connect(self.tab.setInfoContent)
         self.addInfoContent.connect(self.tab.addInfoContent)
         self.setInfoRowColor.connect(self.tab.info.setRowColor)
+        self.setInputEnabled.connect(self.tab.identifierInput.setEnabled)
     
 
     def before(self):
         """This method is called before this worker is run
         """
         super().before()
+        self.setInputEnabled.emit(False)
         if self.tab.id is not None:
             self.setInfoContent.emit(0, str(self.tab.id))
+
+
+    def after(self):
+        """This method is called after this worker is finished
+        """
+        super().after()
+        self.setInputEnabled.emit(True)
