@@ -55,7 +55,7 @@ class GameInfoWorker(TabInfoWorker):
             dict: Loaded game data
         """
         self.message.emit("Loading game information")
-        for i in range(self.tab.info.rowCount()):
+        for i in range(1, self.tab.info.rowCount()):
             self.setInfoRowColor.emit(i, "dark-yellow")
         response = None
         try:
@@ -68,20 +68,20 @@ class GameInfoWorker(TabInfoWorker):
             data = response.json()
             # Showing game information
             gameDatetime = datetime.datetime.strptime(data["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
-            self.setInfoContent.emit(0, gameDatetime.strftime("%d.%m.%Y %H:%M:%S UTC") + " (" + data["create_dt_fuzzy"] + ")")
-            self.setInfoContent.emit(1, "(#" + str(data["server_id"]) + ")")
-            self.setInfoContent.emit(2, "(#" + str(data["map_id"]) + ")")
-            self.setInfoContent.emit(3, data["game_type_cd"].upper() + " (" + data["game_type_descr"] + ")")
-            self.setInfoContent.emit(4, data["duration"] + " (" + str(data["duration_secs"]) + " seconds)")
+            self.setInfoContent.emit(1, gameDatetime.strftime("%d.%m.%Y %H:%M:%S UTC") + " (" + data["create_dt_fuzzy"] + ")")
+            self.setInfoContent.emit(2, "(#" + str(data["server_id"]) + ")")
+            self.setInfoContent.emit(3, "(#" + str(data["map_id"]) + ")")
+            self.setInfoContent.emit(4, data["game_type_cd"].upper() + " (" + data["game_type_descr"] + ")")
+            self.setInfoContent.emit(5, data["duration"] + " (" + str(data["duration_secs"]) + " seconds)")
             # Adding players to table
             self.addPlayers(data)
             self.resultMessage.emit("Successfully loaded game information", True)
-            for i in range(self.tab.info.rowCount()):
+            for i in range(1, self.tab.info.rowCount()):
                 self.setInfoRowColor.emit(i, None)
             return data
         else:
             self.resultMessage.emit("Unable to load game information", False)
-            for i in range(self.tab.info.rowCount()):
+            for i in range(1, self.tab.info.rowCount()):
                 self.setInfoRowColor.emit(i, "dark-red")
             return None
     

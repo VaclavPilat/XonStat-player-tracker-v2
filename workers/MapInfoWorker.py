@@ -47,7 +47,7 @@ class MapInfoWorker(TabInfoWorker):
         """Loads information about the server
         """
         self.message.emit("Loading map information")
-        for i in range(2):
+        for i in range(1, 2):
             self.setInfoRowColor.emit(i, "dark-yellow")
         response = None
         try:
@@ -59,15 +59,15 @@ class MapInfoWorker(TabInfoWorker):
         if response is not None and response:
             data = response.json()
             # Showing player information
-            self.setInfoContent.emit(0, data["name"])
+            self.setInfoContent.emit(1, data["name"])
             gameDatetime = datetime.datetime.strptime(data["create_dt"], "%Y-%m-%dT%H:%M:%SZ")
-            self.setInfoContent.emit(1, gameDatetime.strftime("%d.%m.%Y %H:%M:%S UTC"))
+            self.setInfoContent.emit(2, gameDatetime.strftime("%d.%m.%Y %H:%M:%S UTC"))
             self.resultMessage.emit("Successfully loaded map information", True)
-            for i in range(2):
+            for i in range(1, 2):
                 self.setInfoRowColor.emit(i, None)
         else:
             self.resultMessage.emit("Unable to load map information", False)
-            for i in range(2):
+            for i in range(1, 2):
                 self.setInfoRowColor.emit(i, "dark-red")
     
 

@@ -47,7 +47,7 @@ class ServerInfoWorker(TabInfoWorker):
         """Loads information about the server
         """
         self.message.emit("Loading server information")
-        for i in range(4):
+        for i in range(1, 5):
             self.setInfoRowColor.emit(i, "dark-yellow")
         response = None
         try:
@@ -59,16 +59,16 @@ class ServerInfoWorker(TabInfoWorker):
         if response is not None and response:
             data = response.json()
             # Showing player information
-            self.setInfoContent.emit(0, data["name"])
-            self.setInfoContent.emit(1, data["ip_addr"])
-            self.setInfoContent.emit(2, str(data["port"]))
-            self.setInfoContent.emit(3, data["create_dt"])
+            self.setInfoContent.emit(1, data["name"])
+            self.setInfoContent.emit(2, data["ip_addr"])
+            self.setInfoContent.emit(3, str(data["port"]))
+            self.setInfoContent.emit(4, data["create_dt"])
             self.resultMessage.emit("Successfully loaded server information", True)
-            for i in range(4):
+            for i in range(1, 5):
                 self.setInfoRowColor.emit(i, None)
         else:
             self.resultMessage.emit("Unable to load server information", False)
-            for i in range(4):
+            for i in range(1, 5):
                 self.setInfoRowColor.emit(i, "dark-red")
     
 

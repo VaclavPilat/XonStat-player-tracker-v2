@@ -62,21 +62,21 @@ class PlayerInfoWorker(TabInfoWorker):
         """Checking if this player is already being tracked
         """
         self.message.emit("Checking if player is tracked")
-        for i in range(2):
+        for i in range(1, 2):
             self.setInfoRowColor.emit(i, "dark-yellow")
         if Config.instance().load("Players"):
             player = checkPlayerExistence(self.tab.id)
             if player is not None:
                 self.resultMessage.emit("This player is already being tracked", True)
-                self.setInfoContent.emit(0, player["nick"])
-                self.setInfoContent.emit(1, player["description"])
+                self.setInfoContent.emit(1, player["nick"])
+                self.setInfoContent.emit(2, player["description"])
             else:
                 self.resultMessage.emit("This player is not being tracked yet", True)
-            for i in range(2):
+            for i in range(1, 2):
                 self.setInfoRowColor.emit(i, None)
         else:
             self.resultMessage.emit("Cannot access file with tracked players")
-            for i in range(2):
+            for i in range(1, 2):
                 self.setInfoRowColor.emit(i, "dark-red")
     
 
@@ -87,7 +87,7 @@ class PlayerInfoWorker(TabInfoWorker):
             bool: Did it load successfully?
         """
         self.message.emit("Loading player information")
-        for i in range(2, 6):
+        for i in range(3, 7):
             self.setInfoRowColor.emit(i, "dark-yellow")
         response = None
         try:
@@ -99,23 +99,23 @@ class PlayerInfoWorker(TabInfoWorker):
         if response is not None and response:
             data = response.json()
             # Showing player information
-            self.setInfoContent.emit(2, processNick( data["player"]["nick"] ))
+            self.setInfoContent.emit(3, processNick( data["player"]["nick"] ))
             since = data["player"]["joined_fuzzy"]
-            self.setInfoContent.emit(3, since)
+            self.setInfoContent.emit(4, since)
             self.setInfoTextColor.emit(3, getAgeColor(since))
             active = data["overall_stats"]["overall"]["last_played_fuzzy"]
-            self.setInfoContent.emit(4, active)
+            self.setInfoContent.emit(5, active)
             self.setInfoTextColor.emit(4, getActiveColor(active))
-            self.setInfoContent.emit(5, str(round(data["overall_stats"]["overall"]["total_playing_time"] / 3600)) + " hours; " + str(data["games_played"]["overall"]["games"]) + " games")
+            self.setInfoContent.emit(6, str(round(data["overall_stats"]["overall"]["total_playing_time"] / 3600)) + " hours; " + str(data["games_played"]["overall"]["games"]) + " games")
             self.resultMessage.emit("Successfully loaded player information", True)
-            for i in range(2, 6):
+            for i in range(3, 7):
                 self.setInfoRowColor.emit(i, None)
             # Processing game stats information
             dataList = sorted(data["games_played"].values(), key=lambda x: x["games"], reverse=True)
             self.showGameStats.emit(dataList, data["overall_stats"])
         else:
             self.resultMessage.emit("Unable to load player information", False)
-            for i in range(2, 6):
+            for i in range(3, 7):
                 self.setInfoRowColor.emit(i, "dark-red")
         return bool(response)
     
@@ -124,7 +124,7 @@ class PlayerInfoWorker(TabInfoWorker):
         current = 0
         correct = 0
         self.message.emit("Loading recent games")
-        self.setInfoRowColor.emit(6, "dark-yellow")
+        self.setInfoRowColor.emit(7, "dark-yellow")
         # Loading list of games
         url = "https://stats.xonotic.org/games?player_id=" + str(self.tab.id)
         for i in range( Config.instance()["Settings"]["gameListCount"] ):
@@ -152,9 +152,9 @@ class PlayerInfoWorker(TabInfoWorker):
                 pass
         # Showing results
         if current == correct:
-            self.setInfoRowColor.emit(6, None)
+            self.setInfoRowColor.emit(7, None)
         else:
-            self.setInfoRowColor.emit(6, "dark-red")
+            self.setInfoRowColor.emit(7, "dark-red")
         self.resultProgress.emit("Finished loading recent games", correct, Config.instance()["Settings"]["gameListCount"])
     
 
@@ -179,8 +179,8 @@ class PlayerInfoWorker(TabInfoWorker):
                 # Updating info label
                 self.thisWeek += 1
                 if self.thisWeek == Config.instance()["Settings"]["gameListCount"] * 20:
-                    self.setInfoContent.emit(6, ">" + str(self.thisWeek) + " (>" + str(math.floor(self.thisWeek / 7)) + " games per day)")
+                    self.setInfoContent.emit(7, ">" + str(self.thisWeek) + " (>" + str(math.floor(self.thisWeek / 7)) + " games per day)")
                 else:
-                    self.setInfoContent.emit(6, str(self.thisWeek) + " (~" + str(math.floor(self.thisWeek / 7)) + " games per day)")
+                    self.setInfoContent.emit(7, str(self.thisWeek) + " (~" + str(math.floor(self.thisWeek / 7)) + " games per day)")
             # Showing game in a gameList table
             self.showRecentGame.emit(game)

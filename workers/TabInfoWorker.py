@@ -29,3 +29,11 @@ class TabInfoWorker(Worker):
         self.setInfoContent.connect(self.tab.setInfoContent)
         self.addInfoContent.connect(self.tab.addInfoContent)
         self.setInfoRowColor.connect(self.tab.info.setRowColor)
+    
+
+    def before(self):
+        """This method is called before this worker is run
+        """
+        super().before()
+        if self.tab.id is not None:
+            self.setInfoContent.emit(0, str(self.tab.id))

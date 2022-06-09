@@ -30,11 +30,11 @@ class PlayerInfo(TabInfo):
         # Adding info buttons
         browserButton = BrowserButton(self)
         browserButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/player/" + str(self.id)))
-        self.info.cellWidget(2, 1).layout().addWidget(browserButton)
+        self.info.cellWidget(0, 1).layout().addWidget(browserButton)
         # Adding server info buttons
         copyButton = CopyButton(self.info)
-        copyButton.clicked.connect(lambda: QtWidgets.QApplication.instance().clipboard().setText(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text()))
-        self.info.cellWidget(2, 1).layout().addWidget(copyButton)
+        copyButton.clicked.connect(lambda: QtWidgets.QApplication.instance().clipboard().setText(self.info.cellWidget(3, 1).layout().itemAt(0).widget().text()))
+        self.info.cellWidget(3, 1).layout().addWidget(copyButton)
         # Adding a table for game mode statistics
         self.scrollLayout.addWidget(self.__createGameStats())
         # Adding heatmap
