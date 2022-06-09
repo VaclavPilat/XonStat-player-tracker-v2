@@ -102,10 +102,10 @@ class PlayerInfoWorker(TabInfoWorker):
             self.setInfoContent.emit(3, processNick( data["player"]["nick"] ))
             since = data["player"]["joined_fuzzy"]
             self.setInfoContent.emit(4, since)
-            self.setInfoTextColor.emit(3, getAgeColor(since))
+            self.setInfoTextColor.emit(4, getAgeColor(since))
             active = data["overall_stats"]["overall"]["last_played_fuzzy"]
             self.setInfoContent.emit(5, active)
-            self.setInfoTextColor.emit(4, getActiveColor(active))
+            self.setInfoTextColor.emit(5, getActiveColor(active))
             self.setInfoContent.emit(6, str(round(data["overall_stats"]["overall"]["total_playing_time"] / 3600)) + " hours; " + str(data["games_played"]["overall"]["games"]) + " games")
             self.resultMessage.emit("Successfully loaded player information", True)
             for i in range(3, 7):
