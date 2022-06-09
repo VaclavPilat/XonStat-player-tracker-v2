@@ -27,6 +27,10 @@ class PlayerInfo(TabInfo):
         super().createLayout()
         self.identifierInput.setPlaceholderText("Enter player ID")
         self.scrollLayout.addWidget(self.createInfoTable(["Player nickname", "Player description", "Current player name", "Playing since", "Last active", "Total time spent playing", "Games played this week"]))
+        # Adding info buttons
+        browserButton = BrowserButton(self)
+        browserButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/player/" + str(self.id)))
+        self.info.cellWidget(2, 1).layout().addWidget(browserButton)
         # Adding server info buttons
         copyButton = CopyButton(self.info)
         copyButton.clicked.connect(lambda: QtWidgets.QApplication.instance().clipboard().setText(self.info.cellWidget(2, 1).layout().itemAt(0).widget().text()))

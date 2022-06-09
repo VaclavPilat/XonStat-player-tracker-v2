@@ -26,6 +26,10 @@ class MapInfo(TabInfo):
         self.identifierInput.setPlaceholderText("Enter map ID")
         # Creating an info table
         self.scrollLayout.addWidget(self.createInfoTable(["Map name", "Added on"]))
+        # Adding info buttons
+        browserButton = BrowserButton(self)
+        browserButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/map/" + str(self.id)))
+        self.info.cellWidget(0, 1).layout().addWidget(browserButton)
         # Adding widgets to layout
         self.scrollLayout.addWidget(self.__createGameList())
         # Adding stretch

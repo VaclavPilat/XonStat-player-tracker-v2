@@ -28,6 +28,10 @@ class GameInfo(TabInfo):
         self.identifierInput.setPlaceholderText("Enter game ID")
         # Creating an info table
         self.scrollLayout.addWidget(self.createInfoTable(["Date and time", "Server name", "Map mame", "Game mode", "Duration"]))
+        # Adding info buttons
+        browserButton = BrowserButton(self)
+        browserButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/game/" + str(self.id)))
+        self.info.cellWidget(0, 1).layout().addWidget(browserButton)
         # Adding server info buttons
         serverBrowser = BrowserButton(self)
         serverBrowser.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/server/" + str(getNumberFromString(self.info.cellWidget(1, 1).layout().itemAt(0).widget().text()))))

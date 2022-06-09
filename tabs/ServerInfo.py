@@ -26,6 +26,10 @@ class ServerInfo(TabInfo):
         self.identifierInput.setPlaceholderText("Enter server ID")
         # Creating an info table
         self.scrollLayout.addWidget(self.createInfoTable(["Server name", "IP address", "Port", "Added on"]))
+        # Adding info buttons
+        browserButton = BrowserButton(self)
+        browserButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/server/" + str(self.id)))
+        self.info.cellWidget(0, 1).layout().addWidget(browserButton)
         # Adding widgets to layout
         self.scrollLayout.addWidget(self.__createGameList())
         # Adding stretch
