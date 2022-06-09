@@ -132,7 +132,7 @@ class GameInfoWorker(TabInfoWorker):
         successful = 0
         current = 0
         # Loading server name
-        self.setInfoRowColor.emit(1, "dark-yellow")
+        self.setInfoRowColor.emit(2, "dark-yellow")
         response = None
         try:
             current += 1
@@ -142,13 +142,13 @@ class GameInfoWorker(TabInfoWorker):
             pass
         if response:
             successful += 1
-            self.addInfoContent.emit(1, response.json()["name"])
-            self.setInfoRowColor.emit(1, None)
+            self.addInfoContent.emit(2, response.json()["name"])
+            self.setInfoRowColor.emit(2, None)
         else:
             self.setInfoRowColor.emit(1, "dark-red")
         self.progress.emit(current, 2)
         # Loading map name
-        self.setInfoRowColor.emit(2, "dark-yellow")
+        self.setInfoRowColor.emit(3, "dark-yellow")
         response = None
         try:
             current += 1
@@ -158,8 +158,8 @@ class GameInfoWorker(TabInfoWorker):
             pass
         if response:
             successful += 1
-            self.addInfoContent.emit(2, response.json()["name"])
-            self.setInfoRowColor.emit(2, None)
+            self.addInfoContent.emit(3, response.json()["name"])
+            self.setInfoRowColor.emit(3, None)
         else:
             self.setInfoRowColor.emit(2, "dark-red")
         self.progress.emit(current, 2)
