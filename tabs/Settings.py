@@ -30,9 +30,10 @@ class Settings(Tab):
         # Creating table for tracked players
         self.table = ColoredTable(self)
         # Setting columns
-        headers = ["Setting name", "Setting type", "Setting value"]
+        headers = ["Name", "Type", "Value"]
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
+        self.table.verticalHeader().hide()
         # Setting column stretching
         self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.layout.addWidget(self.table)
@@ -50,8 +51,14 @@ class Settings(Tab):
         self.table.insertRow(row)
         # Adding widgets
         self.table.setCellWidget(row, 0, ColoredLabel(self.table, name))
-        self.table.setCellWidget(row, 1, ColoredLabel(self.table, str(type(name))))
+        self.table.setCellWidget(row, 1, ColoredLabel(self.table, type(value).__name__))
         self.table.setCellWidget(row, 2, ColoredLabel(self.table, str(value)))
+
+
+    def clearOldInformation(self):
+        """Removes old information to make space for new ones
+        """
+        self.table.setRowCount(0)
     
 
     def __search(self, text: str):
@@ -62,7 +69,7 @@ class Settings(Tab):
         """
         for row in range(self.table.rowCount()):
             containsText = False
-            for column in range(0, 4):
+            for column in range(0, self.table.columnCount()):
                 widget = self.table.cellWidget(row, column)
                 if not widget == None and type(widget) == ColoredLabel:
                     # Checking if this label contins HTML
