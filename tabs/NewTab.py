@@ -54,7 +54,7 @@ class NewTab(Tab):
         top.addWidget(searchButton)
         # Settings
         settingsButton = ColoredToolButton(self, "grey")
-        settingsButton.setIcon(qta.icon("fa.gears", color="#FFFFFF"))
+        settingsButton.setIcon(qta.icon("mdi.hammer-screwdriver", color="#FFFFFF"))
         settingsButton.setText("Settings")
         settingsButton.setToolTip("App settings")
         settingsButton.clicked.connect(self.parent.openSettings)
