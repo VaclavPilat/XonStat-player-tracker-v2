@@ -39,7 +39,7 @@ class NewTab(Tab):
         playerListButton.clicked.connect(self.parent.openPlayerList)
         top.addWidget(playerListButton)
         # XonStat home page
-        homePageButton = ColoredToolButton(self, "grey")
+        homePageButton = ColoredToolButton(self, "black")
         homePageButton.setIcon(qta.icon("ph.house-line-fill", color="#FFFFFF"))
         homePageButton.setText("XonStat home")
         homePageButton.setToolTip("XonStat homepage")
