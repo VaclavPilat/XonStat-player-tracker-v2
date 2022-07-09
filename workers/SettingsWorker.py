@@ -12,7 +12,8 @@ class SettingsWorker(Worker):
     """
 
 
-    addSetting = QtCore.pyqtSignal(str, float)
+    addSettingInt = QtCore.pyqtSignal(str, int)
+    addSettingFloat = QtCore.pyqtSignal(str, float)
 
 
     def __init__(self, tab: Tab):
@@ -27,7 +28,8 @@ class SettingsWorker(Worker):
     def connectSlots(self):
         """Connecting signals to slots. This method is called in init.
         """
-        self.addSetting.connect(self.tab.addSetting)
+        self.addSettingInt.connect(self.tab.addSetting)
+        self.addSettingFloat.connect(self.tab.addSetting)
     
 
     def run(self):
@@ -38,7 +40,10 @@ class SettingsWorker(Worker):
         success = Config.instance().load("Settings")
         # Loading settings
         for name, value in Config.instance()["Settings"].items():
-            self.addSetting.emit(name, value)
+            if type(value) == int:
+                self.addSettingInt.emit(name, value)
+            elif type(value) == float:
+                self.addSettingFloat.emit(name, value)
         # Showing result message
         if success:
             message = "Finished loading settings into table"
