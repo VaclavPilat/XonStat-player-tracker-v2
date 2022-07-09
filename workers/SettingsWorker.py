@@ -1,4 +1,3 @@
-from email import message
 from PyQt5 import QtCore
 
 from workers.Worker import *
