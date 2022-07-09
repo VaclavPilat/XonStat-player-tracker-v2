@@ -53,8 +53,15 @@ class Settings(Tab):
         self.table.setCellWidget(row, 0, ColoredLabel(self.table, name))
         self.table.setCellWidget(row, 1, ColoredLabel(self.table, type(value).__name__))
         self.table.setCellWidget(row, 2, QtWidgets.QLineEdit(str(value), self.table))
+        self.table.cellWidget(row, 2).textChanged.connect(self.showWaitingMessage)
         self.table.cellWidget(row, 2).editingFinished.connect(self.saveSettings)
     
+
+    def showWaitingMessage(self):
+        """Showing a message that the app is waiting for th user to make changes
+        """
+        self.status.message("Waiting for editing to finish (press Enter to save)")
+
 
     def saveSettings(self):
         """Attempts to save settings
