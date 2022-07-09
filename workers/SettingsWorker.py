@@ -37,7 +37,8 @@ class SettingsWorker(Worker):
         self.message.emit("Loading settings into table")
         success = Config.instance().load("Settings")
         # Loading settings
-        self.addSetting.emit("exampleSetting", 215.14)
+        for name, value in Config.instance()["Settings"].items():
+            self.addSetting.emit(name, value)
         # Showing result message
         if success:
             message = "Finished loading settings into table"
