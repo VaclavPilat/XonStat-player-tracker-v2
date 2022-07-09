@@ -59,7 +59,25 @@ class Settings(Tab):
     def saveSettings(self):
         """Attempts to save settings
         """
-        print("saving settings")
+        newSettings = Config.instance()["Settings"].copy()
+        try:
+            for row in range(self.table.rowCount()):
+                settingName = list(newSettings.keys())[row]
+                settingType = type(newSettings[settingName])
+                settingValue = self.table.cellWidget(row, 2).text()
+                if settingType == int:
+                    newSettings[settingName] = int(settingValue)
+                elif settingType == float:
+                    newSettings[settingName] = float(settingValue)
+        except:
+            self.status.resultMessage("Invalid value(s) prevents from saving", False)
+        else:
+            self.status.message("Saving settings")
+            Config.instance()["Settings"] = newSettings
+            if Config.instance().save("Settings"):
+                self.status.resultMessage("Settings saved successfully", True)
+            else:
+                self.status.resultMessage("An error occured when saving settings", False)
 
 
     def clearOldInformation(self):
