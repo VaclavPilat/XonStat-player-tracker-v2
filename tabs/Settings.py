@@ -36,6 +36,22 @@ class Settings(Tab):
         # Setting column stretching
         self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.layout.addWidget(self.table)
+
+    
+    def addSetting(self, name: str, value):
+        """Create a single row with setting
+
+        Args:
+            name (str): Setting name
+            value (mixed): Setting value
+        """
+        row = self.table.rowCount()
+        # Creating a new row inside the table
+        self.table.insertRow(row)
+        # Adding widgets
+        self.table.setCellWidget(row, 0, ColoredLabel(self.table, name))
+        self.table.setCellWidget(row, 1, ColoredLabel(self.table, str(type(name))))
+        self.table.setCellWidget(row, 2, ColoredLabel(self.table, str(value)))
     
 
     def __search(self, text: str):

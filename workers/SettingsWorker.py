@@ -1,3 +1,4 @@
+from email import message
 from PyQt5 import QtCore
 
 from workers.Worker import *
@@ -9,6 +10,9 @@ from misc.Functions import *
 class SettingsWorker(Worker):
     """Worker class is for executing background tasks
     """
+
+
+    addSetting = QtCore.pyqtSignal(str, float)
 
 
     def __init__(self, tab: Tab):
@@ -23,7 +27,7 @@ class SettingsWorker(Worker):
     def connectSlots(self):
         """Connecting signals to slots. This method is called in init.
         """
-        pass
+        self.addSetting.connect(self.tab.addSetting)
     
 
     def run(self):
@@ -31,3 +35,12 @@ class SettingsWorker(Worker):
         """
         # Showing message
         self.message.emit("Loading settings into table")
+        success = Config.instance().load("Settings")
+        # Loading settings
+        self.addSetting.emit("exampleSetting", 215.14)
+        # Showing result message
+        if success:
+            message = "Finished loading settings into table"
+        else:
+            message = "An error occured when loading settings into table"
+        self.resultMessage.emit(message, success)
