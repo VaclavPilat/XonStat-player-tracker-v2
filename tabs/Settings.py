@@ -24,7 +24,7 @@ class Settings(Tab):
         """
         # Creating search bar
         self.searchBar = QtWidgets.QLineEdit(self)
-        self.searchBar.setPlaceholderText("Search by setting name")
+        self.searchBar.setPlaceholderText("Search by setting name, type or value")
         self.searchBar.textChanged.connect(self.__search)
         self.layout.addWidget(self.searchBar)
         # Creating table for tracked players
@@ -96,12 +96,10 @@ class Settings(Tab):
             containsText = False
             for column in range(0, self.table.columnCount()):
                 widget = self.table.cellWidget(row, column)
-                if not widget == None and type(widget) == ColoredLabel:
-                    # Checking if this label contins HTML
-                    labelText = parseTextFromHTML(widget.text())
-                    if text.lower() in labelText:
-                        containsText = True
-                        break
+                labelText = parseTextFromHTML(widget.text())
+                if text.lower() in labelText:
+                    containsText = True
+                    break
             self.table.setRowHidden(row, not containsText)
     
 
