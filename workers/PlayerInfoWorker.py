@@ -124,6 +124,7 @@ class PlayerInfoWorker(TabInfoWorker):
         current = 0
         correct = 0
         self.message.emit("Loading recent games")
+        self.setInfoContent.emit(7, "0")
         self.setInfoRowColor.emit(7, "dark-yellow")
         # Loading list of games
         url = "https://stats.xonotic.org/games?player_id=" + str(self.tab.id)
