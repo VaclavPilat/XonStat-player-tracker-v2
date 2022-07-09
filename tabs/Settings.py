@@ -52,7 +52,14 @@ class Settings(Tab):
         # Adding widgets
         self.table.setCellWidget(row, 0, ColoredLabel(self.table, name))
         self.table.setCellWidget(row, 1, ColoredLabel(self.table, type(value).__name__))
-        self.table.setCellWidget(row, 2, ColoredLabel(self.table, str(value)))
+        self.table.setCellWidget(row, 2, QtWidgets.QLineEdit(str(value), self.table))
+        self.table.cellWidget(row, 2).editingFinished.connect(self.saveSettings)
+    
+
+    def saveSettings(self):
+        """Attempts to save settings
+        """
+        print("saving settings")
 
 
     def clearOldInformation(self):
