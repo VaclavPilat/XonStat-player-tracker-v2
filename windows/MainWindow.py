@@ -11,6 +11,7 @@ from tabs.PlayerInfo import *
 from tabs.GameInfo import *
 from tabs.ServerInfo import *
 from tabs.MapInfo import *
+from tabs.Settings import *
 
 
 class MainWindow(Window):
@@ -196,6 +197,21 @@ class MainWindow(Window):
             self.__insertTab(Search(self), index)
         else:
             self.__addTab(Search(self))
+    
+
+    def openSettings(self):
+        """Attempts to add a new Settings tab
+        """
+        for i in range(self.tabWidget.count()):
+            if isinstance(self.tabWidget.widget(i), Settings):
+                self.tabWidget.setCurrentIndex(i)
+                return
+        if isinstance(self.tabWidget.currentWidget(), NewTab):
+            index = self.tabWidget.currentIndex()
+            self.removeTab(index, True, False)
+            self.__insertTab(Settings(self), index)
+        else:
+            self.__addTab(Settings(self))
     
 
     def openPlayerInfo(self, identifier: int = None):

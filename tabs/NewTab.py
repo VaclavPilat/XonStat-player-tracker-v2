@@ -52,6 +52,13 @@ class NewTab(Tab):
         searchButton.setToolTip("Search for players, maps, servers...")
         searchButton.clicked.connect(self.parent.openSearch)
         top.addWidget(searchButton)
+        # Settings
+        settingsButton = ColoredToolButton(self, "grey")
+        settingsButton.setIcon(qta.icon("fa.gears", color="#FFFFFF"))
+        settingsButton.setText("Settings")
+        settingsButton.setToolTip("App settings")
+        settingsButton.clicked.connect(self.parent.openSettings)
+        top.addWidget(settingsButton)
         top.addStretch()
         # Bottom row of buttons
         bottom = QtWidgets.QHBoxLayout()
