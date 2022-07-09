@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+import re
 
 from workers.Worker import *
 from misc.Config import *
@@ -31,6 +32,19 @@ class SettingsWorker(Worker):
         self.addSettingFloat.connect(self.tab.addSetting)
     
 
+    def processSettingName(self, name: str):
+        """Processes setting name into a more readable variant
+
+        Args:
+            name (str): Setting name in CamelCase
+
+        Returns:
+            str: New, more readable, name
+        """
+        matches = re.finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', name)
+        return " ".join([m.group(0) for m in matches]).lower().capitalize()
+    
+
     def run(self):
         """Running the Worker task
         """
@@ -39,6 +53,7 @@ class SettingsWorker(Worker):
         success = Config.instance().load("Settings")
         # Loading settings
         for name, value in Config.instance()["Settings"].items():
+            name = self.processSettingName(name)
             if type(value) == int:
                 self.addSettingInt.emit(name, value)
             elif type(value) == float:
