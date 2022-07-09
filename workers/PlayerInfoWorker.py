@@ -64,6 +64,17 @@ class PlayerInfoWorker(TabInfoWorker):
         self.message.emit("Checking if player is tracked")
         for i in range(1, 2):
             self.setInfoRowColor.emit(i, "dark-yellow")
+        if not Config.instance().load("Players"):
+            # Creating new file for players
+            Config.instance()["Players"] = []
+            Config.instance().save("Players")
+            # Checking if it was created
+            if not Config.instance().load("Players"):
+                self.resultMessage.emit("Cannot access file with tracked players", False)
+                for i in range(1, 3):
+                    self.setInfoRowColor.emit(i, "dark-red")
+            else:
+                self.resultMessage.emit("Created a new config file for players", True)
         if Config.instance().load("Players"):
             player = checkPlayerExistence(self.tab.id)
             if player is not None:
@@ -74,10 +85,6 @@ class PlayerInfoWorker(TabInfoWorker):
                 self.resultMessage.emit("This player is not being tracked yet", True)
             for i in range(1, 2):
                 self.setInfoRowColor.emit(i, None)
-        else:
-            self.resultMessage.emit("Cannot access file with tracked players", False)
-            for i in range(1, 2):
-                self.setInfoRowColor.emit(i, "dark-red")
     
 
     def loadPlayerInformation(self) -> bool:

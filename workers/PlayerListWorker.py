@@ -59,8 +59,15 @@ class PlayerListWorker(Worker):
         """
         # Checking config file existence
         if not Config.instance().load("Players"):
-            self.resultMessage.emit("Cannot find a config file with players", False)
-            return
+            # Creating new file for players
+            Config.instance()["Players"] = []
+            Config.instance().save("Players")
+            # Checking if it was created
+            if not Config.instance().load("Players"):
+                self.resultMessage.emit("Cannot find a config file with players", False)
+                return
+            else:
+                self.resultMessage.emit("Created a new config file for players", True)
         # Checking player count
         if len(Config.instance()["Players"]) == 0:
             self.resultMessage.emit("No players were found", True)
