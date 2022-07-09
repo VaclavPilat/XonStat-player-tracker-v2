@@ -42,12 +42,13 @@ class PlayerListWorker(Worker):
         """
         # Loading plaeyrs from config file
         new = self.loadPlayers()
-        # Cancelling
-        self.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
-        if self.cancel:
-            return
-        # Loading player information
-        self.loadInformation(new)
+        if new is not None:
+            # Cancelling
+            self.sleep( Config.instance()["Settings"]["groupRequestInterval"] )
+            if self.cancel:
+                return
+            # Loading player information
+            self.loadInformation(new)
     
 
     def loadPlayers(self) -> list:

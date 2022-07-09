@@ -75,7 +75,7 @@ class PlayerInfoWorker(TabInfoWorker):
             for i in range(1, 2):
                 self.setInfoRowColor.emit(i, None)
         else:
-            self.resultMessage.emit("Cannot access file with tracked players")
+            self.resultMessage.emit("Cannot access file with tracked players", False)
             for i in range(1, 2):
                 self.setInfoRowColor.emit(i, "dark-red")
     
