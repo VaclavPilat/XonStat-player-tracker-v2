@@ -21,4 +21,4 @@ class DeletePlayerDialog(Dialog):
     def createLayout(self):
         """Creating dialog layout
         """
-        self.setWindowTitle("Delete player?")
+        self.setWindowTitle("Delete player #" + str(self.id) + " ?")

@@ -4,6 +4,8 @@ from widgets.ColoredButtons import *
 from misc.Config import *
 from misc.Functions import *
 from dialogs.AddPlayerDialog import *
+from dialogs.DeletePlayerDialog import *
+from dialogs.EditPlayerDialog import *
 
 
 class GameInfo(TabInfo):
@@ -146,16 +148,16 @@ class GameInfo(TabInfo):
             if player is not None:
                 # Edit button
                 editButton = EditButton(self.players)
-                #editButton.clicked.connect()
+                editButton.clicked.connect(lambda: EditPlayerDialog(self.parent, identifier))
                 buttonGroup.addWidget(editButton)
                 # Delete button
                 deleteButton = DeleteButton(self.players)
-                #deleteButton.clicked.connect()
+                deleteButton.clicked.connect(lambda: DeletePlayerDialog(self.parent, identifier))
                 buttonGroup.addWidget(deleteButton)
             else:
                 # Add button
                 addButton = AddButton(self.players)
-                addButton.clicked.connect(lambda: AddPlayerDialog(self.parent))
+                addButton.clicked.connect(lambda: AddPlayerDialog(self.parent, identifier))
                 buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
         self.players.setCellWidget(row, 5, actions)

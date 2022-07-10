@@ -21,4 +21,4 @@ class EditPlayerDialog(Dialog):
     def createLayout(self):
         """Creating dialog layout
         """
-        self.setWindowTitle("Edit player information")
+        self.setWindowTitle("Edit player #" + str(self.id))

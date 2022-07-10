@@ -21,4 +21,4 @@ class AddPlayerDialog(Dialog):
     def createLayout(self):
         """Creating dialog layout
         """
-        self.setWindowTitle("Add new player")
+        self.setWindowTitle("Add player #" + str(self.id))

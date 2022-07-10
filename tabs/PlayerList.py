@@ -5,6 +5,8 @@ from widgets.ColoredWidgets import *
 from widgets.ColoredButtons import *
 from workers.PlayerListWorker import *
 from misc.Functions import *
+from dialogs.DeletePlayerDialog import *
+from dialogs.EditPlayerDialog import *
 
 
 class PlayerList(Tab):
@@ -83,9 +85,11 @@ class PlayerList(Tab):
         buttonGroup.addWidget(infoButton)
         # Stacked widget with edit and save button
         editButton = EditButton(self.table)
+        editButton.clicked.connect(lambda: EditPlayerDialog(self.parent, int(self.table.cellWidget(row, 0).text())))
         buttonGroup.addWidget(editButton)
         # Delete button
         deleteButton = DeleteButton(self.table)
+        deleteButton.clicked.connect(lambda: DeletePlayerDialog(self.parent, int(self.table.cellWidget(row, 0).text())))
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
         self.table.setCellWidget(row, 6, actions)
