@@ -141,6 +141,21 @@ class GameInfo(TabInfo):
             infoButton = WindowButton(self.players)
             infoButton.clicked.connect(lambda: self.parent.openPlayerInfo(identifier))
             buttonGroup.addWidget(infoButton)
+            # Adding buttons based on if the player is already bing tracked
+            if player is not None:
+                # Edit button
+                editButton = EditButton(self.players)
+                #editButton.clicked.connect()
+                buttonGroup.addWidget(editButton)
+                # Delete button
+                deleteButton = DeleteButton(self.players)
+                #deleteButton.clicked.connect()
+                buttonGroup.addWidget(deleteButton)
+            else:
+                # Add button
+                addButton = AddButton(self.players)
+                #addButton.clicked.connect()
+                buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
         self.players.setCellWidget(row, 5, actions)
     
