@@ -24,7 +24,7 @@ class Dialog(QtWidgets.QDialog):
         self.setFixedSize(500, 250)
         self.layout = QtWidgets.QVBoxLayout(self)
         self.setLayout(self.layout)
-        self.layout.addStretch(2)
+        self.layout.addStretch()
         # Adding custom layout settings
         self.createLayout()
         # Adding the rest of common layout settings
@@ -41,9 +41,9 @@ class Dialog(QtWidgets.QDialog):
         deleteButton.setAutoDefault(False)
         self.buttonBox.addButton(deleteButton, QtWidgets.QDialogButtonBox.RejectRole)
         # Adding stretch and status
-        self.layout.addStretch(1)
+        self.layout.addStretch()
         self.layout.addWidget(self.buttonBox)
-        self.layout.addStretch(1)
+        self.layout.addStretch()
         self.status = Status(self)
         self.layout.addWidget(self.status)
         # Showing dialog window
@@ -59,10 +59,10 @@ class Dialog(QtWidgets.QDialog):
     def dialogAccepted(self):
         """Called when this dialog is accepted
         """
-        print("Dialog accepted")
+        pass
 
 
     def dialogRejected(self):
         """Called when this dialog is rejected
         """
-        print("Dialog rejected")
+        pass
