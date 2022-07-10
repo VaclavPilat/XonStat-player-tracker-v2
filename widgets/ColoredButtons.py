@@ -190,3 +190,35 @@ class TabButton(ColoredButton):
         """
         ColoredButton.__init__(self, parent, "ei.plus", "green")
         self.setToolTip("Add new tab")
+
+
+
+class AcceptButton(ColoredButton):
+    """Button for accepting a dialog
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for accepting a dialog window
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa.check", "green")
+        self.setToolTip("Accept")
+
+
+
+class RejectButton(ColoredButton):
+    """Button for rejecting a dialog
+    """
+
+
+    def __init__(self, parent: QtWidgets.QWidget):
+        """Creates a new button for rejecting a dialog window
+
+        Args:
+            parent (QtWidgets.QWidget): Parent element
+        """
+        ColoredButton.__init__(self, parent, "fa.times", "red")
+        self.setToolTip("Reject")

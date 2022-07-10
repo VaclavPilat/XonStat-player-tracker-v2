@@ -24,7 +24,7 @@ class Dialog(QtWidgets.QDialog):
         self.setFixedSize(500, 250)
         self.layout = QtWidgets.QVBoxLayout(self)
         self.setLayout(self.layout)
-        self.layout.addStretch()
+        self.layout.addStretch(2)
         # Adding custom layout settings
         self.createLayout()
         # Adding the rest of common layout settings
@@ -32,17 +32,18 @@ class Dialog(QtWidgets.QDialog):
         self.buttonBox.setCenterButtons(True)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
-
-        acceptButton = SaveButton(self)
+        # Accept button
+        acceptButton = AcceptButton(self)
         acceptButton.setDefault(True)
         self.buttonBox.addButton(acceptButton, QtWidgets.QDialogButtonBox.AcceptRole)
-
-        deleteButton = DeleteButton(self)
+        # Reject button
+        deleteButton = RejectButton(self)
         deleteButton.setAutoDefault(False)
         self.buttonBox.addButton(deleteButton, QtWidgets.QDialogButtonBox.RejectRole)
-
+        # Adding stretch and status
+        self.layout.addStretch(1)
         self.layout.addWidget(self.buttonBox)
-        self.layout.addStretch()
+        self.layout.addStretch(1)
         self.status = Status(self)
         self.layout.addWidget(self.status)
         # Showing dialog window
