@@ -44,6 +44,7 @@ class PlayerList(Tab):
             self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
         for i in range(4, len(headers)):
             self.table.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
+        self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.layout.addWidget(self.table)
 
     
