@@ -53,7 +53,10 @@ class Status(ColoredWidget):
             icon (str): QTAwesome icon name
         """
         self.icon.setIcon(icon)
-        self.parent.parent.tabWidget.setTabIcon( self.parent.parent.tabWidget.indexOf(self.parent), qta.icon(icon, color="#FFFFFF") )
+        try:
+            self.parent.parent.tabWidget.setTabIcon( self.parent.parent.tabWidget.indexOf(self.parent), qta.icon(icon, color="#FFFFFF") )
+        except:
+            pass
     
 
     def showRate(self, remaining: str, limit: str):

@@ -21,7 +21,7 @@ class Dialog(QtWidgets.QDialog):
         # Adding common layout settings
         self.accepted.connect(self.dialogAccepted)
         self.rejected.connect(self.dialogRejected)
-        self.setFixedSize(500, 250)
+        self.setFixedSize(450, 200)
         self.layout = QtWidgets.QVBoxLayout(self)
         self.setLayout(self.layout)
         self.layout.addStretch()
@@ -33,13 +33,13 @@ class Dialog(QtWidgets.QDialog):
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
         # Accept button
-        acceptButton = AcceptButton(self)
-        acceptButton.setDefault(True)
-        self.buttonBox.addButton(acceptButton, QtWidgets.QDialogButtonBox.AcceptRole)
+        self.acceptButton = AcceptButton(self)
+        self.acceptButton.setDefault(True)
+        self.buttonBox.addButton(self.acceptButton, QtWidgets.QDialogButtonBox.AcceptRole)
         # Reject button
-        deleteButton = RejectButton(self)
-        deleteButton.setAutoDefault(False)
-        self.buttonBox.addButton(deleteButton, QtWidgets.QDialogButtonBox.RejectRole)
+        self.deleteButton = RejectButton(self)
+        self.deleteButton.setAutoDefault(False)
+        self.buttonBox.addButton(self.deleteButton, QtWidgets.QDialogButtonBox.RejectRole)
         # Adding stretch and status
         self.layout.addStretch()
         self.layout.addWidget(self.buttonBox)
@@ -47,11 +47,18 @@ class Dialog(QtWidgets.QDialog):
         self.status = Status(self)
         self.layout.addWidget(self.status)
         # Showing dialog window
+        self.dialogCreated()
         self.exec()
     
     
     def createLayout(self):
         """Creating dialog layout
+        """
+        pass
+    
+    
+    def dialogCreated(self):
+        """Called after the dialog layout is created
         """
         pass
 
