@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 
 from dialogs.Dialog import *
 from misc.Functions import *
+from misc.Config import *
 
 
 class AddPlayerDialog(Dialog):
