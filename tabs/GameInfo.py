@@ -3,6 +3,7 @@ from workers.GameInfoWorker import *
 from widgets.ColoredButtons import *
 from misc.Config import *
 from misc.Functions import *
+from dialogs.AddPlayerDialog import *
 
 
 class GameInfo(TabInfo):
@@ -154,7 +155,7 @@ class GameInfo(TabInfo):
             else:
                 # Add button
                 addButton = AddButton(self.players)
-                #addButton.clicked.connect()
+                addButton.clicked.connect(lambda: AddPlayerDialog(self.parent))
                 buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
         self.players.setCellWidget(row, 5, actions)

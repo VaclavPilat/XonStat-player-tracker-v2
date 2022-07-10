@@ -1,10 +1,8 @@
 from PyQt5 import QtWidgets
 
-from dialogs.Dialog import *
 
-
-class DeletePlayerDialog(Dialog):
-    """Class for creating a dialog window for delting players
+class Dialog(QtWidgets.QDialog):
+    """Class for creating a dialog window
     """
 
 
@@ -15,10 +13,14 @@ class DeletePlayerDialog(Dialog):
             parent (QMainWindow): Dialog parent
             identifier (int): Player ID. Optional. Defaults to None
         """
-        super().__init__(parent, identifier)
+        self.id = identifier
+        super().__init__(parent)
+        self.setFixedSize(500, 250)
+        self.createLayout()
+        self.exec()
     
     
     def createLayout(self):
         """Creating dialog layout
         """
-        self.setWindowTitle("Delete player?")
+        pass
