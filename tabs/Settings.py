@@ -76,6 +76,13 @@ class Settings(Tab):
                     newSettings[settingName] = int(settingValue)
                 elif settingType == float:
                     newSettings[settingName] = float(settingValue)
+                elif settingType == bool:
+                    if settingValue.lower() == "true":
+                        newSettings[settingName] = True
+                    elif settingValue.lower() == "false":
+                        newSettings[settingName] = False
+                    else:
+                        raise
         except:
             self.status.resultMessage("Invalid value(s) prevents from saving", False)
         else:

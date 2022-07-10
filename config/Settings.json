@@ -3,5 +3,6 @@
     "groupRequestInterval": 0.5,
     "heatmapHourSpan": 3,
     "gameListCount": 5,
-    "recentGamesCount": 10
+    "recentGamesCount": 10,
+    "reloadTabsAfterChange": true
 }

@@ -14,6 +14,7 @@ class SettingsWorker(Worker):
 
     addSettingInt = QtCore.pyqtSignal(str, int)
     addSettingFloat = QtCore.pyqtSignal(str, float)
+    addSettingBool = QtCore.pyqtSignal(str, bool)
 
 
     def __init__(self, tab: Tab):
@@ -30,6 +31,7 @@ class SettingsWorker(Worker):
         """
         self.addSettingInt.connect(self.tab.addSetting)
         self.addSettingFloat.connect(self.tab.addSetting)
+        self.addSettingBool.connect(self.tab.addSetting)
     
 
     def processSettingName(self, name: str):
@@ -58,6 +60,8 @@ class SettingsWorker(Worker):
                 self.addSettingInt.emit(name, value)
             elif type(value) == float:
                 self.addSettingFloat.emit(name, value)
+            elif type(value) == bool:
+                self.addSettingBool.emit(name, value)
         # Showing result message
         if success:
             message = "Finished loading settings into table"
