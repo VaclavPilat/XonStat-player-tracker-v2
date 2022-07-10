@@ -34,6 +34,7 @@ class Settings(Tab):
         self.table.setColumnCount( len(headers) )
         self.table.setHorizontalHeaderLabels(headers)
         self.table.verticalHeader().hide()
+        self.table.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         # Setting column stretching
         self.table.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.layout.addWidget(self.table)
@@ -67,6 +68,7 @@ class Settings(Tab):
         """Attempts to save settings
         """
         newSettings = Config.instance()["Settings"].copy()
+        row = 0
         try:
             for row in range(self.table.rowCount()):
                 settingName = list(newSettings.keys())[row]
@@ -83,7 +85,9 @@ class Settings(Tab):
                         newSettings[settingName] = False
                     else:
                         raise
+                self.table.setRowColor(row)
         except:
+            self.table.setRowColor(row, "dark-red")
             self.status.resultMessage("Invalid value(s) prevents from saving", False)
         else:
             self.status.message("Saving settings")

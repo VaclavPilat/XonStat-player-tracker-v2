@@ -352,7 +352,7 @@ class MainWindow(Window):
                 self.tabWidget.widget(i).startLoading()
 
 
-    def closeEvent(self):
+    def closeEvent(self, e):
         """Saving currently open tabs
         """
         Config.instance()["Tabs"] = []
