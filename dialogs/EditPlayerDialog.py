@@ -66,3 +66,4 @@ class EditPlayerDialog(Dialog):
             Config.instance()["Players"][index]["nick"] = self.nick.text()
             Config.instance()["Players"][index]["description"] = self.description.text()
             Config.instance().save("Players")
+            self.reloadAllTabs.emit()

@@ -344,7 +344,15 @@ class MainWindow(Window):
             widget.localKeyPressEvent(event)
 
 
-    def closeEvent(self, event):
+    def reloadAllTabs(self):
+        """Attempts to reload all tabs
+        """
+        if Config.instance()["Settings"]["reloadTabsAfterChange"]:
+            for i in range(self.tabWidget.count()):
+                self.tabWidget.widget(i).startLoading()
+
+
+    def closeEvent(self):
         """Saving currently open tabs
         """
         Config.instance()["Tabs"] = []

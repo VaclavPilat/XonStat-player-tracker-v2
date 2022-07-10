@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 from widgets.ColoredButtons import *
 from widgets.Status import *
@@ -7,6 +7,9 @@ from widgets.Status import *
 class Dialog(QtWidgets.QDialog):
     """Class for creating a dialog window
     """
+
+
+    reloadAllTabs = QtCore.pyqtSignal()
 
 
     def __init__(self, parent, identifier: int = None):
@@ -18,6 +21,7 @@ class Dialog(QtWidgets.QDialog):
         """
         self.id = identifier
         super().__init__(parent)
+        self.reloadAllTabs.connect(parent.reloadAllTabs)
         # Adding common layout settings
         self.accepted.connect(self.dialogAccepted)
         self.rejected.connect(self.dialogRejected)

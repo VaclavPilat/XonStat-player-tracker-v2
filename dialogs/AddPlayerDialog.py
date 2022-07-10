@@ -73,3 +73,4 @@ class AddPlayerDialog(Dialog):
             player["description"] = self.description.text()
             Config.instance()["Players"].append(player)
             Config.instance().save("Players")
+            self.reloadAllTabs.emit()

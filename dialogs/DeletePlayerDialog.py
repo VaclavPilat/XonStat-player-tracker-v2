@@ -42,4 +42,4 @@ class DeletePlayerDialog(Dialog):
         if self.player is not None:
             Config.instance()["Players"].remove(self.player)
             Config.instance().save("Players")
-            
+            self.reloadAllTabs.emit()
