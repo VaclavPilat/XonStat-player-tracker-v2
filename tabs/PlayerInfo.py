@@ -34,21 +34,6 @@ class PlayerInfo(TabInfo):
         browserButton = BrowserButton(self)
         browserButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/player/" + str(self.id)))
         self.info.cellWidget(0, 1).layout().addWidget(browserButton)
-        # Adding buttons based on player existence
-        if checkPlayerExistence(self.id) is not None:
-            # Edit button
-            editButton = EditButton(self)
-            editButton.clicked.connect(lambda: EditPlayerDialog(self.parent, self.id))
-            self.info.cellWidget(1, 1).layout().addWidget(editButton)
-            # Delete button
-            deleteButton = DeleteButton(self)
-            deleteButton.clicked.connect(lambda: DeletePlayerDialog(self.parent, self.id))
-            self.info.cellWidget(1, 1).layout().addWidget(deleteButton)
-        else:
-            # Add player button
-            addButton = AddButton(self)
-            addButton.clicked.connect(lambda: AddPlayerDialog(self.parent, self.id))
-            self.info.cellWidget(1, 1).layout().addWidget(addButton)
         # Adding server info buttons
         copyButton = CopyButton(self.info)
         copyButton.clicked.connect(lambda: QtWidgets.QApplication.instance().clipboard().setText(self.info.cellWidget(3, 1).layout().itemAt(0).widget().text()))
@@ -151,6 +136,26 @@ class PlayerInfo(TabInfo):
                 self.heatmap.cellWidget(i, j).setBackground("heatmap-0")
         self.setInfoContent(6, "")
         self.gameStats.setRowCount(0)
+        # Removing player buttons
+        for i in range(self.info.cellWidget(1, 1).layout().count() - 1, 0, -1):
+            widget = self.info.cellWidget(1, 1).layout().itemAt(i).widget()
+            self.info.cellWidget(1, 1).layout().removeWidget(widget)
+            widget.deleteLater()
+        # Adding buttons based on player existence
+        if checkPlayerExistence(self.id) is not None:
+            # Edit button
+            editButton = EditButton(self)
+            editButton.clicked.connect(lambda: EditPlayerDialog(self.parent, self.id))
+            self.info.cellWidget(1, 1).layout().addWidget(editButton)
+            # Delete button
+            deleteButton = DeleteButton(self)
+            deleteButton.clicked.connect(lambda: DeletePlayerDialog(self.parent, self.id))
+            self.info.cellWidget(1, 1).layout().addWidget(deleteButton)
+        else:
+            # Add player button
+            addButton = AddButton(self)
+            addButton.clicked.connect(lambda: AddPlayerDialog(self.parent, self.id))
+            self.info.cellWidget(1, 1).layout().addWidget(addButton)
     
 
     def setInfoTextColor(self, row: int, color: str):
