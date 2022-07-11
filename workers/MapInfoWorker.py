@@ -99,7 +99,7 @@ class MapInfoWorker(TabInfoWorker):
                         url = "https://stats.xonotic.org/games?map_id=" + str(self.tab.id) + "&start_game_id=" + str(data[-1]["game_id"] -1)
                     else:
                         break
-            except BufferError:
+            except:
                 pass
         # Showing results
         if current == correct:
