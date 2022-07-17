@@ -38,13 +38,6 @@ class NewTab(Tab):
         playerListButton.setToolTip("List of tracked players")
         playerListButton.clicked.connect(self.parent.openPlayerList)
         top.addWidget(playerListButton)
-        # XonStat home page
-        homePageButton = ColoredToolButton(self, "black")
-        homePageButton.setIcon(qta.icon("ph.house-line-fill", color="#FFFFFF"))
-        homePageButton.setText("XonStat home")
-        homePageButton.setToolTip("XonStat homepage")
-        homePageButton.clicked.connect(self.parent.openXonStatHome)
-        top.addWidget(homePageButton)
         # Search
         searchButton = ColoredToolButton(self, "yellow")
         searchButton.setIcon(qta.icon("fa.search", color="#FFFFFF"))

@@ -5,7 +5,6 @@ from widgets.ColoredWidgets import *
 from widgets.ColoredButtons import *
 from tabs.NewTab import *
 from tabs.PlayerList import *
-from tabs.XonStatHome import *
 from tabs.Search import *
 from tabs.PlayerInfo import *
 from tabs.GameInfo import *
@@ -167,21 +166,6 @@ class MainWindow(Window):
             self.__insertTab(PlayerList(self), index)
         else:
             self.__addTab(PlayerList(self))
-    
-
-    def openXonStatHome(self):
-        """Attempts to add a new XonStatHome tab
-        """
-        for i in range(self.tabWidget.count()):
-            if isinstance(self.tabWidget.widget(i), XonStatHome):
-                self.tabWidget.setCurrentIndex(i)
-                return
-        if isinstance(self.tabWidget.currentWidget(), NewTab):
-            index = self.tabWidget.currentIndex()
-            self.removeTab(index, True, False)
-            self.__insertTab(XonStatHome(self), index)
-        else:
-            self.__addTab(XonStatHome(self))
     
 
     def openSearch(self):
