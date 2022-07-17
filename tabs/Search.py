@@ -1,5 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
-import qtawesome as qta
+from PyQt5 import QtWidgets
 
 from tabs.Tab import *
 from workers.SearchWorker import *
@@ -61,10 +60,11 @@ class Search(Tab):
     def startLoading(self):
         """Starting page (re)loading
         """
-        if self.worker is None:
-            self.worker = SearchWorker(self)
-        if self.worker.isFinished() or not self.worker.isRunning():
-            self.worker.start()
+        if len(self.searchBar.text()) > 0:
+            if self.worker is None:
+                self.worker = SearchWorker(self)
+            if self.worker.isFinished() or not self.worker.isRunning():
+                self.worker.start()
 
 
     def clearOldInformation(self):
