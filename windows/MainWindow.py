@@ -153,49 +153,22 @@ class MainWindow(Window):
         self.__addTab(NewTab(self))
     
 
-    def openPlayerList(self):
-        """Attempts to add a new PlayerList tab
-        """
-        for i in range(self.tabWidget.count()):
-            if isinstance(self.tabWidget.widget(i), PlayerList):
-                self.tabWidget.setCurrentIndex(i)
-                return
-        if isinstance(self.tabWidget.currentWidget(), NewTab):
-            index = self.tabWidget.currentIndex()
-            self.removeTab(index, True, False)
-            self.__insertTab(PlayerList(self), index)
-        else:
-            self.__addTab(PlayerList(self))
-    
+    def openTab(self, tab: Tab):
+        """Attempts to add a new tab extended from Tab class
 
-    def openSearch(self):
-        """Attempts to add a new Search tab
+        Args:
+            tab (Tab): Tab class
         """
         for i in range(self.tabWidget.count()):
-            if isinstance(self.tabWidget.widget(i), Search):
+            if isinstance(self.tabWidget.widget(i), tab):
                 self.tabWidget.setCurrentIndex(i)
                 return
         if isinstance(self.tabWidget.currentWidget(), NewTab):
             index = self.tabWidget.currentIndex()
             self.removeTab(index, True, False)
-            self.__insertTab(Search(self), index)
+            self.__insertTab(tab(self), index)
         else:
-            self.__addTab(Search(self))
-    
-
-    def openSettings(self):
-        """Attempts to add a new Settings tab
-        """
-        for i in range(self.tabWidget.count()):
-            if isinstance(self.tabWidget.widget(i), Settings):
-                self.tabWidget.setCurrentIndex(i)
-                return
-        if isinstance(self.tabWidget.currentWidget(), NewTab):
-            index = self.tabWidget.currentIndex()
-            self.removeTab(index, True, False)
-            self.__insertTab(Settings(self), index)
-        else:
-            self.__addTab(Settings(self))
+            self.__addTab(tab(self))
     
 
     def openPlayerInfo(self, identifier: int = None):

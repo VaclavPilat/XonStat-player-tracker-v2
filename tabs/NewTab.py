@@ -2,6 +2,9 @@ from PyQt5 import QtWidgets, QtCore
 import qtawesome as qta
 
 from tabs.Tab import *
+from tabs.PlayerList import *
+from tabs.Search import *
+from tabs.Settings import *
 
 
 class NewTab(Tab):
@@ -36,21 +39,21 @@ class NewTab(Tab):
         playerListButton.setIcon(qta.icon("fa.list", color="#FFFFFF"))
         playerListButton.setText("Player list")
         playerListButton.setToolTip("List of tracked players")
-        playerListButton.clicked.connect(self.parent.openPlayerList)
+        playerListButton.clicked.connect(lambda: self.parent.openTab(PlayerList))
         top.addWidget(playerListButton)
         # Search
         searchButton = ColoredToolButton(self, "yellow")
         searchButton.setIcon(qta.icon("fa.search", color="#FFFFFF"))
         searchButton.setText("Search")
         searchButton.setToolTip("Search for players, maps, servers...")
-        searchButton.clicked.connect(self.parent.openSearch)
+        searchButton.clicked.connect(lambda: self.parent.openTab(Search))
         top.addWidget(searchButton)
         # Settings
         settingsButton = ColoredToolButton(self, "grey")
         settingsButton.setIcon(qta.icon("mdi.hammer-screwdriver", color="#FFFFFF"))
         settingsButton.setText("Settings")
         settingsButton.setToolTip("App settings")
-        settingsButton.clicked.connect(self.parent.openSettings)
+        settingsButton.clicked.connect(lambda: self.parent.openTab(Settings))
         top.addWidget(settingsButton)
         top.addStretch()
         # Bottom row of buttons
