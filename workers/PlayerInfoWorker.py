@@ -49,13 +49,13 @@ class PlayerInfoWorker(TabInfoWorker):
         if self.cancel:
             return
         # Loading player information
-        self.loadPlayerInformation()
+        games = self.loadPlayerInformation()
         # Sleeping
         self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
         if self.cancel:
             return
         # Loading recent games
-        self.loadGames()
+        self.loadGames(games)
     
 
     def checkConfigFile(self):
@@ -87,11 +87,11 @@ class PlayerInfoWorker(TabInfoWorker):
                 self.setInfoRowColor.emit(i, None)
     
 
-    def loadPlayerInformation(self) -> bool:
+    def loadPlayerInformation(self) -> int:
         """Loading simple player information
 
         Returns:
-            bool: Did it load successfully?
+            int: Number of games
         """
         self.message.emit("Loading player information")
         for i in range(3, 7):
@@ -120,14 +120,21 @@ class PlayerInfoWorker(TabInfoWorker):
             # Processing game stats information
             dataList = sorted(data["games_played"].values(), key=lambda x: x["games"], reverse=True)
             self.showGameStats.emit(dataList, data["overall_stats"])
+            return data["games_played"]["overall"]["games"]
         else:
             self.resultMessage.emit("Unable to load player information", False)
             for i in range(3, 7):
                 self.setInfoRowColor.emit(i, "dark-red")
-        return bool(response)
+        return None
     
 
-    def loadGames(self):
+    def loadGames(self, totalGames: int = None):
+        """Loading recent games
+
+        Args:
+            games (int, optional): Total game count. Defaults to None.
+        """
+        gamesLoaded = 0
         current = 0
         correct = 0
         self.message.emit("Loading recent games")
@@ -151,6 +158,7 @@ class PlayerInfoWorker(TabInfoWorker):
                     correct += 1
                     data = response.json()
                     if data is not None and len(data) > 0:
+                        gamesLoaded += len(data)
                         self.processGames(data)
                         # Getting new URL
                         url = "https://stats.xonotic.org/games?player_id=" + str(self.tab.id) + "&start_game_id=" + str(data[-1]["game_id"] -1)
@@ -163,7 +171,10 @@ class PlayerInfoWorker(TabInfoWorker):
             self.setInfoRowColor.emit(7, None)
         else:
             self.setInfoRowColor.emit(7, "dark-red")
-        self.resultProgress.emit("Finished loading recent games", correct, Config.instance()["Settings"]["gameListCount"])
+        if totalGames == gamesLoaded:
+            self.resultProgress.emit("Finished loading recent games", correct, correct)
+        else:
+            self.resultProgress.emit("Finished loading recent games", correct, Config.instance()["Settings"]["gameListCount"])
     
 
     def processGames(self, data: dict):
