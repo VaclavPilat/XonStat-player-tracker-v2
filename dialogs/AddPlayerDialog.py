@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets
 from dialogs.Dialog import *
 from misc.Functions import *
 from misc.Config import *
+from workers.AddPlayerDialogWorker import *
 
 
 class AddPlayerDialog(Dialog):
@@ -30,7 +31,8 @@ class AddPlayerDialog(Dialog):
             # Player nick input
             self.nick = QtWidgets.QLineEdit(self)
             self.nick.setPlaceholderText("Nick")
-            self.nick.textEdited.connect(self.checkInputValidity)
+            self.nick.textChanged.connect(self.checkInputValidity)
+            self.nick.textChanged.connect(self.cancel)
             self.layout.addWidget(self.nick)
             # Player description input
             self.description = QtWidgets.QLineEdit(self)
@@ -42,6 +44,15 @@ class AddPlayerDialog(Dialog):
             label.setAlignment(QtCore.Qt.AlignCenter)
             label.setWordWrap(True)
             self.layout.addWidget(label)
+    
+
+    def cancel(self):
+        """Calcels worker
+        """
+        try:
+            self.worker.cancel = True
+        except:
+            pass
     
 
     def checkInputValidity(self):
@@ -60,6 +71,9 @@ class AddPlayerDialog(Dialog):
         """
         if self.player is None:
             self.checkInputValidity()
+            # Starting worker for loading player name
+            self.worker = AddPlayerDialogWorker(self)
+            self.worker.start()
 
 
     def dialogAccepted(self):
