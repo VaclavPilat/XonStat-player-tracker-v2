@@ -199,7 +199,7 @@ class ColoredFixedTable(ColoredTable):
         """
         super().insertRow(row)
         if self.horizontalHeaderVisible:
-            self.setFixedHeight((self.rowCount() + 1) * 30)
+            self.setFixedHeight(int((self.rowCount() + 1.2) * 30))
         else:
             self.setFixedHeight(self.rowCount() * 30)
 
