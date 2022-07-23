@@ -77,19 +77,19 @@ class PlayerList(Tab):
         buttonGroup.addStretch()
         # Profile button
         profileButton = BrowserButton(self.table)
-        profileButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/player/" + self.table.cellWidget(row, 0).text()))
+        profileButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/player/" + str(player["id"])))
         buttonGroup.addWidget(profileButton)
         # PlayerInfo button
         infoButton = WindowButton(self.table)
-        infoButton.clicked.connect(lambda: self.parent.openPlayerInfo(int(self.table.cellWidget(row, 0).text())))
+        infoButton.clicked.connect(lambda: self.parent.openPlayerInfo(player["id"]))
         buttonGroup.addWidget(infoButton)
         # Stacked widget with edit and save button
         editButton = EditButton(self.table)
-        editButton.clicked.connect(lambda: EditPlayerDialog(self.parent, int(self.table.cellWidget(row, 0).text())))
+        editButton.clicked.connect(lambda: EditPlayerDialog(self.parent, player["id"]))
         buttonGroup.addWidget(editButton)
         # Delete button
         deleteButton = DeleteButton(self.table)
-        deleteButton.clicked.connect(lambda: DeletePlayerDialog(self.parent, int(self.table.cellWidget(row, 0).text())))
+        deleteButton.clicked.connect(lambda: DeletePlayerDialog(self.parent, player["id"]))
         buttonGroup.addWidget(deleteButton)
         buttonGroup.addStretch()
         self.table.setCellWidget(row, 6, actions)
