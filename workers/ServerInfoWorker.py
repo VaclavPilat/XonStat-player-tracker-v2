@@ -11,6 +11,7 @@ class ServerInfoWorker(TabInfoWorker):
     """
 
 
+    showPlayer = QtCore.pyqtSignal(int, str, int, str)
     showRecentGame = QtCore.pyqtSignal(dict)
 
 
@@ -27,6 +28,7 @@ class ServerInfoWorker(TabInfoWorker):
         """Connecting signals to slots. This method is called in init.
         """
         super().connectSlots()
+        self.showPlayer.connect(self.tab.showPlayer)
         self.showRecentGame.connect(self.tab.showRecentGame)
     
 
@@ -35,6 +37,12 @@ class ServerInfoWorker(TabInfoWorker):
         """
         # Loading player information
         self.loadServerInformation()
+        # Sleeping
+        self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
+        if self.cancel:
+            return
+        # Loading players
+        self.loadPlayers()
         # Sleeping
         self.sleep(Config.instance()["Settings"]["groupRequestInterval"])
         if self.cancel:
@@ -70,6 +78,31 @@ class ServerInfoWorker(TabInfoWorker):
             self.resultMessage.emit("Unable to load server information", False)
             for i in range(1, 5):
                 self.setInfoRowColor.emit(i, "dark-red")
+    
+
+    def loadPlayers(self):
+        """Loading top scoring players
+        """
+        self.message.emit("Loading top scoring players")
+        response = None
+        try:
+            response = createRequest("https://stats.xonotic.org/server/" + str(self.tab.id) + "/topscorers")
+            self.showRate.emit(response.headers["X-Ratelimit-Remaining"], response.headers["X-Ratelimit-Limit"])
+        except:
+            pass
+        # Checking response
+        if response is not None and response:
+            data = response.json()
+            # Adding players to table
+            for player in data["top_scorers"]:
+                if checkPlayerExistence(player["player_id"]):
+                    color = "dark-blue"
+                else:
+                    color = None
+                self.showPlayer.emit(player["player_id"], processNick(player["nick"]), player["score"], color)
+            self.resultMessage.emit("Successfully loaded top scoring players", True)
+        else:
+            self.resultMessage.emit("Failed to load top scoring players", False)
     
 
     def loadGames(self):

@@ -121,8 +121,6 @@ class ServerInfo(TabInfo):
         else:
             nickname = ""
             description = ""
-            if not color == None:
-                color = "dark-" + color
         # Creating a new row inside the table
         row = self.players.rowCount()
         self.players.insertRow(row)
