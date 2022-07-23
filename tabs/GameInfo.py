@@ -138,7 +138,7 @@ class GameInfo(TabInfo):
         if identifier >= 6:
             # Profile button
             profileButton = BrowserButton(self.players)
-            profileButton.clicked.connect(lambda: webbrowser.open("https://stats.xonotic.org/player/" + str(identifier), new=2))
+            profileButton.clicked.connect(lambda: openInBrowser("https://stats.xonotic.org/player/" + str(identifier)))
             buttonGroup.addWidget(profileButton)
             # Load button
             infoButton = WindowButton(self.players)
