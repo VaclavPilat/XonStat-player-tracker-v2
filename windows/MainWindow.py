@@ -17,6 +17,8 @@ class MainWindow(Window):
     """Class for showing a main window with tabs
     """
 
+    closedTabs = []
+
 
     def __init__(self):
         """Init
@@ -69,16 +71,25 @@ class MainWindow(Window):
             for tab in Config.instance()["Tabs"]:
                 if "focus" in tab.keys():
                     focusIndex = Config.instance()["Tabs"].index(tab)
-                cls = globals()[tab["type"]]
-                if "id" in tab.keys():
-                    self.__addTab(cls(self, tab["id"]))
-                else:
-                    self.__addTab(cls(self))
+                self.openTabFromConfig(tab)
             if focusIndex >= 0:
                 self.tabWidget.setCurrentIndex(focusIndex)
         else:
             # Opening new tab instead
             self.openNewTab()
+    
+
+    def openTabFromConfig(self, tab: dict):
+        """Opens a tab stored in config
+
+        Args:
+            tab (dict): Tab information represented by a dict
+        """
+        cls = globals()[tab["type"]]
+        if "id" in tab.keys():
+            self.__addTab(cls(self, tab["id"]))
+        else:
+            self.__addTab(cls(self))
     
 
     def __startLoading(self):
@@ -141,6 +152,14 @@ class MainWindow(Window):
         if hasattr(page, "id"):
             output += " with ID " + str(page.id)
         print(output)
+    
+
+    def openRecentTab(self):
+        """Attmpts to open a recently closed tab
+        """
+        if len(self.closedTabs) > 0:
+            tab = self.closedTabs.pop()
+            self.openTabFromConfig(tab)
 
 
     def openNewTab(self):
@@ -259,6 +278,7 @@ class MainWindow(Window):
             return
         if self.tabWidget.count() > 0:
             widget = self.tabWidget.widget(index)
+            self.closedTabs.append(self.getTabData(widget))
             print("Removed " + type(widget).__name__ + " at index " + str(index))
             widget.deleteLater()
             self.tabWidget.removeTab(index)
@@ -282,13 +302,17 @@ class MainWindow(Window):
             event: Event
         """
         key = event.key()
-        if event.modifiers() == QtCore.Qt.ControlModifier:
+        modifiers = event.modifiers()
+        if modifiers & QtCore.Qt.ControlModifier:
             # Closing current tab
             if key == QtCore.Qt.Key_W:
                 self.removeTab(self.tabWidget.currentIndex())
             # Closing all tabs
             elif key == QtCore.Qt.Key_Q:
                 self.removeTabs()
+            # Opening recently closed tab
+            elif (modifiers & QtCore.Qt.ShiftModifier) and key == QtCore.Qt.Key_T:
+                self.openRecentTab()
             # Adding a new tab
             elif key == QtCore.Qt.Key_T or key == QtCore.Qt.Key_N:
                 self.openNewTab()
@@ -307,6 +331,24 @@ class MainWindow(Window):
         if Config.instance()["Settings"]["reloadTabsAfterChange"]:
             for i in range(self.tabWidget.count()):
                 self.tabWidget.widget(i).startLoading()
+    
+
+    def getTabData(self, widget: Tab) -> dict:
+        """Gets data about current tab to allow saving and opening again
+
+        Args:
+            widget (Tab): Tab widget
+
+        Returns:
+            dict: Tab data
+        """
+        data = {}
+        data["type"] = str(type(widget).__name__)
+        if issubclass(type(widget), TabInfo) and widget.id is not None:
+            data["id"] = widget.id
+        if widget == self.tabWidget.currentWidget():
+            data["focus"] = True
+        return data
 
 
     def closeEvent(self, e):
@@ -315,11 +357,6 @@ class MainWindow(Window):
         Config.instance()["Tabs"] = []
         for i in range(self.tabWidget.count()):
             widget = self.tabWidget.widget(i)
-            data = {}
-            data["type"] = str(type(widget).__name__)
-            if issubclass(type(widget), TabInfo) and widget.id is not None:
-                data["id"] = widget.id
-            if widget == self.tabWidget.currentWidget():
-                data["focus"] = True
+            data = self.getTabData(widget)
             Config.instance()["Tabs"].append(data)
         Config.instance().save("Tabs")
