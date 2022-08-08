@@ -13,7 +13,7 @@ class GameInfoWorker(TabInfoWorker):
     """
 
 
-    showPlayer = QtCore.pyqtSignal(int, str, int, str)
+    showPlayer = QtCore.pyqtSignal(int, str, int, str, str)
     showGroupName = QtCore.pyqtSignal(str)
 
 
@@ -119,7 +119,11 @@ class GameInfoWorker(TabInfoWorker):
                             color = player["color"]
                 else:
                     color = settings["color"]
-                self.showPlayer.emit(player["player_id"], player["nick"], player["score"], color)
+                if "avg_latency" in player:
+                    ping = str(player["avg_latency"])
+                else:
+                    ping = ""
+                self.showPlayer.emit(player["player_id"], player["nick"], player["score"], color, ping)
 
 
     def loadAdditionalInformation(self, data: dict):

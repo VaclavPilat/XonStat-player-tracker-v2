@@ -63,15 +63,15 @@ class GameInfo(TabInfo):
         """
         self.players = ColoredFixedTable(self)
         # Setting columns
-        headers = ["Player ID", "Player name", "Nickname", "Description", "Score", "Actions"]
+        headers = ["Player ID", "Ping", "Player name", "Nickname", "Description", "Score", "Actions"]
         self.players.setColumnCount( len(headers) )
         self.players.setHorizontalHeaderLabels(headers)
         # Setting column stretching
         self.players.verticalHeader().hide()
         self.players.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        for i in range(1, 4):
+        for i in range(2, 5):
             self.players.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.Stretch)
-        for i in range(4, len(headers)):
+        for i in range(5, len(headers)):
             self.players.horizontalHeader().setSectionResizeMode(i, QtWidgets.QHeaderView.ResizeToContents)
         return self.players
     
@@ -96,7 +96,7 @@ class GameInfo(TabInfo):
         self.players.setRowCount(0)
     
 
-    def showPlayer(self, identifier: int, name: str, score: int, color: str):
+    def showPlayer(self, identifier: int, name: str, score: int, color: str, ping: str):
         """Adds a row with player information into table
 
         Args:
@@ -104,6 +104,7 @@ class GameInfo(TabInfo):
             name (str): Player name (at the time this game happened)
             score (int): Player score
             color (str): Row background color
+            ping (str): Average ping
         """
         # Checking if player exists
         player = checkPlayerExistence(identifier)
@@ -119,14 +120,15 @@ class GameInfo(TabInfo):
         row = self.players.rowCount()
         self.players.insertRow(row)
         # Adding labels
-        for i in range(5):
+        for i in range(6):
             self.players.setCellWidget(row, i, ColoredLabel(self.players, None, color))
         # Adding label text
         self.players.cellWidget(row, 0).setText(str(identifier))
-        self.players.cellWidget(row, 1).setText(name)
-        self.players.cellWidget(row, 2).setText(nickname)
-        self.players.cellWidget(row, 3).setText(description)
-        self.players.cellWidget(row, 4).setText(str(score))
+        self.players.cellWidget(row, 1).setText(ping)
+        self.players.cellWidget(row, 2).setText(name)
+        self.players.cellWidget(row, 3).setText(nickname)
+        self.players.cellWidget(row, 4).setText(description)
+        self.players.cellWidget(row, 5).setText(str(score))
         # Adding buttons
         actions = ColoredWidget()
         buttonGroup = QtWidgets.QHBoxLayout()
@@ -160,7 +162,7 @@ class GameInfo(TabInfo):
                 addButton.clicked.connect(lambda: AddPlayerDialog(self.parent, identifier))
                 buttonGroup.addWidget(addButton)
         buttonGroup.addStretch()
-        self.players.setCellWidget(row, 5, actions)
+        self.players.setCellWidget(row, 6, actions)
     
 
     def showGroupName(self, name: str):
